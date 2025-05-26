@@ -1,0 +1,15 @@
+{
+  "hash": "f6cf2e142777366ed04b6ec7fd65ad96",
+  "result": {
+    "engine": "knitr",
+    "markdown": "\n# Введение\n\nНапишу введение позже, когда репозиторий будет представлять из себя более-менее полноценное методическое пособие по анализу и визуализации данных в области оценки и управления водными биоресурсами с помощью программной среды R.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

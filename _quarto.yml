@@ -1,0 +1,34 @@
+project:
+  type: book
+
+book:
+  title: "Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)"
+  author: "Сергей Баканёв"
+  date: "2025-04-30"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - chapter 1.qmd
+    - chapter 2.qmd
+    - chapter 3.qmd
+    - chapter 4.qmd
+    - chapter 5.qmd
+    - chapter 6.qmd
+    - chapter 7.qmd
+    - chapter 8.qmd
+    - chapter 9.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
+
