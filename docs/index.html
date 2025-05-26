@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Сергей Баканёв">
+<meta name="dcterms.date" content="2025-04-30">
 
-<title>9&nbsp; Введение в прогнозирование – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./chapter 9.html" rel="next">
-<link href="./chapter 7.html" rel="prev">
+<link href="./intro.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -82,7 +83,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 8.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Введение в прогнозирование</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Аннотация</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -109,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Аннотация</span></a>
   </div>
 </li>
@@ -163,7 +164,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapter 8.html" class="sidebar-item-text sidebar-link active">
+  <a href="./chapter 8.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Введение в прогнозирование</span></span></a>
   </div>
 </li>
@@ -189,9 +190,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">9.1</span> Введение</a></li>
-  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">9.2</span> Загрузка данных и первичный осмотр</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">9.3</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#аннотация" id="toc-аннотация" class="nav-link active" data-scroll-target="#аннотация">Аннотация</a></li>
   </ul>
 </nav>
     </div>
@@ -200,14 +199,26 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Введение в прогнозирование</span></h1>
+<h1 class="title">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Сергей Баканёв </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 30, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -217,16 +228,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="введение" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">9.1</span> Введение</h2>
-</section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">9.2</span> Загрузка данных и первичный осмотр</h2>
-<p>Текст. Текст. Текст.</p>
-</section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">9.3</span> Описательная статистика и визуализация</h2>
-<p>Текст. Текст. Текст.</p>
+<section id="аннотация" class="level1 unnumbered">
+<h1 class="unnumbered">Аннотация</h1>
+<p><strong>Баканев С. В. (2025) Оценка водных биоресурсов при недостатке данных в среде R (для начинающих). — Курс лекций и практических занятий, адрес доступа:&nbsp;https://mombus.github.io/cRab</strong></p>
+<p>Здесь будет краткая аннотация.</p>
 
 
 </section>
@@ -633,13 +638,10 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./chapter 7.html" class="pagination-link" aria-label="Продукционные модели">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продукционные модели</span></span>
-      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chapter 9.html" class="pagination-link" aria-label="ПРП и стратегии управления">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">ПРП и стратегии управления</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./intro.html" class="pagination-link" aria-label="Введение">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

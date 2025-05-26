@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Анализ и визуализация данных улова</title>
+<title>2&nbsp; Анализ и визуализация данных улова – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,11 +59,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./chapter 2.html" rel="next">
+<link href="./intro.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -73,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -134,20 +137,156 @@ window.Quarto = {
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 1.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Введение в картографию</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">От регрессии и до нейронных сетей</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">SDM - Модели пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Основы геостатистики</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Байесовский подход</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продукционные модели</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Введение в прогнозирование</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter 9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">ПРП и стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#введение-в-r" id="toc-введение-в-r" class="nav-link active" data-scroll-target="#введение-в-r"><span class="header-section-number">2.1</span> Введение (в R)</a></li>
+  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">2.2</span> Загрузка данных и первичный осмотр</a></li>
+  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">2.3</span> Описательная статистика и визуализация</a>
+  <ul class="collapse">
+  <li><a href="#построение-гистограммы-для-переменной-length-длина-креветок" id="toc-построение-гистограммы-для-переменной-length-длина-креветок" class="nav-link" data-scroll-target="#построение-гистограммы-для-переменной-length-длина-креветок"><span class="header-section-number">2.3.1</span> Построение гистограммы для переменной ‘length’ (длина креветок)</a></li>
+  <li><a href="#визуализация-в-ggridges" id="toc-визуализация-в-ggridges" class="nav-link" data-scroll-target="#визуализация-в-ggridges"><span class="header-section-number">2.3.2</span> Визуализация в <code>ggridges</code></a></li>
+  </ul></li>
+  <li><a href="#выявление-аутлайеров-выбросов" id="toc-выявление-аутлайеров-выбросов" class="nav-link" data-scroll-target="#выявление-аутлайеров-выбросов"><span class="header-section-number">2.4</span> Выявление аутлайеров (выбросов)</a>
+  <ul class="collapse">
+  <li><a href="#теория-метода" id="toc-теория-метода" class="nav-link" data-scroll-target="#теория-метода"><span class="header-section-number">2.4.1</span> <strong>Теория метода</strong></a></li>
+  <li><a href="#преимущества-метода" id="toc-преимущества-метода" class="nav-link" data-scroll-target="#преимущества-метода"><span class="header-section-number">2.4.2</span> <strong>Преимущества метода</strong></a></li>
+  </ul></li>
+  <li><a href="#определение-возрастной-структуры-статистические-методы-анализа-размерных-данных" id="toc-определение-возрастной-структуры-статистические-методы-анализа-размерных-данных" class="nav-link" data-scroll-target="#определение-возрастной-структуры-статистические-методы-анализа-размерных-данных"><span class="header-section-number">2.5</span> Определение возрастной структуры: статистические методы анализа размерных данных</a></li>
+  <li><a href="#уравнение-берталанфи" id="toc-уравнение-берталанфи" class="nav-link" data-scroll-target="#уравнение-берталанфи"><span class="header-section-number">2.6</span> Уравнение Берталанфи</a></li>
+  <li><a href="#огива-логистическая-кривая-и-50-ное-созревание" id="toc-огива-логистическая-кривая-и-50-ное-созревание" class="nav-link" data-scroll-target="#огива-логистическая-кривая-и-50-ное-созревание"><span class="header-section-number">2.7</span> Огива, логистическая кривая и 50%-ное созревание</a>
+  <ul class="collapse">
+  <li><a href="#оценка-модели" id="toc-оценка-модели" class="nav-link" data-scroll-target="#оценка-модели"><span class="header-section-number">2.7.1</span> <strong>Оценка модели</strong></a></li>
+  <li><a href="#биологический-контекст" id="toc-биологический-контекст" class="nav-link" data-scroll-target="#биологический-контекст"><span class="header-section-number">2.7.2</span> <strong>Биологический контекст</strong></a></li>
+  </ul></li>
+  <li><a href="#сравнение-групп-параметров-моделей" id="toc-сравнение-групп-параметров-моделей" class="nav-link" data-scroll-target="#сравнение-групп-параметров-моделей"><span class="header-section-number">2.8</span> Сравнение групп, параметров, моделей</a>
+  <ul class="collapse">
+  <li><a href="#сравнение-групп-на-примере-самцов-и-самок" id="toc-сравнение-групп-на-примере-самцов-и-самок" class="nav-link" data-scroll-target="#сравнение-групп-на-примере-самцов-и-самок"><span class="header-section-number">2.8.1</span> Сравнение групп (на примере самцов и самок)</a></li>
+  <li><a href="#сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий" id="toc-сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий" class="nav-link" data-scroll-target="#сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий"><span class="header-section-number">2.8.3</span> Сравнение параметров (линейные модели для оценки межгрупповых различий)</a></li>
+  <li><a href="#сравнение-моделей" id="toc-сравнение-моделей" class="nav-link" data-scroll-target="#сравнение-моделей"><span class="header-section-number">2.8.4</span> Сравнение моделей</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Анализ и визуализация данных улова</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></h1>
 </div>
 
 
@@ -164,11 +303,11 @@ window.Quarto = {
 </header>
 
 
-<section id="введение-в-r" class="level2">
-<h2 class="anchored" data-anchor-id="введение-в-r">Введение (в R)</h2>
+<section id="введение-в-r" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="введение-в-r"><span class="header-section-number">2.1</span> Введение (в R)</h2>
 </section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2">
-<h2 class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр">Загрузка данных и первичный осмотр</h2>
+<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">2.2</span> Загрузка данных и первичный осмотр</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
@@ -206,8 +345,8 @@ window.Quarto = {
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="описательная-статистика-и-визуализация" class="level2">
-<h2 class="anchored" data-anchor-id="описательная-статистика-и-визуализация">Описательная статистика и визуализация</h2>
+<section id="описательная-статистика-и-визуализация" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">2.3</span> Описательная статистика и визуализация</h2>
 <p>Команда <code>summary</code> выводит <strong>описательную статистику</strong> для каждой числовой переменной: минимум, 1-й квартиль, медиана, среднее, 3-й квартиль, максимум; для категориальных переменных — частоты.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Общая статистика</span></span>
@@ -278,8 +417,8 @@ window.Quarto = {
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span>     <span class="dv">4</span>        <span class="fl">29.1</span>      <span class="fl">2.28</span>       <span class="fl">2.96</span>      <span class="fl">0.804</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="построение-гистограммы-для-переменной-length-длина-креветок" class="level3">
-<h3 class="anchored" data-anchor-id="построение-гистограммы-для-переменной-length-длина-креветок">Построение гистограммы для переменной ‘length’ (длина креветок)</h3>
+<section id="построение-гистограммы-для-переменной-length-длина-креветок" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="построение-гистограммы-для-переменной-length-длина-креветок"><span class="header-section-number">2.3.1</span> Построение гистограммы для переменной ‘length’ (длина креветок)</h3>
 <p>Для первого визуального знакомства команда <code>hist</code> строит гистограмму — простой график, который показывает, как распределены значения числовой переменной. В данном случае отображается распределение длин креветок из набора данных.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>length, </span>
@@ -297,8 +436,8 @@ window.Quarto = {
 </figure>
 </div>
 </section>
-<section id="визуализация-в-ggridges" class="level3">
-<h3 class="anchored" data-anchor-id="визуализация-в-ggridges">Визуализация в <code>ggridges</code></h3>
+<section id="визуализация-в-ggridges" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="визуализация-в-ggridges"><span class="header-section-number">2.3.2</span> Визуализация в <code>ggridges</code></h3>
 <p>Для элегантных и компактных графиков подходит библиотека <code>ggridges</code>. Посторим распределение длины креветки в зависимости от пола и возраста.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
@@ -329,11 +468,11 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="выявление-аутлайеров-выбросов" class="level2">
-<h2 class="anchored" data-anchor-id="выявление-аутлайеров-выбросов">Выявление аутлайеров (выбросов)</h2>
+<section id="выявление-аутлайеров-выбросов" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="выявление-аутлайеров-выбросов"><span class="header-section-number">2.4</span> Выявление аутлайеров (выбросов)</h2>
 <p>Аутлаеры (выбросы) — наблюдения, значительно отклоняющиеся от общего распределения данных. Их идентификация критически важна, так как они могут искажать результаты анализа. Один из надёжных методов обнаружения выбросов — <strong>метод межквартильного размаха (IQR)</strong>.</p>
-<section id="теория-метода" class="level3">
-<h3 class="anchored" data-anchor-id="теория-метода"><strong>Теория метода</strong></h3>
+<section id="теория-метода" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="теория-метода"><span class="header-section-number">2.4.1</span> <strong>Теория метода</strong></h3>
 <ol type="1">
 <li><p><strong>Расчёт квартилей</strong>:</p>
 <ul>
@@ -349,8 +488,8 @@ window.Quarto = {
 </ul></li>
 </ol>
 </section>
-<section id="преимущества-метода" class="level3">
-<h3 class="anchored" data-anchor-id="преимущества-метода"><strong>Преимущества метода</strong></h3>
+<section id="преимущества-метода" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="преимущества-метода"><span class="header-section-number">2.4.2</span> <strong>Преимущества метода</strong></h3>
 <ul>
 <li><p>Устойчивость к асимметрии распределения.</p></li>
 <li><p>Не требует предположения о нормальности данных.</p></li>
@@ -379,8 +518,8 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных" class="level2">
-<h2 class="anchored" data-anchor-id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных">Определение возрастной структуры: статистические методы анализа размерных данных</h2>
+<section id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных"><span class="header-section-number">2.5</span> Определение возрастной структуры: статистические методы анализа размерных данных</h2>
 <p>Возрастная структура популяции — часто важна для расчёта промысловой смертности, оценки репродуктивного потенциала и прогнозирования динамики запасов. Поскольку прямое измерение возраста часто невозможно (например, у беспозвоночных или рыб без четких возрастных меток), используются статистические методы, выделяющие группы в смешанных распределениях размеров.</p>
 <p><strong>Основные подходы:</strong></p>
 <ol type="1">
@@ -496,8 +635,8 @@ window.Quarto = {
 </figure>
 </div>
 </section>
-<section id="уравнение-берталанфи" class="level2">
-<h2 class="anchored" data-anchor-id="уравнение-берталанфи">Уравнение Берталанфи</h2>
+<section id="уравнение-берталанфи" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="уравнение-берталанфи"><span class="header-section-number">2.6</span> Уравнение Берталанфи</h2>
 <p>Уравнение Берталанфи — фундаментальная модель в рыбохозяйственной науке, описывающая асимптотический рост организмов. Оно имеет вид: <span class="math display">\[
 L(t) = L_{\infty} \cdot \left(1 - e^{-k \cdot (t - t_0)}\right)
 \]</span> где <em>L<sub>∞</sub></em>— теоретическая максимальная длина особи, <em>k</em>— коэффициент скорости роста, <em>t<sub>0</sub></em>— гипотетический возраст при нулевой длине.</p>
@@ -577,8 +716,8 @@ L(t) = L_{\infty} \cdot \left(1 - e^{-k \cdot (t - t_0)}\right)
 </figure>
 </div>
 </section>
-<section id="огива-логистическая-кривая-и-50-ное-созревание" class="level2">
-<h2 class="anchored" data-anchor-id="огива-логистическая-кривая-и-50-ное-созревание">Огива, логистическая кривая и 50%-ное созревание</h2>
+<section id="огива-логистическая-кривая-и-50-ное-созревание" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="огива-логистическая-кривая-и-50-ное-созревание"><span class="header-section-number">2.7</span> Огива, логистическая кривая и 50%-ное созревание</h2>
 <p>Логистическая кривая — ключевой инструмент для моделирования бинарных процессов, таких как созревание или смена пола у организмов. В случае протоандрических креветок (<em>Pandalus borealis</em>), которые меняют пол с возрастом, зависимость вероятности быть самкой от длины карапакса можно описать логистической функцией:</p>
 <p><span class="math display">\[
 P(F) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 \cdot длина)}}
@@ -600,8 +739,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <figcaption>Рис. 1.8: Огива</figcaption>
 </figure>
 </div>
-<section id="оценка-модели" class="level3">
-<h3 class="anchored" data-anchor-id="оценка-модели"><strong>Оценка модели</strong></h3>
+<section id="оценка-модели" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="оценка-модели"><span class="header-section-number">2.7.1</span> <strong>Оценка модели</strong></h3>
 <ol type="1">
 <li><p><strong>ROC-кривая и AUC</strong>:</p>
 <ul>
@@ -623,8 +762,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </ul></li>
 </ol>
 </section>
-<section id="биологический-контекст" class="level3">
-<h3 class="anchored" data-anchor-id="биологический-контекст"><strong>Биологический контекст</strong></h3>
+<section id="биологический-контекст" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="биологический-контекст"><span class="header-section-number">2.7.2</span> <strong>Биологический контекст</strong></h3>
 <ul>
 <li><p><strong>Протоандрический гермафродитизм</strong>: У креветок смена пола с самцов на самок происходит при достижении критического размера (~25-28 мм).</p></li>
 <li><p><strong>L50 как индикатор</strong>: Снижение <em>L<sub>50</sub></em> в популяции может сигнализировать о стрессовых условиях (перелов, изменение среды), ускоряющих созревание.</p></li>
@@ -727,13 +866,13 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </div>
 </section>
 </section>
-<section id="сравнение-групп-параметров-моделей" class="level2">
-<h2 class="anchored" data-anchor-id="сравнение-групп-параметров-моделей">Сравнение групп, параметров, моделей</h2>
-<section id="сравнение-групп-на-примере-самцов-и-самок" class="level3">
-<h3 class="anchored" data-anchor-id="сравнение-групп-на-примере-самцов-и-самок">Сравнение групп (на примере самцов и самок)</h3>
+<section id="сравнение-групп-параметров-моделей" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="сравнение-групп-параметров-моделей"><span class="header-section-number">2.8</span> Сравнение групп, параметров, моделей</h2>
+<section id="сравнение-групп-на-примере-самцов-и-самок" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="сравнение-групп-на-примере-самцов-и-самок"><span class="header-section-number">2.8.1</span> Сравнение групп (на примере самцов и самок)</h3>
 <p>Рассмотрим методы сравнения количественных характеристик (длина, вес) между самцами и самками северной креветки. Анализ включает проверку нормальности распределения, выбор подходящего статистического теста и визуализацию различий.</p>
-<section id="подготовка-данных" class="level4">
-<h4 class="anchored" data-anchor-id="подготовка-данных">Подготовка данных</h4>
+<section id="подготовка-данных" class="level4" data-number="2.8.1.1">
+<h4 data-number="2.8.1.1" class="anchored" data-anchor-id="подготовка-данных"><span class="header-section-number">2.8.1.1</span> Подготовка данных</h4>
 <p>Загрузим данные и выделим подвыборки для самцов и самок:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
@@ -754,8 +893,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>females <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"F"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="проверка-нормальности-распределения" class="level4">
-<h4 class="anchored" data-anchor-id="проверка-нормальности-распределения">Проверка нормальности распределения</h4>
+<section id="проверка-нормальности-распределения" class="level4" data-number="2.8.1.2">
+<h4 data-number="2.8.1.2" class="anchored" data-anchor-id="проверка-нормальности-распределения"><span class="header-section-number">2.8.1.2</span> Проверка нормальности распределения</h4>
 <p>Перед сравнением групп проверим, соответствуют ли данные нормальному распределению (тест Шапиро-Уилка):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка нормальности для длины самцов  </span></span>
@@ -765,8 +904,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </div>
 <p>Если p-value &gt; 0.05, распределение считается нормальным. В противном случае используем непараметрические методы.</p>
 </section>
-<section id="сравнение-средних-значений" class="level4">
-<h4 class="anchored" data-anchor-id="сравнение-средних-значений">Сравнение средних значений</h4>
+<section id="сравнение-средних-значений" class="level4" data-number="2.8.1.3">
+<h4 data-number="2.8.1.3" class="anchored" data-anchor-id="сравнение-средних-значений"><span class="header-section-number">2.8.1.3</span> Сравнение средних значений</h4>
 <p>Если данные нормальны: t-тест</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-тест для сравнения длин самцов и самок  </span></span>
@@ -780,8 +919,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>mannwhitney_result </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="эффект-размера-коэффициент-коэна" class="level4">
-<h4 class="anchored" data-anchor-id="эффект-размера-коэффициент-коэна">Эффект размера (коэффициент Коэна)</h4>
+<section id="эффект-размера-коэффициент-коэна" class="level4" data-number="2.8.1.4">
+<h4 data-number="2.8.1.4" class="anchored" data-anchor-id="эффект-размера-коэффициент-коэна"><span class="header-section-number">2.8.1.4</span> Эффект размера (коэффициент Коэна)</h4>
 <p>Для оценки практической значимости различий рассчитаем коэффициент Коэна:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет коэффициента Коэна  </span></span>
@@ -794,8 +933,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <li><p><strong>d &gt; 0.8</strong> : большой эффект.</p></li>
 </ul>
 </section>
-<section id="визуализация-различий" class="level4">
-<h4 class="anchored" data-anchor-id="визуализация-различий"><strong>Визуализация различий</strong></h4>
+<section id="визуализация-различий" class="level4" data-number="2.8.1.5">
+<h4 data-number="2.8.1.5" class="anchored" data-anchor-id="визуализация-различий"><span class="header-section-number">2.8.1.5</span> <strong>Визуализация различий</strong></h4>
 <p>Построим boxplot для визуального сравнения длин самцов и самок:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> length, <span class="at">fill =</span> sex)) <span class="sc">+</span>  </span>
@@ -812,12 +951,12 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </figure>
 </div>
 </section>
-<section id="интерпретация-результатов" class="level4">
-<h4 class="anchored" data-anchor-id="интерпретация-результатов"><strong>Интерпретация результатов</strong></h4>
+<section id="интерпретация-результатов" class="level4" data-number="2.8.1.6">
+<h4 data-number="2.8.1.6" class="anchored" data-anchor-id="интерпретация-результатов"><span class="header-section-number">2.8.1.6</span> <strong>Интерпретация результатов</strong></h4>
 <ol type="1">
 <li><p>Если p-value &lt; 0.05, различия между группами статистически значимы.</p></li>
 <li><p>Эффект размера помогает оценить биологическую важность различий. Например, если самки значительно крупнее самцов (d = 1.2), это может указывать на половой диморфизм, связанный с репродуктивной стратегией.</p>
-<h4 id="пример-полного-анализа-для-веса" class="anchored"><strong>Пример полного анализа для веса</strong></h4></li>
+<h4 id="пример-полного-анализа-для-веса" data-number="2.8.1.7" class="anchored"><span class="header-section-number">2.8.1.7</span> <strong>Пример полного анализа для веса</strong></h4></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Полный анализ для веса  </span></span>
@@ -850,8 +989,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </figure>
 </div>
 </section>
-<section id="выводы" class="level4">
-<h4 class="anchored"><strong>Выводы</strong></h4>
+<section id="выводы" class="level4" data-number="2.8.1.8">
+<h4 data-number="2.8.1.8" class="anchored"><span class="header-section-number">2.8.1.8</span> <strong>Выводы</strong></h4>
 <ol type="1">
 <li><p>Используйте t-тест для нормальных данных и U-тест для ненормальных.</p></li>
 <li><p>Дополните анализ оценкой эффекта размера для биологической интерпретации.</p></li>
@@ -861,9 +1000,9 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <ul>
 <li><p>Для многомерных данных (например, одновременное сравнение длины, веса и возраста) применяйте MANOVA.</p></li>
 <li><p>Если группы неоднородны (например, разный возрастной состав), используйте ковариационный анализ (ANCOVA).</p>
-<h3 id="что-делать-если-тест-на-нормальность-не-пройден-для-одной-из-групп" class="anchored" data-anchor-id="выводы"><strong>Что делать, если тест на нормальность не пройден для одной из групп?</strong></h3>
+<h3 id="что-делать-если-тест-на-нормальность-не-пройден-для-одной-из-групп" data-number="2.8.2" class="anchored" data-anchor-id="выводы"><span class="header-section-number">2.8.2</span> <strong>Что делать, если тест на нормальность не пройден для одной из групп?</strong></h3>
 <p>При сравнении количественных характеристик (например, длины карапакса у самцов и самок) важно учитывать, соответствуют ли данные нормальному распределению. Если тест на нормальность (например, Шапиро-Уилка) показывает значимое отклонение от нормальности для одной из групп, это влияет на выбор статистического теста и интерпретацию результатов.</p>
-<h4 id="пример-из-нашего-анализа" class="anchored"><strong>Пример из нашего анализа</strong></h4>
+<h4 id="пример-из-нашего-анализа" data-number="2.8.2.1" class="anchored"><span class="header-section-number">2.8.2.1</span> <strong>Пример из нашего анализа</strong></h4>
 <p>Мы провели сравнение длины карапакса между самцами и самками:</p>
 <ul>
 <li><p>Для самцов: <strong><code>shapiro_test(males$length)</code></strong> → p-value = <strong>0.000574</strong> (нормальность отвергнута).</p></li>
@@ -875,7 +1014,7 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <li><p><strong>U-тест</strong> : p-value = 1.97e-27 (значимо).</p></li>
 <li><p>Коэффициент Коэна: d = 2.14 (большой эффект).</p></li>
 </ul>
-<h4 id="почему-это-работает" class="anchored"><strong>Почему это работает?</strong></h4>
+<h4 id="почему-это-работает" data-number="2.8.2.2" class="anchored"><span class="header-section-number">2.8.2.2</span> <strong>Почему это работает?</strong></h4>
 <ol type="1">
 <li><p><strong>t-тест устойчив к умеренным отклонениям от нормальности</strong> :</p>
 <ul>
@@ -895,8 +1034,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </ul>
 </section>
 </section>
-<section id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий" class="level3">
-<h3 class="anchored" data-anchor-id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий">Сравнение параметров (линейные модели для оценки межгрупповых различий)</h3>
+<section id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий" class="level3" data-number="2.8.3">
+<h3 data-number="2.8.3" class="anchored" data-anchor-id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий"><span class="header-section-number">2.8.3</span> Сравнение параметров (линейные модели для оценки межгрупповых различий)</h3>
 <p>Для сравнения параметров двух линейных моделей (например, скорости роста самцов и самок) используем следующий подход.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
@@ -994,33 +1133,33 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <p><strong>Интерпретация:</strong><br>
 Значимая <em>разница</em> (p &lt; 0.05) указывает на статистически значимые различия в скорости роста между полами.</p>
 </section>
-<section id="сравнение-моделей" class="level3">
-<h3 class="anchored" data-anchor-id="сравнение-моделей">Сравнение моделей</h3>
+<section id="сравнение-моделей" class="level3" data-number="2.8.4">
+<h3 data-number="2.8.4" class="anchored" data-anchor-id="сравнение-моделей"><span class="header-section-number">2.8.4</span> Сравнение моделей</h3>
 <p>Одним из ключевых аспектов анализа биологических данных является определение формы зависимости между переменными. В данном разделе мы рассмотрим основы подбора модели зависимости между длиной и весом креветок. Начиная с простой линейной модели, мы постепенно перейдем к более сложным нелинейным моделям, чтобы продемонстрировать методику выбора наилучшей модели. Cравним три модели — линейную, полиномиальную и степенную — чтобы определить, какая из них наилучшим образом описывает данные. Цель анализа — найти математическую зависимость, которая:</p>
 <ol type="1">
 <li><p>Точно предсказывает вес креветки по её длине.</p></li>
 <li><p>Имеет биологическую интерпретацию.</p></li>
 <li><p>Минимизирует ошибку предсказания.</p></li>
 </ol>
-<section id="модели-и-их-параметры" class="level4">
-<h4 class="anchored" data-anchor-id="модели-и-их-параметры">Модели и их параметры</h4>
+<section id="модели-и-их-параметры" class="level4" data-number="2.8.4.1">
+<h4 data-number="2.8.4.1" class="anchored" data-anchor-id="модели-и-их-параметры"><span class="header-section-number">2.8.4.1</span> Модели и их параметры</h4>
 <ol type="1">
 <li><strong>Линейная</strong>: <span class="math inline">\(\text{weight} = \beta_0 + \beta_1\cdot\text{length}\)</span></li>
 <li><strong>Полиномиальная 3-й степени</strong>: <span class="math inline">\(\text{weight} = \beta_0 + \beta_1\cdot\text{length} + \beta_2\cdot\text{length}^2 + \beta_3\cdot\text{length}^3\)</span></li>
 <li><strong>Степенная</strong>: <span class="math inline">\(\text{weight} = a\cdot\text{length}^b\)</span></li>
 </ol>
 </section>
-<section id="метрики" class="level4">
-<h4 class="anchored" data-anchor-id="метрики">Метрики</h4>
+<section id="метрики" class="level4" data-number="2.8.4.2">
+<h4 data-number="2.8.4.2" class="anchored" data-anchor-id="метрики"><span class="header-section-number">2.8.4.2</span> Метрики</h4>
 <ul>
 <li><strong>R²</strong> - (коэффициент детерминации): чем ближе к 1, тем лучше модель объясняет данные.</li>
 <li><strong>AIC</strong> -(информационный критерий Акаике): чем меньше значение, тем лучше модель с учётом её сложности.</li>
 </ul>
 </section>
-<section id="результаты" class="level4">
-<h4 class="anchored" data-anchor-id="результаты"><strong>Результаты</strong></h4>
-<section id="линейная-модель" class="level5">
-<h5 class="anchored" data-anchor-id="линейная-модель"><strong>1. Линейная модель</strong></h5>
+<section id="результаты" class="level4" data-number="2.8.4.3">
+<h4 data-number="2.8.4.3" class="anchored" data-anchor-id="результаты"><span class="header-section-number">2.8.4.3</span> <strong>Результаты</strong></h4>
+<section id="линейная-модель" class="level5" data-number="2.8.4.3.1">
+<h5 data-number="2.8.4.3.1" class="anchored" data-anchor-id="линейная-модель"><span class="header-section-number">2.8.4.3.1</span> <strong>1. Линейная модель</strong></h5>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>             Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
@@ -1038,8 +1177,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </figure>
 </div>
 </section>
-<section id="полиномиальная-модель" class="level5">
-<h5 class="anchored" data-anchor-id="полиномиальная-модель"><strong>2. Полиномиальная модель</strong></h5>
+<section id="полиномиальная-модель" class="level5" data-number="2.8.4.3.2">
+<h5 data-number="2.8.4.3.2" class="anchored" data-anchor-id="полиномиальная-модель"><span class="header-section-number">2.8.4.3.2</span> <strong>2. Полиномиальная модель</strong></h5>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                 Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
@@ -1058,8 +1197,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </figure>
 </div>
 </section>
-<section id="степенная-модель" class="level5">
-<h5 class="anchored" data-anchor-id="степенная-модель"><strong>3. Степенная модель</strong></h5>
+<section id="степенная-модель" class="level5" data-number="2.8.4.3.3">
+<h5 data-number="2.8.4.3.3" class="anchored" data-anchor-id="степенная-модель"><span class="header-section-number">2.8.4.3.3</span> <strong>3. Степенная модель</strong></h5>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>Parameters<span class="sc">:</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>   Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
@@ -1072,8 +1211,8 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 </ul>
 </section>
 </section>
-<section id="сравнение-моделей-1" class="level4">
-<h4 class="anchored" data-anchor-id="сравнение-моделей-1"><strong>3. Сравнение моделей</strong></h4>
+<section id="сравнение-моделей-1" class="level4" data-number="2.8.4.4">
+<h4 data-number="2.8.4.4" class="anchored" data-anchor-id="сравнение-моделей-1"><span class="header-section-number">2.8.4.4</span> <strong>3. Сравнение моделей</strong></h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1107,20 +1246,20 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 <li><p><strong>Линейная модель</strong> существенно уступает по точности.</p></li>
 </ol>
 </section>
-<section id="рекомендации" class="level4">
-<h4 class="anchored" data-anchor-id="рекомендации"><strong>4. Рекомендации</strong></h4>
+<section id="рекомендации" class="level4" data-number="2.8.4.5">
+<h4 data-number="2.8.4.5" class="anchored" data-anchor-id="рекомендации"><span class="header-section-number">2.8.4.5</span> <strong>4. Рекомендации</strong></h4>
 <ul>
 <li><p><strong>Для прогнозирования</strong> используйте полиномиальную модель, так как она минимизирует ошибку.</p></li>
 <li><p><strong>Для биологической интерпретации</strong> предпочтительна степенная модель: weight∝length<sup>2.92</sup>.</p></li>
 <li><p><strong>Избегайте переобучения:</strong> Полиномиальные модели высокой степени могут терять интерпретируемость.</p></li>
 </ul>
 </section>
-<section id="визуализация-остатков" class="level4">
-<h4 class="anchored" data-anchor-id="визуализация-остатков"><strong>5. Визуализация остатков</strong></h4>
+<section id="визуализация-остатков" class="level4" data-number="2.8.4.6">
+<h4 data-number="2.8.4.6" class="anchored" data-anchor-id="визуализация-остатков"><span class="header-section-number">2.8.4.6</span> <strong>5. Визуализация остатков</strong></h4>
 <p>Остатки степенной модели распределены равномерно, что подтверждает её адекватность: <img src="images/residuals_shrimp.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:60.0%" alt="Рис. 1.5: Остатки"></p>
 </section>
-<section id="заключение" class="level4">
-<h4 class="anchored" data-anchor-id="заключение"><strong>Заключение</strong></h4>
+<section id="заключение" class="level4" data-number="2.8.4.7">
+<h4 data-number="2.8.4.7" class="anchored" data-anchor-id="заключение"><span class="header-section-number">2.8.4.7</span> <strong>Заключение</strong></h4>
 <p>Для анализа зависимости веса от длины северной креветки <strong>рекомендуется</strong>:</p>
 <ol type="1">
 <li><p><strong>Полиномиальная модель</strong> — для задач, требующих максимальной точности.</p></li>
@@ -1609,6 +1748,18 @@ L_{50} = -\frac{\beta_0}{\beta_1}
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link" aria-label="Введение">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter 2.html" class="pagination-link" aria-label="Введение в картографию">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Введение в картографию</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
