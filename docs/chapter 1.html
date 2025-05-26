@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Анализ и визуализация данных улова</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Анализ и визуализация данных улова</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="введение-в-r" class="level2">
+<h2 class="anchored" data-anchor-id="введение-в-r">Введение (в R)</h2>
+</section>
+<section id="загрузка-данных-и-первичный-осмотр" class="level2">
+<h2 class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр">Загрузка данных и первичный осмотр</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"shrimp_catch.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Команда <code>glimpse</code> знакомит со структурой данных:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Просмотр структуры и первых строк загруженных данных</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Rows<span class="sc">:</span> <span class="dv">230</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Columns<span class="sc">:</span> <span class="dv">5</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span> id     <span class="sc">&lt;</span>int<span class="sc">&gt;</span> <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">17</span>, <span class="dv">18</span>, <span class="sc">~</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="er">$</span> age    <span class="sc">&lt;</span>int<span class="sc">&gt;</span> <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="sc">~</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="er">$</span> length <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="fl">20.45450</span>, <span class="fl">25.88928</span>, <span class="fl">29.42257</span>, <span class="fl">30.68292</span>, <span class="fl">12.46059</span>, <span class="fl">28.52152</span>, <span class="fl">17.</span><span class="sc">~</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="er">$</span> weight <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="fl">1.28221748</span>, <span class="fl">1.97476899</span>, <span class="fl">2.65412595</span>, <span class="fl">3.44746476</span>, <span class="fl">0.13404801</span>, <span class="fl">2.3</span><span class="sc">~</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="er">$</span> sex    <span class="sc">&lt;</span>chr<span class="sc">&gt;</span> <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span><span class="sc">~</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="er">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Можно использовать команду <code>str</code> — показывает внутреннюю <strong>структуру</strong> объекта , включая количество строк, столбцов, названия переменных, их типы (<code>chr</code>, <code>num</code>, <code>int</code> и др.), а также несколько первых значений.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="st">'data.frame'</span><span class="sc">:</span>   <span class="dv">230</span> obs. of  <span class="dv">5</span> variables<span class="sc">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="er">$</span> id    <span class="sc">:</span> int  <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">8</span> <span class="dv">9</span> <span class="dv">10</span> ...</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> age   <span class="sc">:</span> int  <span class="dv">2</span> <span class="dv">4</span> <span class="dv">4</span> <span class="dv">4</span> <span class="dv">1</span> <span class="dv">4</span> <span class="dv">2</span> <span class="dv">2</span> <span class="dv">4</span> <span class="dv">3</span> ...</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> length<span class="sc">:</span> num  <span class="fl">20.5</span> <span class="fl">25.9</span> <span class="fl">29.4</span> <span class="fl">30.7</span> <span class="fl">12.5</span> ...</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> weight<span class="sc">:</span> num  <span class="fl">1.282</span> <span class="fl">1.975</span> <span class="fl">2.654</span> <span class="fl">3.447</span> <span class="fl">0.134</span> ...</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> sex   <span class="sc">:</span> chr  <span class="st">"M"</span> <span class="st">"F"</span> <span class="st">"F"</span> <span class="st">"F"</span> ...</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="описательная-статистика-и-визуализация" class="level2">
+<h2 class="anchored" data-anchor-id="описательная-статистика-и-визуализация">Описательная статистика и визуализация</h2>
+<p>Команда <code>summary</code> выводит <strong>описательную статистику</strong> для каждой числовой переменной: минимум, 1-й квартиль, медиана, среднее, 3-й квартиль, максимум; для категориальных переменных — частоты.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Общая статистика</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>       id              age            length          weight       </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a> Min.   <span class="sc">:</span>  <span class="fl">1.00</span>   Min.   <span class="sc">:</span><span class="fl">1.000</span>   Min.   <span class="sc">:</span> <span class="fl">7.65</span>   Min.   <span class="sc">:-</span><span class="fl">0.3334</span>  </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a> <span class="dv">1</span>st Qu.<span class="sc">:</span> <span class="fl">58.25</span>   <span class="dv">1</span>st Qu.<span class="sc">:</span><span class="fl">2.000</span>   <span class="dv">1</span>st Qu.<span class="sc">:</span><span class="fl">17.62</span>   <span class="dv">1</span>st Qu.<span class="sc">:</span> <span class="fl">0.6320</span>  </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a> Median <span class="sc">:</span><span class="fl">115.50</span>   Median <span class="sc">:</span><span class="fl">3.000</span>   Median <span class="sc">:</span><span class="fl">22.49</span>   Median <span class="sc">:</span> <span class="fl">1.3660</span>  </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> Mean   <span class="sc">:</span><span class="fl">115.50</span>   Mean   <span class="sc">:</span><span class="fl">2.509</span>   Mean   <span class="sc">:</span><span class="fl">21.68</span>   Mean   <span class="sc">:</span> <span class="fl">1.4933</span>  </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="dv">3</span>rd Qu.<span class="sc">:</span><span class="fl">172.75</span>   <span class="dv">3</span>rd Qu.<span class="sc">:</span><span class="fl">3.000</span>   <span class="dv">3</span>rd Qu.<span class="sc">:</span><span class="fl">26.03</span>   <span class="dv">3</span>rd Qu.<span class="sc">:</span> <span class="fl">2.1148</span>  </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a> Max.   <span class="sc">:</span><span class="fl">230.00</span>   Max.   <span class="sc">:</span><span class="fl">4.000</span>   Max.   <span class="sc">:</span><span class="fl">36.02</span>   Max.   <span class="sc">:</span> <span class="fl">5.1316</span>  </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>     sex           </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a> Length<span class="sc">:</span><span class="dv">230</span>        </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a> Class <span class="sc">:</span>character  </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a> Mode  <span class="sc">:</span>character  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Простейшими командами можно вычислить, например, соотоношение полов или корреляцию длина-вес.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Соотношение полов</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(data<span class="sc">$</span>sex)) <span class="sc">%&gt;%</span> <span class="fu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>   F    M </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.35</span> <span class="fl">0.65</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Корреляция длина-вес с p-value</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cor_test <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(data<span class="sc">$</span>length, data<span class="sc">$</span>weight, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">method =</span> <span class="st">"pearson"</span>, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">exact =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na.action =</span> na.omit)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>cor_coef <span class="ot">&lt;-</span> <span class="fu">round</span>(cor_test<span class="sc">$</span>estimate, <span class="dv">2</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">&lt;-</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(cor_test<span class="sc">$</span>p.value, <span class="at">accuracy =</span> .<span class="dv">001</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Корреляция Пирсона: r ="</span>, cor_coef, <span class="st">", p ="</span>, p_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Корреляция Пирсона<span class="sc">:</span> r <span class="ot">=</span> <span class="fl">0.95</span> , p <span class="ot">=</span> <span class="er">&lt;</span><span class="fl">0.001</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Распределение возраста</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>  <span class="dv">2</span>  <span class="dv">3</span>  <span class="dv">4</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dv">43</span> <span class="dv">68</span> <span class="dv">77</span> <span class="dv">40</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Средние значения длины и веса по группам</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">group_by</span>(age) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">summarise</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">mean_length =</span> <span class="fu">mean</span>(length),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">sd_length =</span> <span class="fu">sd</span>(length),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">mean_weight =</span> <span class="fu">mean</span>(weight),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">sd_weight =</span> <span class="fu">sd</span>(weight))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A tibble: 4 x 5</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    age mean_length sd_length mean_weight sd_weight</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span>       <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>     <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>       <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>     <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>     <span class="dv">1</span>        <span class="fl">12.7</span>      <span class="fl">1.37</span>       <span class="fl">0.249</span>     <span class="fl">0.234</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>     <span class="dv">2</span>        <span class="fl">19.2</span>      <span class="fl">1.88</span>       <span class="fl">0.919</span>     <span class="fl">0.341</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span>     <span class="dv">3</span>        <span class="fl">24.8</span>      <span class="fl">1.72</span>       <span class="fl">1.88</span>      <span class="fl">0.424</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span>     <span class="dv">4</span>        <span class="fl">29.1</span>      <span class="fl">2.28</span>       <span class="fl">2.96</span>      <span class="fl">0.804</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="построение-гистограммы-для-переменной-length-длина-креветок" class="level3">
+<h3 class="anchored" data-anchor-id="построение-гистограммы-для-переменной-length-длина-креветок">Построение гистограммы для переменной ‘length’ (длина креветок)</h3>
+<p>Для первого визуального знакомства команда <code>hist</code> строит гистограмму — простой график, который показывает, как распределены значения числовой переменной. В данном случае отображается распределение длин креветок из набора данных.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>length, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Гистограмма длины креветок"</span>,          <span class="co"># Заголовок графика</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Длина (см)"</span>,                          <span class="co"># Подпись оси X</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Частота"</span>,                             <span class="co"># Подпись оси Y</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"lightblue"</span>,                            <span class="co"># Цвет столбцов</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">"black"</span>,                             <span class="co"># Цвет границ столбцов</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">15</span>)                                   <span class="co"># Количество интервалов</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/hist_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.1: Гистограмма длины креветок</figcaption>
+</figure>
+</div>
+</section>
+<section id="визуализация-в-ggridges" class="level3">
+<h3 class="anchored" data-anchor-id="визуализация-в-ggridges">Визуализация в <code>ggridges</code></h3>
+<p>Для элегантных и компактных графиков подходит библиотека <code>ggridges</code>. Посторим распределение длины креветки в зависимости от пола и возраста.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> sex, </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">group =</span> sex, </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">scale =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Распределение длины карапакса по полу"</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Длина карапакса (мм)"</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Пол"</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),  <span class="co"># Убирает рамку вокруг графика</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>)  <span class="co"># Сохраняет осевые линии (опционально)</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ggridges_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.2: Пол-длина креветок с использованием <code>ggridges</code></figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="выявление-аутлайеров-выбросов" class="level2">
+<h2 class="anchored" data-anchor-id="выявление-аутлайеров-выбросов">Выявление аутлайеров (выбросов)</h2>
+<p>Аутлаеры (выбросы) — наблюдения, значительно отклоняющиеся от общего распределения данных. Их идентификация критически важна, так как они могут искажать результаты анализа. Один из надёжных методов обнаружения выбросов — <strong>метод межквартильного размаха (IQR)</strong>.</p>
+<section id="теория-метода" class="level3">
+<h3 class="anchored" data-anchor-id="теория-метода"><strong>Теория метода</strong></h3>
+<ol type="1">
+<li><p><strong>Расчёт квартилей</strong>:</p>
+<ul>
+<li><p><strong>Q1</strong> (25-й перцентиль): значение, ниже которого находится 25% данных.</p></li>
+<li><p><strong>Q3</strong> (75-й перцентиль): значение, ниже которого находится 75% данных.</p></li>
+<li><p><strong>IQR = Q3 - Q1</strong>: мера разброса средней половины данных.</p></li>
+</ul></li>
+<li><p><strong>Границы аутлаеров</strong>:</p>
+<ul>
+<li><p><strong>Нижняя граница</strong>: Q1−1.5×IQRQ1−1.5×IQR</p></li>
+<li><p><strong>Верхняя граница</strong>: Q3+1.5×IQRQ3+1.5×IQR<br>
+Наблюдения за этими пределами считаются выбросами.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="преимущества-метода" class="level3">
+<h3 class="anchored" data-anchor-id="преимущества-метода"><strong>Преимущества метода</strong></h3>
+<ul>
+<li><p>Устойчивость к асимметрии распределения.</p></li>
+<li><p>Не требует предположения о нормальности данных.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Метод межквартильного размаха</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>outliers <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">length_z =</span> <span class="fu">scale</span>(length),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight_z =</span> <span class="fu">scale</span>(weight)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">abs</span>(length_z) <span class="sc">&gt;</span> <span class="dv">3</span> <span class="sc">|</span> <span class="fu">abs</span>(weight_z) <span class="sc">&gt;</span> <span class="dv">3</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Обычные"</span>), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> outliers, <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Аутлаеры"</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Обычные"</span> <span class="ot">=</span> <span class="st">"grey50"</span>, <span class="st">"Аутлаеры"</span> <span class="ot">=</span> <span class="st">"red"</span>)) <span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Выявление аномальных наблюдений"</span>, <span class="at">color =</span> <span class="st">"Тип"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/outliers_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.3: Распределение длины карапакса</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных" class="level2">
+<h2 class="anchored" data-anchor-id="определение-возрастной-структуры-статистические-методы-анализа-размерных-данных">Определение возрастной структуры: статистические методы анализа размерных данных</h2>
+<p>Возрастная структура популяции — часто важна для расчёта промысловой смертности, оценки репродуктивного потенциала и прогнозирования динамики запасов. Поскольку прямое измерение возраста часто невозможно (например, у беспозвоночных или рыб без четких возрастных меток), используются статистические методы, выделяющие группы в смешанных распределениях размеров.</p>
+<p><strong>Основные подходы:</strong></p>
+<ol type="1">
+<li><p><strong>Метод k-средних (k-means)</strong> — алгоритм кластеризации, группирующий особи в заданное число кластеров (возрастных групп) на основе их размеров.</p></li>
+<li><p><strong>Метод Бхаттачарии</strong> — статистический подход для разделения смешанных нормальных распределений, часто применяемый для идентификации мод в гистограммах.</p></li>
+<li><p><strong>EM-алгоритм</strong> — оценка параметров смеси распределений, подходящая для данных с перекрывающимися возрастными группами.</p></li>
+<li><p><strong>Гауссовы смеси (GMM)</strong> — расширение метода Бхаттачарии для многомерного анализа.</p></li>
+<li><p><strong>Ядерное сглаживание</strong> — непараметрический метод визуализации плотности, помогающий выявить скрытые моды.</p></li>
+</ol>
+<p>Рассмотрим метод k-средних (k-means) и метод Бхаттачарии, предварительно построив гистограмму.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixtools)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Гистограмма длины с наложением плотности</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length)) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#FC4E07"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Распределение длины карапакса"</span>, </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Пики могут соответствовать возрастным группам"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Длина (мм)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/hist_dens_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.3: Распределение длины карапакса</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Кластеризация по длине (K-means как пример)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(data<span class="sc">$</span>length, <span class="at">centers =</span> <span class="dv">4</span>)  <span class="co"># Предполагаем 4 возрастные группы</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(clusters<span class="sc">$</span>cluster)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация кластеров</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">fill =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">25</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Кластеризация по длине)"</span>, </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Длина (мм)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/cluster_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.4: Кластеризация по длине</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixtools)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"shrimp_catch.csv"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Построение и отображение гистограммы</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>length, <span class="at">breaks =</span> <span class="dv">20</span>, <span class="at">main =</span> <span class="st">"Гистограмма распределения длин карапаксов"</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Длина карапакса (мм)"</span>, <span class="at">ylab =</span> <span class="st">"Частота"</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Инициализация параметров (предположим 4 возрастные группы)</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>init_params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">4</span>),</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">13</span>, <span class="dv">19</span>, <span class="dv">25</span>, <span class="dv">32</span>),</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.75</span>, <span class="fl">1.75</span>, <span class="fl">2.5</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Разделение смеси распределений методом EM</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">normalmixEM</span>(data<span class="sc">$</span>length, <span class="at">k =</span> <span class="dv">4</span>, <span class="at">maxit =</span> <span class="dv">1000</span>, <span class="at">epsilon =</span> <span class="fl">1e-3</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">lambda =</span> init_params<span class="sc">$</span>lambda,</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mu =</span> init_params<span class="sc">$</span>mu,</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sigma =</span> init_params<span class="sc">$</span>sigma)</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Визуализация результатов с ggplot2</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Генерация сетки для построения кривых</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>x_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(data<span class="sc">$</span>length), <span class="fu">max</span>(data<span class="sc">$</span>length), <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция смеси</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>mixture_density <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>  fit<span class="sc">$</span>lambda[<span class="dv">1</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">1</span>], fit<span class="sc">$</span>sigma[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>  fit<span class="sc">$</span>lambda[<span class="dv">2</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">2</span>], fit<span class="sc">$</span>sigma[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  fit<span class="sc">$</span>lambda[<span class="dv">3</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">3</span>], fit<span class="sc">$</span>sigma[<span class="dv">3</span>]) <span class="sc">+</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  fit<span class="sc">$</span>lambda[<span class="dv">4</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">4</span>], fit<span class="sc">$</span>sigma[<span class="dv">4</span>])</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a><span class="co"># График</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length)) <span class="sc">+</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Гистограмма</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Исходное распределение (гладкая линия)</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Смесь распределений</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> mixture_density, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Компоненты смеси</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> <span class="cf">function</span>(x) fit<span class="sc">$</span>lambda[<span class="dv">1</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">1</span>], fit<span class="sc">$</span>sigma[<span class="dv">1</span>]), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> <span class="cf">function</span>(x) fit<span class="sc">$</span>lambda[<span class="dv">2</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">2</span>], fit<span class="sc">$</span>sigma[<span class="dv">2</span>]), <span class="at">color =</span> <span class="st">"green"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> <span class="cf">function</span>(x) fit<span class="sc">$</span>lambda[<span class="dv">3</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">3</span>], fit<span class="sc">$</span>sigma[<span class="dv">3</span>]), <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> <span class="cf">function</span>(x) fit<span class="sc">$</span>lambda[<span class="dv">4</span>] <span class="sc">*</span> <span class="fu">dnorm</span>(x, fit<span class="sc">$</span>mu[<span class="dv">4</span>], fit<span class="sc">$</span>sigma[<span class="dv">4</span>]), <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Настройка темы и легенды</span></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Длина карапакса (мм)"</span>,</span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Плотность"</span>,</span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Разделение возрастных групп методом EM"</span></span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/bhattacharya_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.5: Метод Бхаттачарии</figcaption>
+</figure>
+</div>
+</section>
+<section id="уравнение-берталанфи" class="level2">
+<h2 class="anchored" data-anchor-id="уравнение-берталанфи">Уравнение Берталанфи</h2>
+<p>Уравнение Берталанфи — фундаментальная модель в рыбохозяйственной науке, описывающая асимптотический рост организмов. Оно имеет вид: <span class="math display">\[
+L(t) = L_{\infty} \cdot \left(1 - e^{-k \cdot (t - t_0)}\right)
+\]</span> где <em>L<sub>∞</sub></em>— теоретическая максимальная длина особи, <em>k</em>— коэффициент скорости роста, <em>t<sub>0</sub></em>— гипотетический возраст при нулевой длине.</p>
+<p>В приведённом коде модель применяется для анализа роста северной креветки :</p>
+<ol type="1">
+<li><p><strong>Подготовка данных</strong>: Удаление аутлаеров (например, строк 10 и 50) повышает точность оценки параметров.</p></li>
+<li><p><strong>Инициализация параметров</strong>:</p>
+<ul>
+<li><p><em>L<sub>∞</sub></em> задаётся как максимальная наблюдаемая длина в данных.</p></li>
+<li><p><em>k</em> и <em>t<sub>0</sub></em> подбираются итеративно методом нелинейных наименьших квадратов (<strong><code>nls</code></strong>).</p></li>
+</ul></li>
+<li><p><strong>Визуализация</strong>: График сопоставляет эмпирические данные (точки) с предсказаниями модели (красная линия), демонстрируя, как рост замедляется с приближением к <em>L∞</em>.</p></li>
+</ol>
+<p><strong>Интерпретация параметров</strong>:</p>
+<ul>
+<li><p>Высокое значение <em>k</em> (&gt;0.3) указывает на быстрый рост молоди.</p></li>
+<li><p><em>t<sub>0</sub></em>&lt;0 может отражать ранний метаморфоз личинок.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"shrimp_catch.csv"</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование возраста в числовой формат</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>age_num <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(data<span class="sc">$</span>age)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Удаление аутлайеров (если необходимо)</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>))  <span class="co"># Пример удаления строк с аномалиями</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Начальные параметры на основе данных</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>L_inf_start <span class="ot">&lt;-</span> <span class="fu">max</span>(data_clean<span class="sc">$</span>length, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="co"># Максимальная длина</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>k_start <span class="ot">&lt;-</span> <span class="fl">0.3</span>                                        <span class="co"># Средняя скорость роста</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>t0_start <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span>                                      <span class="co"># Гипотетический возраст</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Подгонка модели с увеличенным числом итераций</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">nls</span>(</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  length <span class="sc">~</span> L_inf <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>k <span class="sc">*</span> (age_num <span class="sc">-</span> t0))),</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_clean,</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">list</span>(<span class="at">L_inf =</span> L_inf_start, <span class="at">k =</span> k_start, <span class="at">t0 =</span> t0_start),</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">nls.control</span>(<span class="at">maxiter =</span> <span class="dv">200</span>, <span class="at">warnOnly =</span> <span class="cn">TRUE</span>)  <span class="co"># Увеличиваем лимит итераций</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод результатов</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание последовательности возрастов для предсказания</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>age_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(data_clean<span class="sc">$</span>age_num), <span class="fu">max</span>(data_clean<span class="sc">$</span>age_num), <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Предсказание значений длины</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>length_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">age_num =</span> age_seq))</span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Построение графика</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">x =</span> age_num, <span class="at">y =</span> length)) <span class="sc">+</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> age), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">age_num =</span> age_seq, <span class="at">length =</span> length_pred), </span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> age_num, <span class="at">y =</span> length), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Рост креветок по уравнению Берталанфи"</span>,</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Возраст (годы)"</span>,</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Длина карапакса (мм)"</span>,</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Возрастная группа"</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение графика</span></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"bertalanffy_model.png"</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/bertalanffy_model.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.6: Рост креветок по уравнению Берталанфи</figcaption>
+</figure>
+</div>
+</section>
+<section id="огива-логистическая-кривая-и-50-ное-созревание" class="level2">
+<h2 class="anchored" data-anchor-id="огива-логистическая-кривая-и-50-ное-созревание">Огива, логистическая кривая и 50%-ное созревание</h2>
+<p>Логистическая кривая — ключевой инструмент для моделирования бинарных процессов, таких как созревание или смена пола у организмов. В случае протоандрических креветок (<em>Pandalus borealis</em>), которые меняют пол с возрастом, зависимость вероятности быть самкой от длины карапакса можно описать логистической функцией:</p>
+<p><span class="math display">\[
+P(F) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 \cdot длина)}}
+\]</span></p>
+<p>где <em>P(F)</em> — вероятность принадлежности к женскому полу, <em>β<sub>0</sub></em> — интерсепт, <em>β<sub>1</sub></em> — коэффициент влияния длины.</p>
+<p>Точка перегиба логистической кривой соответствует длине, при которой вероятность быть самкой равна 50%: <span class="math display">\[
+L_{50} = -\frac{\beta_0}{\beta_1}
+\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/logistic_model_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.7: Логистическая кривая</figcaption>
+</figure>
+</div>
+<p>Огива (кумулятивная кривая) показывает накопление вероятности с увеличением длины. Для анализа созревания её можно построить через интеграл логистической функции. Визуально она демонстрирует, как доля самок возрастает с размером.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ogive_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.8: Огива</figcaption>
+</figure>
+</div>
+<section id="оценка-модели" class="level3">
+<h3 class="anchored" data-anchor-id="оценка-модели"><strong>Оценка модели</strong></h3>
+<ol type="1">
+<li><p><strong>ROC-кривая и AUC</strong>:</p>
+<ul>
+<li><p>Площадь под ROC-кривой (AUC) &gt;0.7 указывает на хорошую предсказательную способность модели.</p></li>
+<li><p>Значение AUC = 0.94(пример из кода) подтверждает сильную связь длины и пола.</p></li>
+</ul></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ROC_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.9: ROC-кривая и AUC</figcaption>
+</figure>
+</div>
+<ol start="2" type="1">
+<li><p><strong>Интерпретация коэффициентов</strong>:</p>
+<ul>
+<li><p>Положительный <em>β<sub>1</sub></em> означает: с ростом длины вероятность быть самкой увеличивается.</p></li>
+<li><p>Например, <em>β<sub>1</sub></em>=0.25 → увеличение длины на 1 мм повышает шансы в e<sup>0.25</sup>≈1.28 раза.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="биологический-контекст" class="level3">
+<h3 class="anchored" data-anchor-id="биологический-контекст"><strong>Биологический контекст</strong></h3>
+<ul>
+<li><p><strong>Протоандрический гермафродитизм</strong>: У креветок смена пола с самцов на самок происходит при достижении критического размера (~25-28 мм).</p></li>
+<li><p><strong>L50 как индикатор</strong>: Снижение <em>L<sub>50</sub></em> в популяции может сигнализировать о стрессовых условиях (перелов, изменение среды), ускоряющих созревание.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"shrimp_catch.csv"</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Предобработка данных -----------------------------------------------------</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Удаление аутлаеров методом IQR</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>Q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(data<span class="sc">$</span>length, <span class="fl">0.25</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>Q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(data<span class="sc">$</span>length, <span class="fl">0.75</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>IQR <span class="ot">&lt;-</span> Q3 <span class="sc">-</span> Q1</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(length <span class="sc">&gt;=</span> Q1 <span class="sc">-</span> <span class="fl">1.5</span><span class="sc">*</span>IQR <span class="sc">&amp;</span> length <span class="sc">&lt;=</span> Q3 <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">*</span>IQR)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Логистическая регрессия --------------------------------------------------</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование пола в бинарную переменную</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>data_clean<span class="sc">$</span>sex_binary <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(data_clean<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">"F"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Подгонка модели</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>model_logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(sex_binary <span class="sc">~</span> length, </span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data_clean, </span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет коэффициентов</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span> <span class="fu">coef</span>(model_logit)[<span class="dv">1</span>]</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(model_logit)[<span class="dv">2</span>]</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Вычисление L50 (длина 50% созревания)</span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>L50 <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="sc">-</span>beta0<span class="sc">/</span>beta1, <span class="dv">1</span>)</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Визуализация ------------------------------------------------------------</span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Логистическая кривая</span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> sex_binary)) <span class="sc">+</span></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> sex), <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">predict</span>(model_logit, <span class="at">type =</span> <span class="st">"response"</span>)), </span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#D81B60"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> L50, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"#1E88E5"</span>) <span class="sc">+</span></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> L50 <span class="sc">+</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fl">0.2</span>, </span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"L50 ="</span>, L50, <span class="st">"мм"</span>), <span class="at">color =</span> <span class="st">"#1E88E5"</span>) <span class="sc">+</span></span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FFC107"</span>, <span class="st">"#1976D2"</span>)) <span class="sc">+</span></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Зависимость пола от длины карапакса"</span>,</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Логистическая регрессия с 50%-ной точкой созревания"</span>,</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Длина карапакса (мм)"</span>,</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Вероятность быть самкой (P(F))"</span></span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Огива (кумулятивное распределение)</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>data_ogive <span class="ot">&lt;-</span> data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(length) <span class="sc">%&gt;%</span></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">cum_females =</span> <span class="fu">cumsum</span>(sex_binary),</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">cum_prob =</span> cum_females <span class="sc">/</span> <span class="fu">max</span>(cum_females)</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_ogive, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> cum_prob)) <span class="sc">+</span></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"#4CAF50"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> L50, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"#1E88E5"</span>) <span class="sc">+</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"#757575"</span>) <span class="sc">+</span></span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> L50 <span class="sc">+</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fl">0.55</span>, </span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"50% созревание при"</span>, L50, <span class="st">"мм"</span>), <span class="at">color =</span> <span class="st">"#1E88E5"</span>) <span class="sc">+</span></span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Огива: Кумулятивное распределение самок"</span>,</span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Длина карапакса (мм)"</span>,</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Накопленная доля самок"</span></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Оценка модели -----------------------------------------------------------</span></span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC-анализ</span></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(data_clean<span class="sc">$</span>sex_binary, <span class="fu">predict</span>(model_logit, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>auc_value <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">auc</span>(roc_obj), <span class="dv">2</span>)</span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a><span class="co"># График ROC-кривой</span></span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(roc_obj, <span class="at">col =</span> <span class="st">"#E53935"</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"ROC-кривая (AUC ="</span>, auc_value, <span class="st">")"</span>))</span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Сохранение результатов --------------------------------------------------</span></span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"logistic_curve.png"</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"ogive_curve.png"</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод ключевых метрик</span></span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Результаты анализа:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Длина 50%-ного созревания (L50):"</span>, L50, <span class="st">"мм</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- AUC модели:"</span>, auc_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Коэффициенты модели:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Intercept (β0):"</span>, <span class="fu">round</span>(beta0, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Slope (β1):"</span>, <span class="fu">round</span>(beta1, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="сравнение-групп-параметров-моделей" class="level2">
+<h2 class="anchored" data-anchor-id="сравнение-групп-параметров-моделей">Сравнение групп, параметров, моделей</h2>
+<section id="сравнение-групп-на-примере-самцов-и-самок" class="level3">
+<h3 class="anchored" data-anchor-id="сравнение-групп-на-примере-самцов-и-самок">Сравнение групп (на примере самцов и самок)</h3>
+<p>Рассмотрим методы сравнения количественных характеристик (длина, вес) между самцами и самками северной креветки. Анализ включает проверку нормальности распределения, выбор подходящего статистического теста и визуализацию различий.</p>
+<section id="подготовка-данных" class="level4">
+<h4 class="anchored" data-anchor-id="подготовка-данных">Подготовка данных</h4>
+<p>Загрузим данные и выделим подвыборки для самцов и самок:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек  </span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)  </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)  </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных  </span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"shrimp_catch.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>))  <span class="co"># Удаление аномальных наблюдений </span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Фильтрация данных по полу  </span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>males <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"M"</span>)  </span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>females <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"F"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="проверка-нормальности-распределения" class="level4">
+<h4 class="anchored" data-anchor-id="проверка-нормальности-распределения">Проверка нормальности распределения</h4>
+<p>Перед сравнением групп проверим, соответствуют ли данные нормальному распределению (тест Шапиро-Уилка):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка нормальности для длины самцов  </span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro_test</span>(males<span class="sc">$</span>length)  </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка нормальности для длины самок  </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro_test</span>(females<span class="sc">$</span>length) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Если p-value &gt; 0.05, распределение считается нормальным. В противном случае используем непараметрические методы.</p>
+</section>
+<section id="сравнение-средних-значений" class="level4">
+<h4 class="anchored" data-anchor-id="сравнение-средних-значений">Сравнение средних значений</h4>
+<p>Если данные нормальны: t-тест</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T-тест для сравнения длин самцов и самок  </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>t_test_result <span class="ot">&lt;-</span> <span class="fu">t_test</span>(length <span class="sc">~</span> sex, <span class="at">data =</span> data)  </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>t_test_result </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Если данные не нормальны: U-тест Манна-Уитни</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># U-тест для сравнения длин самцов и самок  </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mannwhitney_result <span class="ot">&lt;-</span> <span class="fu">wilcox_test</span>(length <span class="sc">~</span> sex, <span class="at">data =</span> data)  </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>mannwhitney_result </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="эффект-размера-коэффициент-коэна" class="level4">
+<h4 class="anchored" data-anchor-id="эффект-размера-коэффициент-коэна">Эффект размера (коэффициент Коэна)</h4>
+<p>Для оценки практической значимости различий рассчитаем коэффициент Коэна:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет коэффициента Коэна  </span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>cohens_d_result <span class="ot">&lt;-</span> <span class="fu">cohens_d</span>(length <span class="sc">~</span> sex, <span class="at">data =</span> data)  </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>cohens_d_result  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><strong>d &lt; 0.2</strong> : малый эффект,</p></li>
+<li><p><strong>d ≈ 0.5</strong> : средний эффект,</p></li>
+<li><p><strong>d &gt; 0.8</strong> : большой эффект.</p></li>
+</ul>
+</section>
+<section id="визуализация-различий" class="level4">
+<h4 class="anchored" data-anchor-id="визуализация-различий"><strong>Визуализация различий</strong></h4>
+<p>Построим boxplot для визуального сравнения длин самцов и самок:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> length, <span class="at">fill =</span> sex)) <span class="sc">+</span>  </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span>  </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_compare_means</span>(<span class="at">method =</span> <span class="st">"t.test"</span>) <span class="sc">+</span>  <span class="co"># Добавление p-value  </span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Сравнение длин самцов и самок"</span>,  </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Пол"</span>, <span class="at">y =</span> <span class="st">"Длина карапакса (мм)"</span>) <span class="sc">+</span>  </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ttest_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.10: Boxplot сравнения длин самцов и самок</figcaption>
+</figure>
+</div>
+</section>
+<section id="интерпретация-результатов" class="level4">
+<h4 class="anchored" data-anchor-id="интерпретация-результатов"><strong>Интерпретация результатов</strong></h4>
+<ol type="1">
+<li><p>Если p-value &lt; 0.05, различия между группами статистически значимы.</p></li>
+<li><p>Эффект размера помогает оценить биологическую важность различий. Например, если самки значительно крупнее самцов (d = 1.2), это может указывать на половой диморфизм, связанный с репродуктивной стратегией.</p>
+<h4 id="пример-полного-анализа-для-веса" class="anchored"><strong>Пример полного анализа для веса</strong></h4></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Полный анализ для веса  </span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>weight_analysis <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span>  </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span>  </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(  </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_weight =</span> <span class="fu">mean</span>(weight),  </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_weight =</span> <span class="fu">sd</span>(weight),  </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>()  </span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span>  </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(  </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">t_test =</span> <span class="fu">list</span>(<span class="fu">t_test</span>(weight <span class="sc">~</span> sex, <span class="at">data =</span> data)),  </span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cohens_d =</span> <span class="fu">list</span>(<span class="fu">cohens_d</span>(weight <span class="sc">~</span> sex, <span class="at">data =</span> data))  </span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  )  </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод результатов  </span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(weight_analysis) </span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Распределение веса по полу</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(sex), <span class="at">y =</span> weight, <span class="at">fill =</span> <span class="fu">factor</span>(sex))) <span class="sc">+</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Распределение веса по полу"</span>, <span class="at">x =</span> <span class="st">"Пол"</span>, <span class="at">y =</span> <span class="st">"Вес (г)"</span>) <span class="sc">+</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/violin_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.12: Violin plot для визуализации распределения веса</figcaption>
+</figure>
+</div>
+</section>
+<section id="выводы" class="level4">
+<h4 class="anchored"><strong>Выводы</strong></h4>
+<ol type="1">
+<li><p>Используйте t-тест для нормальных данных и U-тест для ненормальных.</p></li>
+<li><p>Дополните анализ оценкой эффекта размера для биологической интерпретации.</p></li>
+<li><p>Визуализируйте различия с помощью boxplot или violin plot.</p></li>
+</ol>
+<p><strong>Рекомендации</strong> :</p>
+<ul>
+<li><p>Для многомерных данных (например, одновременное сравнение длины, веса и возраста) применяйте MANOVA.</p></li>
+<li><p>Если группы неоднородны (например, разный возрастной состав), используйте ковариационный анализ (ANCOVA).</p>
+<h3 id="что-делать-если-тест-на-нормальность-не-пройден-для-одной-из-групп" class="anchored" data-anchor-id="выводы"><strong>Что делать, если тест на нормальность не пройден для одной из групп?</strong></h3>
+<p>При сравнении количественных характеристик (например, длины карапакса у самцов и самок) важно учитывать, соответствуют ли данные нормальному распределению. Если тест на нормальность (например, Шапиро-Уилка) показывает значимое отклонение от нормальности для одной из групп, это влияет на выбор статистического теста и интерпретацию результатов.</p>
+<h4 id="пример-из-нашего-анализа" class="anchored"><strong>Пример из нашего анализа</strong></h4>
+<p>Мы провели сравнение длины карапакса между самцами и самками:</p>
+<ul>
+<li><p>Для самцов: <strong><code>shapiro_test(males$length)</code></strong> → p-value = <strong>0.000574</strong> (нормальность отвергнута).</p></li>
+<li><p>Для самок: <strong><code>shapiro_test(females$length)</code></strong> → p-value = <strong>0.891</strong> (нормальность подтверждена).</p></li>
+</ul>
+<p>Несмотря на это, мы применили как <strong>t-тест</strong> , так и <strong>U-тест Манна-Уитни</strong> :</p>
+<ul>
+<li><p><strong>t-тест</strong> : p-value = 1.46e-40 (значимо).</p></li>
+<li><p><strong>U-тест</strong> : p-value = 1.97e-27 (значимо).</p></li>
+<li><p>Коэффициент Коэна: d = 2.14 (большой эффект).</p></li>
+</ul>
+<h4 id="почему-это-работает" class="anchored"><strong>Почему это работает?</strong></h4>
+<ol type="1">
+<li><p><strong>t-тест устойчив к умеренным отклонениям от нормальности</strong> :</p>
+<ul>
+<li><p>При больших выборках (n &gt; 30) центральная предельная теорема позволяет использовать t-тест даже при слабо выраженной асимметрии.</p></li>
+<li><p>В вашем случае выборка самцов (n = 149) достаточно велика, чтобы компенсировать отклонение от нормальности.</p></li>
+</ul></li>
+<li><p><strong>U-тест Манна-Уитни — непараметрическая альтернатива</strong> :</p>
+<ul>
+<li><p>Этот тест не требует нормальности и сравнивает ранги, а не средние значения.</p></li>
+<li><p>Он подтверждает значимость различий, что усиливает доверие к выводу.</p></li>
+</ul></li>
+<li><p><strong>Эффект размера (коэффициент Кобена)</strong> :</p>
+<ul>
+<li>d = 2.14 указывает на <strong>большой эффект</strong> , что важно для биологической интерпретации, даже если p-values значимы.</li>
+</ul></li>
+</ol></li>
+</ul>
+</section>
+</section>
+<section id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий" class="level3">
+<h3 class="anchored" data-anchor-id="сравнение-параметров-линейные-модели-для-оценки-межгрупповых-различий">Сравнение параметров (линейные модели для оценки межгрупповых различий)</h3>
+<p>Для сравнения параметров двух линейных моделей (например, скорости роста самцов и самок) используем следующий подход.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"shrimp_catch.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>))  <span class="co"># Удаление аномальных наблюдений</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Фильтрация данных по полу</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>data_male <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"M"</span>)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>data_female <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"F"</span>)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Построение моделей</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>model_male <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> age, <span class="at">data =</span> data_male)</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>model_female <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> age, <span class="at">data =</span> data_female)</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(age, length, <span class="at">color =</span> sex)) <span class="sc">+</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> x) <span class="sc">+</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#00AFBB"</span>)) <span class="sc">+</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Возраст"</span>, <span class="at">y =</span> <span class="st">"Длина (мм)"</span>) <span class="sc">+</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/comparison_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.15: Визуализация моделей</figcaption>
+</figure>
+</div>
+<p><strong>Метод 1: Объединенная модель с взаимодействиями</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>joint_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> age <span class="sc">*</span> sex, <span class="at">data =</span> data)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(joint_model) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"age:sexM"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Проверка различия наклонов"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>Table<span class="sc">:</span> Проверка различия наклонов</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="sc">|</span>term     <span class="sc">|</span> estimate<span class="sc">|</span> std.error<span class="sc">|</span> statistic<span class="sc">|</span> p.value<span class="sc">|</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="er">|:</span><span class="sc">--------</span><span class="er">|</span><span class="sc">--------</span><span class="er">:|</span><span class="sc">---------</span><span class="er">:|</span><span class="sc">---------</span><span class="er">:|</span><span class="sc">-------</span><span class="er">:|</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>age<span class="sc">:</span>sexM <span class="sc">|</span>     <span class="fl">1.86</span><span class="sc">|</span>     <span class="fl">0.459</span><span class="sc">|</span>     <span class="fl">4.053</span><span class="sc">|</span>       <span class="dv">0</span><span class="sc">|</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="er">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Интерпретация:</strong><br>
+Значимый коэффициент взаимодействия <strong><code>age:sexM</code></strong> (p &lt; 0.05) указывает на статистически значимые различия в скорости роста между полами.</p>
+<p><strong>Метод 2: Тест Вальда</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>delta_beta <span class="ot">&lt;-</span> <span class="fu">coef</span>(model_male)[<span class="st">"age"</span>] <span class="sc">-</span> <span class="fu">coef</span>(model_female)[<span class="st">"age"</span>]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>se_diff <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">vcov</span>(model_male)[<span class="st">"age"</span>,<span class="st">"age"</span>] <span class="sc">+</span> <span class="fu">vcov</span>(model_female)[<span class="st">"age"</span>,<span class="st">"age"</span>])</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>z_score <span class="ot">&lt;-</span> delta_beta <span class="sc">/</span> se_diff</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="fu">abs</span>(z_score))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Разница коэффициентов:"</span>, <span class="fu">round</span>(delta_beta, <span class="dv">3</span>), </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">Z-статистика:"</span>, <span class="fu">round</span>(z_score, <span class="dv">3</span>),</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">p-value:"</span>, <span class="fu">format.pval</span>(p_value, <span class="at">digits =</span> <span class="dv">2</span>))</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>comparison_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  Параметр <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Скорость роста самцов"</span>, <span class="st">"Скорость роста самок"</span>, <span class="st">"Разница"</span>),</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  Значение <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">coef</span>(model_male)[<span class="st">"age"</span>], <span class="dv">2</span>),</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">coef</span>(model_female)[<span class="st">"age"</span>], <span class="dv">2</span>),</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(delta_beta, <span class="dv">2</span>)</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">p-value</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format.pval</span>(<span class="fu">summary</span>(model_male)<span class="sc">$</span>coefficients[<span class="st">"age"</span>,<span class="dv">4</span>], <span class="at">digits =</span> <span class="dv">2</span>),</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format.pval</span>(<span class="fu">summary</span>(model_female)<span class="sc">$</span>coefficients[<span class="st">"age"</span>,<span class="dv">4</span>], <span class="at">digits =</span> <span class="dv">2</span>),</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format.pval</span>(p_value, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(comparison_table, <span class="at">caption =</span> <span class="st">"Сравнение коэффициентов роста"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Вывод</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="sc">:</span> Сравнение коэффициентов роста</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="sc">|</span>Параметр              <span class="sc">|</span> Значение<span class="sc">|</span>p.value <span class="sc">|</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="er">|:</span><span class="sc">---------------------</span><span class="er">|</span><span class="sc">--------</span><span class="er">:|:</span><span class="sc">-------</span><span class="er">|</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>Скорость роста самцов <span class="sc">|</span>     <span class="fl">5.95</span><span class="sc">|</span><span class="er">&lt;</span><span class="fl">2e-16</span>  <span class="sc">|</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>Скорость роста самок  <span class="sc">|</span>     <span class="fl">4.09</span><span class="sc">|</span><span class="fl">5.2e-13</span> <span class="sc">|</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="er">|</span>Разница               <span class="sc">|</span>     <span class="fl">1.86</span><span class="sc">|</span><span class="fl">0.00024</span> <span class="sc">|</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="er">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Интерпретация:</strong><br>
+Значимая <em>разница</em> (p &lt; 0.05) указывает на статистически значимые различия в скорости роста между полами.</p>
+</section>
+<section id="сравнение-моделей" class="level3">
+<h3 class="anchored" data-anchor-id="сравнение-моделей">Сравнение моделей</h3>
+<p>Одним из ключевых аспектов анализа биологических данных является определение формы зависимости между переменными. В данном разделе мы рассмотрим основы подбора модели зависимости между длиной и весом креветок. Начиная с простой линейной модели, мы постепенно перейдем к более сложным нелинейным моделям, чтобы продемонстрировать методику выбора наилучшей модели. Cравним три модели — линейную, полиномиальную и степенную — чтобы определить, какая из них наилучшим образом описывает данные. Цель анализа — найти математическую зависимость, которая:</p>
+<ol type="1">
+<li><p>Точно предсказывает вес креветки по её длине.</p></li>
+<li><p>Имеет биологическую интерпретацию.</p></li>
+<li><p>Минимизирует ошибку предсказания.</p></li>
+</ol>
+<section id="модели-и-их-параметры" class="level4">
+<h4 class="anchored" data-anchor-id="модели-и-их-параметры">Модели и их параметры</h4>
+<ol type="1">
+<li><strong>Линейная</strong>: <span class="math inline">\(\text{weight} = \beta_0 + \beta_1\cdot\text{length}\)</span></li>
+<li><strong>Полиномиальная 3-й степени</strong>: <span class="math inline">\(\text{weight} = \beta_0 + \beta_1\cdot\text{length} + \beta_2\cdot\text{length}^2 + \beta_3\cdot\text{length}^3\)</span></li>
+<li><strong>Степенная</strong>: <span class="math inline">\(\text{weight} = a\cdot\text{length}^b\)</span></li>
+</ol>
+</section>
+<section id="метрики" class="level4">
+<h4 class="anchored" data-anchor-id="метрики">Метрики</h4>
+<ul>
+<li><strong>R²</strong> - (коэффициент детерминации): чем ближе к 1, тем лучше модель объясняет данные.</li>
+<li><strong>AIC</strong> -(информационный критерий Акаике): чем меньше значение, тем лучше модель с учётом её сложности.</li>
+</ul>
+</section>
+<section id="результаты" class="level4">
+<h4 class="anchored" data-anchor-id="результаты"><strong>Результаты</strong></h4>
+<section id="линейная-модель" class="level5">
+<h5 class="anchored" data-anchor-id="линейная-модель"><strong>1. Линейная модель</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>             Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>(Intercept) <span class="sc">-</span><span class="fl">2.115</span>      <span class="fl">0.085</span>     <span class="sc">-</span><span class="fl">24.86</span>   <span class="sc">&lt;</span><span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>length       <span class="fl">0.1665</span>     <span class="fl">0.0038</span>    <span class="fl">43.71</span>    <span class="sc">&lt;</span><span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><strong>R² = 0.894</strong></p></li>
+<li><p><strong>AIC = 148.02</strong></p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/linear_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.5: Линейная модель</figcaption>
+</figure>
+</div>
+</section>
+<section id="полиномиальная-модель" class="level5">
+<h5 class="anchored" data-anchor-id="полиномиальная-модель"><strong>2. Полиномиальная модель</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                 Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">poly</span>(length,<span class="dv">3</span>)<span class="dv">1</span>  <span class="fl">14.5038</span>    <span class="fl">0.2127</span>    <span class="fl">68.18</span>   <span class="sc">&lt;</span><span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">poly</span>(length,<span class="dv">3</span>)<span class="dv">2</span>   <span class="fl">3.7209</span>    <span class="fl">0.2127</span>    <span class="fl">17.49</span>   <span class="sc">&lt;</span><span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">poly</span>(length,<span class="dv">3</span>)<span class="dv">3</span>   <span class="fl">0.9526</span>    <span class="fl">0.2127</span>     <span class="fl">4.48</span>  <span class="fl">1.2e-05</span> <span class="sc">**</span><span class="er">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><strong>R² = 0.957</strong></p></li>
+<li><p><strong>AIC = -52.80</strong></p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/poly_shrimp.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.5: Полиномиальная модель</figcaption>
+</figure>
+</div>
+</section>
+<section id="степенная-модель" class="level5">
+<h5 class="anchored" data-anchor-id="степенная-модель"><strong>3. Степенная модель</strong></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>Parameters<span class="sc">:</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>   Estimate Std. Error t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>a <span class="fl">0.000157</span>   <span class="fl">0.000028</span>    <span class="fl">5.60</span>  <span class="fl">6.3e-08</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>b <span class="fl">2.920160</span>   <span class="fl">0.054102</span>   <span class="fl">53.98</span>   <span class="sc">&lt;</span><span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><strong>R² = 0.955</strong></p></li>
+<li><p><strong>AIC = -48.43</strong> <img src="images/power_shrimp.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:60.0%" alt="Рис. 1.5: Степенная модель"></p></li>
+</ul>
+</section>
+</section>
+<section id="сравнение-моделей-1" class="level4">
+<h4 class="anchored" data-anchor-id="сравнение-моделей-1"><strong>3. Сравнение моделей</strong></h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Модель</strong></th>
+<th style="text-align: left;"><strong>R²</strong></th>
+<th style="text-align: left;"><strong>AIC</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Линейная</td>
+<td style="text-align: left;">0.894</td>
+<td style="text-align: left;">148.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Полиномиальная</td>
+<td style="text-align: left;">0.957</td>
+<td style="text-align: left;">-52.80</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Степенная</td>
+<td style="text-align: left;">0.955</td>
+<td style="text-align: left;">-48.43</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Выводы:</strong></p>
+<ol type="1">
+<li><p><strong>Полиномиальная модель</strong> демонстрирует наилучшие показатели (максимальный R² и минимальный AIC).</p></li>
+<li><p><strong>Степенная модель</strong> близка по качеству, но её параметр <em>b</em>≈2.92 близок к биологически ожидаемому значению 3 (вес пропорционален объёму).</p></li>
+<li><p><strong>Линейная модель</strong> существенно уступает по точности.</p></li>
+</ol>
+</section>
+<section id="рекомендации" class="level4">
+<h4 class="anchored" data-anchor-id="рекомендации"><strong>4. Рекомендации</strong></h4>
+<ul>
+<li><p><strong>Для прогнозирования</strong> используйте полиномиальную модель, так как она минимизирует ошибку.</p></li>
+<li><p><strong>Для биологической интерпретации</strong> предпочтительна степенная модель: weight∝length<sup>2.92</sup>.</p></li>
+<li><p><strong>Избегайте переобучения:</strong> Полиномиальные модели высокой степени могут терять интерпретируемость.</p></li>
+</ul>
+</section>
+<section id="визуализация-остатков" class="level4">
+<h4 class="anchored" data-anchor-id="визуализация-остатков"><strong>5. Визуализация остатков</strong></h4>
+<p>Остатки степенной модели распределены равномерно, что подтверждает её адекватность: <img src="images/residuals_shrimp.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:60.0%" alt="Рис. 1.5: Остатки"></p>
+</section>
+<section id="заключение" class="level4">
+<h4 class="anchored" data-anchor-id="заключение"><strong>Заключение</strong></h4>
+<p>Для анализа зависимости веса от длины северной креветки <strong>рекомендуется</strong>:</p>
+<ol type="1">
+<li><p><strong>Полиномиальная модель</strong> — для задач, требующих максимальной точности.</p></li>
+<li><p><strong>Степенная модель</strong> — для интерпретации биологических закономерностей.</p></li>
+</ol>
+<p>Скрипт вышеописанных событий:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/TEXTBOOK/"</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка библиотек</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"shrimp_catch.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>))  <span class="co"># Удаление аномальных наблюдений</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка структуры</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Линейная модель: вес ~ длина</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>model_linear <span class="ot">&lt;-</span> <span class="fu">lm</span>(weight <span class="sc">~</span> length, <span class="at">data =</span> data)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_linear)</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"#FC4E07"</span>) <span class="sc">+</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Линейная модель"</span>, <span class="at">x =</span> <span class="st">"Длина (мм)"</span>, <span class="at">y =</span> <span class="st">"Вес (г)"</span>)</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Полиномиальная модель: вес ~ длина + длина? + длина?</span></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>model_poly <span class="ot">&lt;-</span> <span class="fu">lm</span>(weight <span class="sc">~</span> <span class="fu">poly</span>(length, <span class="dv">3</span>), <span class="at">data =</span> data)</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_poly)</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">3</span>), <span class="at">color =</span> <span class="st">"#E7B800"</span>) <span class="sc">+</span></span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Полиномиальная модель"</span>, <span class="at">x =</span> <span class="st">"Длина (мм)"</span>, <span class="at">y =</span> <span class="st">"Вес (г)"</span>)</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Степенная модель: вес ~ длина^k (k подбирается)</span></span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>model_power <span class="ot">&lt;-</span> <span class="fu">nls</span>(weight <span class="sc">~</span> a <span class="sc">*</span> length<span class="sc">^</span>b, </span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data, </span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a>                   <span class="at">start =</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="fl">0.001</span>, <span class="at">b =</span> <span class="dv">3</span>))  <span class="co"># Начальные значения</span></span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_power)</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pred_power <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_power)</span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_power), <span class="at">color =</span> <span class="st">"#00BA38"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Степенная модель"</span>, <span class="at">x =</span> <span class="st">"Длина (мм)"</span>, <span class="at">y =</span> <span class="st">"Вес (г)"</span>)</span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет AIC</span></span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(model_linear, model_poly, model_power)</span>
+<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет R?</span></span>
+<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a>r2_linear <span class="ot">&lt;-</span> <span class="fu">summary</span>(model_linear)<span class="sc">$</span>r.squared</span>
+<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a>r2_poly <span class="ot">&lt;-</span> <span class="fu">summary</span>(model_poly)<span class="sc">$</span>r.squared</span>
+<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a>r2_power <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(model_power)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((data<span class="sc">$</span>weight <span class="sc">-</span> <span class="fu">mean</span>(data<span class="sc">$</span>weight))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание таблицы сравнения моделей</span></span>
+<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a>comparison_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>  Модель <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Линейная"</span>, <span class="st">"Полиномиальная"</span>, <span class="st">"Степенная"</span>),</span>
+<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_square =</span> <span class="fu">c</span>(r2_linear, r2_poly, r2_power),</span>
+<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> <span class="fu">c</span>(<span class="fu">AIC</span>(model_linear), <span class="fu">AIC</span>(model_poly), <span class="fu">AIC</span>(model_power))</span>
+<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод таблицы</span></span>
+<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(comparison_table)</span>
+<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Остатки для степенной модели</span></span>
+<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>residuals <span class="ot">&lt;-</span> <span class="fu">residuals</span>(model_power)</span>
+<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
+<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#FC4E07"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Остатки степенной модели"</span>, <span class="at">x =</span> <span class="st">"Длина (мм)"</span>, <span class="at">y =</span> <span class="st">"Ошибка"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
