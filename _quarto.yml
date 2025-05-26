@@ -1,6 +1,6 @@
 project:
   type: book
-
+  output-dir: docs
 book:
   title: "Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)"
   author: "Сергей Баканёв"
