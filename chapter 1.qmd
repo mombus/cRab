@@ -7,6 +7,8 @@ format: html
 
 ## Загрузка данных и первичный осмотр
 
+ссылка на файл: [shrimp_catch.csv](https://mombus.github.io/cRab/data/shrimp_catch.csv)
+
 ```{r}
 #| output: false
 #| eval: false
