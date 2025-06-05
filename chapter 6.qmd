@@ -3,7 +3,7 @@ title: "Байесовский подход"
 format: html
 ---
 
-## Введение пробное
+## Введение п
 
 $$  
 P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\theta)P(\theta)\right]}}  
