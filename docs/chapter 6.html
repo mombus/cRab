@@ -70,6 +70,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -189,9 +218,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">7.1</span> Введение</a></li>
-  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">7.2</span> Загрузка данных и первичный осмотр</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">7.3</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#лекция-введение" id="toc-лекция-введение" class="nav-link active" data-scroll-target="#лекция-введение"><span class="header-section-number">7.1</span> Лекция-Введение</a></li>
+  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">7.2</span> Описательная статистика и визуализация</a></li>
   </ul>
 </nav>
     </div>
@@ -217,15 +245,14 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="введение" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">7.1</span> Введение</h2>
+<section id="лекция-введение" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="лекция-введение"><span class="header-section-number">7.1</span> Лекция-Введение</h2>
+<p><span class="math display">\[  
+P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\theta)P(\theta)\right]}}  
+\]</span></p>
 </section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">7.2</span> Загрузка данных и первичный осмотр</h2>
-<p>Текст. Текст. Текст.</p>
-</section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">7.3</span> Описательная статистика и визуализация</h2>
+<section id="описательная-статистика-и-визуализация" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">7.2</span> Описательная статистика и визуализация</h2>
 <p>Текст. Текст. Текст.</p>
 
 
