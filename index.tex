@@ -1767,25 +1767,792 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 
 \bookmarksetup{startatroot}
 
-\chapter{Введение в
-картографию}\label{ux432ux432ux435ux434ux435ux43dux438ux435-ux432-ux43aux430ux440ux442ux43eux433ux440ux430ux444ux438ux44e}
+\chapter{Нейронные сети в экологии: практическое
+введение}\label{ux43dux435ux439ux440ux43eux43dux43dux44bux435-ux441ux435ux442ux438-ux432-ux44dux43aux43eux43bux43eux433ux438ux438-ux43fux440ux430ux43aux442ux438ux447ux435ux441ux43aux43eux435-ux432ux432ux435ux434ux435ux43dux438ux435}
 
 \section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-1}
 
-Вступительное слово
+Это практическое занятие можно рассматривать не только как введение в
+нейронные сети, но и как введение в экологическое моделирование в общем
+с помошью R. Занятие основано на статье Андрея Викторовича Коросова
+``\href{https://ecopri.ru/journal/article.php?id=14002}{Нейронные сети в
+экологии: введение}'', опубликованной в журнале Принципы экологии, №3,
+2023, стр. 76-96. В статье рассмотрены основы нейросетевого
+моделирования в экологии, начиная с классических регрессионных методов и
+заканчивая искусственными нейронными сетями. Представленные примеры
+демонстрируют эволюционный переход от простых линейных моделей к сложным
+нейросетевым конструкциям, что позволяет решать задачи классификации и
+прогнозирования в экологии. ``Теоретическая'' лекция, основанная на этой
+статье, находиться по \href{KOROSOV.ppt}{ссылке}.
 
-\section{Раздел}\label{ux440ux430ux437ux434ux435ux43b}
+Можно скачать скрипт целиком в трех версиях:
+\href{https://mombus.github.io/cRab/data/KOROSOV.R}{KOROSOV.R} -
+максимально приближен к оригинальной работе;
+\href{https://mombus.github.io/cRab/data/KOROSOV_updated.R}{KOROSOV\_updated.R}
+- тотже скрипт, но с комментариями и пояснениями (содержание этого
+занятия);
+\href{https://mombus.github.io/cRab/data/KOROSOV_visual.R}{KOROSOV\_visual.R}
+- почти такой же с дополнительным продвинутым визуалом и аналитикой.
 
-Текст. Текст. Текст.
+\subsubsection{\texorpdfstring{\textbf{Для работы
+скрипта:}}{Для работы скрипта:}}\label{ux434ux43bux44f-ux440ux430ux431ux43eux442ux44b-ux441ux43aux440ux438ux43fux442ux430}
 
-\section{Раздел}\label{ux440ux430ux437ux434ux435ux43b-1}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Скачайте файлы данных
+  (\href{https://mombus.github.io/cRab/data/vipkar.csv}{vipkar.csv} и
+  \href{https://mombus.github.io/cRab/data/kihzsdat.csv}{kihzsdat.csv})
+\item
+  Установите рабочую директорию в setwd()
+\item
+  Установите необходимые пакеты :
+  \textbf{\texttt{install.packages(c("neuralnet",\ "ggplot2"))}}
+\end{enumerate}
 
-Текст. Текст. Текст.
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ЗАГРУЗКА БИБЛИОТЕК И НАСТРОЙКА СРЕДЫ ================================}
+\FunctionTok{library}\NormalTok{(neuralnet)   }\CommentTok{\# Для построения нейронных сетей}
+\FunctionTok{library}\NormalTok{(ggplot2)     }\CommentTok{\# Для продвинутой визуализации (в данном скрипте не используется напрямую)}
 
-\section{Выявление
-аутлайеров}\label{ux432ux44bux44fux432ux43bux435ux43dux438ux435-ux430ux443ux442ux43bux430ux439ux435ux440ux43eux432}
+\CommentTok{\# Установите свою рабочую директорию (где лежат файлы данных)}
+\CommentTok{\# setwd("C:/ВАША\_ДИРЕКТОРИЯ/")}
+\end{Highlighting}
+\end{Shaded}
 
-Текст. Текст. Текст.
+\section{ЛИНЕЙНАЯ
+РЕГРЕССИЯ}\label{ux43bux438ux43dux435ux439ux43dux430ux44f-ux440ux435ux433ux440ux435ux441ux441ux438ux44f}
+
+В этом разделе мы изучим основы экологического моделирования на примере
+зависимости массы тела гадюки от ее длины. Вы построите простую линейную
+регрессионную модель, визуализируете данные и линию регрессии, а также
+интерпретируете результаты с помощью функции \texttt{summary()}.
+
+Загружаем данные
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Данные: масса (w) и длина тела (lt) гадюк (в см и граммах)}
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{85}\NormalTok{, }\DecValTok{90}\NormalTok{, }\DecValTok{85}\NormalTok{, }\DecValTok{95}\NormalTok{, }\DecValTok{95}\NormalTok{, }\DecValTok{135}\NormalTok{, }\DecValTok{165}\NormalTok{, }\DecValTok{135}\NormalTok{, }\DecValTok{140}\NormalTok{)}
+\NormalTok{lt }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{51}\NormalTok{, }\DecValTok{51}\NormalTok{, }\DecValTok{52}\NormalTok{, }\DecValTok{54}\NormalTok{, }\DecValTok{54}\NormalTok{, }\DecValTok{59}\NormalTok{, }\DecValTok{59}\NormalTok{, }\DecValTok{60}\NormalTok{, }\DecValTok{62}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Строим и запускаем модель \[
+w_t = a_0 + a_1 \cdot l_t
+\]
+
+где: - \(w_t\) --- зависимая переменная, - \(a_0\) --- свободный член, -
+\(a_1\) --- коэффициент регрессии, - \(l_t\) --- независимая переменная.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Построение линейной модели: w = a0 + a1*lt}
+\NormalTok{lreg }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lt)}
+\end{Highlighting}
+\end{Shaded}
+
+Выведем результаты модели
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Просмотр результатов модели:}
+\FunctionTok{summary}\NormalTok{(lreg)  }\CommentTok{\# Обратите внимание на коэффициенты и p{-}значения}
+\end{Highlighting}
+\end{Shaded}
+
+На экране появится:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Call}\SpecialCharTok{:}
+\FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lt)}
+
+\NormalTok{Residuals}\SpecialCharTok{:}
+\NormalTok{    Min      }\DecValTok{1}\NormalTok{Q  Median      }\DecValTok{3}\NormalTok{Q     Max }
+\SpecialCharTok{{-}}\FloatTok{13.452}  \SpecialCharTok{{-}}\FloatTok{7.585}  \SpecialCharTok{{-}}\FloatTok{4.868}   \FloatTok{1.490}  \FloatTok{30.623} 
+
+\NormalTok{Coefficients}\SpecialCharTok{:}
+\NormalTok{            Estimate Std. Error t value }\FunctionTok{Pr}\NormalTok{(}\SpecialCharTok{\textgreater{}}\ErrorTok{|}\NormalTok{t}\SpecialCharTok{|}\NormalTok{)    }
+\NormalTok{(Intercept) }\SpecialCharTok{{-}}\FloatTok{240.766}     \FloatTok{64.457}  \SpecialCharTok{{-}}\FloatTok{3.735} \FloatTok{0.007308} \SpecialCharTok{**} 
+\NormalTok{lt             }\FloatTok{6.358}      \FloatTok{1.153}   \FloatTok{5.516} \FloatTok{0.000891} \SpecialCharTok{**}\ErrorTok{*}
+\SpecialCharTok{{-}{-}{-}}
+\NormalTok{Signif. codes}\SpecialCharTok{:}  \DecValTok{0}\NormalTok{ ‘}\SpecialCharTok{**}\ErrorTok{*}\NormalTok{’ }\FloatTok{0.001}\NormalTok{ ‘}\SpecialCharTok{**}\NormalTok{’ }\FloatTok{0.01}\NormalTok{ ‘}\SpecialCharTok{*}\NormalTok{’ }\FloatTok{0.05}\NormalTok{ ‘.’ }\FloatTok{0.1}\NormalTok{ ‘ ’ }\DecValTok{1}
+
+\NormalTok{Residual standard error}\SpecialCharTok{:} \FloatTok{13.81}\NormalTok{ on }\DecValTok{7}\NormalTok{ degrees of freedom}
+\NormalTok{Multiple R}\SpecialCharTok{{-}}\NormalTok{squared}\SpecialCharTok{:}  \FloatTok{0.813}\NormalTok{,     Adjusted R}\SpecialCharTok{{-}}\NormalTok{squared}\SpecialCharTok{:}  \FloatTok{0.7863} 
+\NormalTok{F}\SpecialCharTok{{-}}\NormalTok{statistic}\SpecialCharTok{:} \FloatTok{30.43}\NormalTok{ on }\DecValTok{1}\NormalTok{ and }\DecValTok{7}\NormalTok{ DF,  p}\SpecialCharTok{{-}}\NormalTok{value}\SpecialCharTok{:} \FloatTok{0.0008911}
+\end{Highlighting}
+\end{Shaded}
+
+Мы получили результаты линейной регрессии, где зависимая переменная ---
+масса тела гадюки (w), а независимая переменная --- длина тела (lt).
+Разберем каждый параметр:
+
+1. **Call (Вызов модели):**
+
+`lm(formula = w \textasciitilde{} lt)`
+
+Это просто напоминание, какая модель была построена. Здесь указано, что
+мы моделировали зависимость массы (w) от длины тела (lt) с помощью
+линейной регрессии.
+
+2. **Residuals (Остатки):**
+
+Остатки --- это разница между наблюдаемыми значениями массы и
+предсказанными моделью значениями. Они показывают, насколько хорошо
+модель описывает данные.
+
+\begin{itemize}
+\item
+  `Min`: минимальный остаток = -13.452 (наибольшее недооцененное
+  значение)
+\item
+  `1Q`: первый квартиль = -7.585 (25\% остатков меньше этого значения)
+\item
+  `Median`: медиана остатков = -4.868 (середина распределения остатков)
+\item
+  `3Q`: третий квартиль = 1.490 (75\% остатков меньше этого значения)
+\item
+  `Max`: максимальный остаток = 30.623 (наибольшее переоцененное
+  значение)
+\end{itemize}
+
+Распределение остатков: медиана немного смещена влево (отрицательное
+значение), а размах между 1Q и 3Q составляет примерно 9 единиц. Это
+может указывать на легкую асимметрию, но выборка мала.
+
+3. **Coefficients (Коэффициенты):**
+
+\begin{itemize}
+\item
+  `(Intercept)`: свободный член (a0) = -240.766. Это предсказанное
+  значение массы при длине тела, равной нулю. Биологически это не имеет
+  смысла (длина не может быть нулевой), но это математическая
+  особенность модели.
+\item
+  `lt`: коэффициент регрессии (a1) = 6.358. Это означает, что при
+  увеличении длины тела на 1 см масса тела увеличивается в среднем на
+  6.358 г.
+\end{itemize}
+
+Для каждого коэффициента приведены:
+
+\begin{itemize}
+\item
+  `Estimate`: точечная оценка коэффициента.
+\item
+  `Std. Error`: стандартная ошибка оценки коэффициента. Для intercept =
+  64.457, для lt = 1.153. Это мера изменчивости оценки.
+\item
+  `t value`: t-статистика. Рассчитывается как Estimate / Std.Error. Для
+  intercept: -240.766 / 64.457 ≈ -3.735; для lt: 6.358 / 1.153 ≈ 5.516.
+\item
+  `Pr(\textgreater\textbar t\textbar)`: p-значение для проверки гипотезы
+  о равенстве коэффициента нулю.
+\item
+  Для intercept: p=0.007308 (значим на уровне α=0.01, т.е. intercept
+  статистически значимо отличается от нуля).
+\item
+  Для lt: p=0.000891 (значим на уровне α=0.001). Это означает, что длина
+  тела значимо влияет на массу.
+\end{itemize}
+
+Значимость кодов: три звездочки (`***`) означают, что коэффициент значим
+на уровне 0.001.
+
+4. **Residual standard error (Стандартная ошибка остатков):** 13.81 на 7
+степенях свободы. Это мера разброса остатков. В среднем, предсказания
+модели отклоняются от реальных значений на ±13.81 г. Степени свободы
+(df) = n - 2 = 9 - 2 = 7 (n --- количество наблюдений).
+
+5. **Multiple R-squared (Коэффициент детерминации R²):** 0.813. Это
+означает, что 81.3\% вариации массы тела объясняется длиной тела.
+Остальные 18.7\% --- это неучтенные факторы и случайная изменчивость.
+
+6. **Adjusted R-squared (Скорректированный R²):** 0.7863. Этот
+показатель корректирует R² с учетом числа предикторов. Он полезен при
+сравнении моделей с разным числом предикторов. Здесь он немного меньше
+R², так как учитывает, что в модели один предиктор.
+
+7. **F-statistic (F-статистика):** 30.43 на 1 и 7 степенях свободы.
+Проверяет гипотезу о том, что все коэффициенты (кроме intercept) равны
+нулю (т.е. модель не лучше, чем модель только с константой).
+
+\begin{itemize}
+\tightlist
+\item
+  p-value: 0.0008911 (крайне значимый), что означает, что модель в целом
+  адекватна.
+\end{itemize}
+
+**Выводы:**
+
+- Уравнение модели: `w = -240.77 + 6.36 * lt`
+
+- Длина тела значимо влияет на массу (p\textless0.001).
+
+- Модель объясняет 81.3\% вариации массы.
+
+- На каждый сантиметр длины тела масса увеличивается примерно на 6.36 г.
+
+- Остатки модели показывают, что есть несколько точек, которые модель
+предсказывает с заметной ошибкой (особенно максимальный остаток в 30.6
+г). Возможно, для более точного прогноза нужна нелинейная модель или
+учет дополнительных факторов.
+
+**Рекомендации:**
+
+- Проверить допущения линейной регрессии (нормальность остатков,
+гомоскедастичность) с помощью диагностических графиков.
+
+- Рассмотреть возможность включения других переменных (например,
+возраста, пола) в модель.
+
+- Убедиться, что в данных нет выбросов, которые могут влиять на
+коэффициенты.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Визуализация зависимости}
+\FunctionTok{plot}\NormalTok{(lt, w, }
+     \AttributeTok{main =} \StringTok{"Зависимость массы от длины тела гадюки"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Длина тела (см)"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"Масса (г)"}\NormalTok{, }
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,        }\CommentTok{\# Кружки вместо стандартных точек}
+     \AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(lreg, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)  }\CommentTok{\# Добавляем линию регрессии}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV1.PNG}
+
+}
+
+\caption{Рис. 1.: Пример линейной регрессии}
+
+\end{figure}%
+
+\section{ЧИСЛЕННАЯ
+ОПТИМИЗАЦИЯ}\label{ux447ux438ux441ux43bux435ux43dux43dux430ux44f-ux43eux43fux442ux438ux43cux438ux437ux430ux446ux438ux44f}
+
+Здесь вы познакомитесь с численными методами оптимизации параметров
+моделей, которые применяются, когда аналитическое решение невозможно. На
+примере той же зависимости массы от длины вы подгоните параметры модели
+с помощью функции \texttt{nls()} и сравните результаты с аналитическим
+решением.
+
+Аналитические методы дают точное решение в виде математической формулы,
+используя алгебраические преобразования и теоремы математического
+анализа. Они идеальны для простых моделей, где существуют явные решения,
+обеспечивая прозрачную интерпретацию параметров. В экологии такие методы
+применимы для базовых зависимостей типа линейной регрессии. Численные
+методы используются, когда аналитическое решение невозможно, и работают
+через последовательные приближения, начиная со стартовых значений и
+итеративно улучшая параметры модели. Они незаменимы для сложных
+экологических моделей с нелинейными зависимостями, взаимодействиями
+факторов и ``шумными'' полевыми данными, позволяя решать задачи,
+недоступные для аналитических подходов.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Подгонка параметров через оптимизацию}
+\NormalTok{nls\_model }\OtherTok{\textless{}{-}} \FunctionTok{nls}\NormalTok{(w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ a0 }\SpecialCharTok{+}\NormalTok{ a1 }\SpecialCharTok{*}\NormalTok{ lt, }\AttributeTok{start =} \FunctionTok{list}\NormalTok{(}\AttributeTok{a0 =} \DecValTok{1}\NormalTok{, }\AttributeTok{a1 =} \DecValTok{1}\NormalTok{))}
+\FunctionTok{summary}\NormalTok{(nls\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+На экране появится:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Formula}\SpecialCharTok{:}\NormalTok{ w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ a0 }\SpecialCharTok{+}\NormalTok{ a1 }\SpecialCharTok{*}\NormalTok{ lt}
+
+\NormalTok{Parameters}\SpecialCharTok{:}
+\NormalTok{   Estimate Std. Error t value }\FunctionTok{Pr}\NormalTok{(}\SpecialCharTok{\textgreater{}}\ErrorTok{|}\NormalTok{t}\SpecialCharTok{|}\NormalTok{)    }
+\NormalTok{a0 }\SpecialCharTok{{-}}\FloatTok{240.766}     \FloatTok{64.457}  \SpecialCharTok{{-}}\FloatTok{3.735} \FloatTok{0.007308} \SpecialCharTok{**} 
+\NormalTok{a1    }\FloatTok{6.358}      \FloatTok{1.153}   \FloatTok{5.516} \FloatTok{0.000891} \SpecialCharTok{**}\ErrorTok{*}
+\SpecialCharTok{{-}{-}{-}}
+\NormalTok{Signif. codes}\SpecialCharTok{:}  \DecValTok{0}\NormalTok{ ‘}\SpecialCharTok{**}\ErrorTok{*}\NormalTok{’ }\FloatTok{0.001}\NormalTok{ ‘}\SpecialCharTok{**}\NormalTok{’ }\FloatTok{0.01}\NormalTok{ ‘}\SpecialCharTok{*}\NormalTok{’ }\FloatTok{0.05}\NormalTok{ ‘.’ }\FloatTok{0.1}\NormalTok{ ‘ ’ }\DecValTok{1}
+
+\NormalTok{Residual standard error}\SpecialCharTok{:} \FloatTok{13.81}\NormalTok{ on }\DecValTok{7}\NormalTok{ degrees of freedom}
+
+\NormalTok{Number of iterations to convergence}\SpecialCharTok{:} \DecValTok{1} 
+\NormalTok{Achieved convergence tolerance}\SpecialCharTok{:} \FloatTok{3.247e{-}08}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Интерпретация результатов
+модели}}{Интерпретация результатов модели}}\label{ux438ux43dux442ux435ux440ux43fux440ux435ux442ux430ux446ux438ux44f-ux440ux435ux437ux443ux43bux44cux442ux430ux442ux43eux432-ux43cux43eux434ux435ux43bux438}
+
+Мы построили линейную модель зависимости массы гадюки (w) от длины её
+тела (lt) по формуле:\\
+\textbf{\texttt{w\ =\ a0\ +\ a1\ *\ lt}}
+
+\textbf{Ключевые параметры модели:}
+
+\begin{itemize}
+\item
+  \textbf{a0 (свободный член)}: -240.8 г\\
+  Это теоретическая масса при нулевой длине тела. Отрицательное значение
+  указывает, что модель не подходит для очень молодых особей.
+\item
+  \textbf{a1 (коэффициент при lt)}: 6.36 г/см\\
+  Каждый дополнительный сантиметр длины тела увеличивает массу в среднем
+  на 6.36 г.
+\end{itemize}
+
+\textbf{Точность и значимость:}
+
+\begin{itemize}
+\item
+  Оба коэффициента \textbf{высоко значимы} (p \textless{} 0.01), что
+  подтверждает реальность зависимости.
+\item
+  Стандартная ошибка для a1 составляет 1.15 г/см - это значит, что
+  реальное значение, вероятно, находится между 5.2 и 7.5 г/см.
+\item
+  Модель хорошо сошлась за 1 шаг (итерацию), что говорит об удачном
+  подборе параметров.
+\end{itemize}
+
+\textbf{Ошибка прогноза:}\\
+Среднее отклонение предсказаний от реальных значений - 13.8 г
+(стандартная ошибка остатков). Для особи массой 100 г это означает
+возможную ошибку прогноза около 14\%.
+
+\begin{quote}
+\textbf{Биологический смысл:} Модель подтверждает сильную аллометрию -
+крупные гадюки имеют относительно большую массу тела. Каждый сантиметр
+длины добавляет около 6.4 г массы. Для особи длиной 55 см прогнозируемая
+масса составит: -240.8 + 6.36*55 ≈ 109 г.
+\end{quote}
+
+\#\#МНОЖЕСТВЕННАЯ РЕГРЕССИЯ
+
+В этом разделе мы расширим модель, включив несколько факторов. Вы
+построите множественную регрессию, учитывающую одновременно длину тела и
+длину хвоста гадюки, и научитесь интерпретировать влияние нескольких
+предикторов на зависимую переменную.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Добавляем новый признак {-} длину хвоста (lc)}
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{156}\NormalTok{, }\DecValTok{105}\NormalTok{, }\DecValTok{85}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{48}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{67}\NormalTok{)}
+\NormalTok{lt }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{44}\NormalTok{, }\DecValTok{59}\NormalTok{, }\DecValTok{49}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{54}\NormalTok{, }\DecValTok{43}\NormalTok{, }\DecValTok{49}\NormalTok{, }\DecValTok{42}\NormalTok{, }\DecValTok{47}\NormalTok{, }\DecValTok{47}\NormalTok{)}
+\NormalTok{lc }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{70}\NormalTok{, }\DecValTok{78}\NormalTok{, }\DecValTok{66}\NormalTok{, }\DecValTok{90}\NormalTok{, }\DecValTok{83}\NormalTok{, }\DecValTok{70}\NormalTok{, }\DecValTok{62}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{80}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Используя glm-функцию, построим модель с двумя предикторами: \[
+w = a_0 + a_1 \cdot l_t + a_2 \cdot l_c
+\]
+
+где: - \(w\) --- масса гадюки, - \(l_t\) --- длина тела гадюки, -
+\(l_c\) --- длина хвоста гадюки, - \(a_0\) --- свободный член
+(константа), - \(a_1\) --- коэффициент регрессии при длине тела, -
+\(a_2\) --- коэффициент регрессии при длине хвоста.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Множественная регрессия: w = a0 + a1*lt + a2*lc}
+\NormalTok{multi\_reg }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lt }\SpecialCharTok{+}\NormalTok{ lc)}
+\FunctionTok{summary}\NormalTok{(multi\_reg)}
+\end{Highlighting}
+\end{Shaded}
+
+На экране появится:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Call}\SpecialCharTok{:}
+\FunctionTok{glm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ w }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lt }\SpecialCharTok{+}\NormalTok{ lc)}
+
+\NormalTok{Coefficients}\SpecialCharTok{:}
+\NormalTok{             Estimate Std. Error t value }\FunctionTok{Pr}\NormalTok{(}\SpecialCharTok{\textgreater{}}\ErrorTok{|}\NormalTok{t}\SpecialCharTok{|}\NormalTok{)    }
+\NormalTok{(Intercept) }\SpecialCharTok{{-}}\FloatTok{191.2982}    \FloatTok{53.6908}  \SpecialCharTok{{-}}\FloatTok{3.563} \FloatTok{0.009183} \SpecialCharTok{**} 
+\NormalTok{lt             }\FloatTok{6.0308}     \FloatTok{1.1051}   \FloatTok{5.457} \FloatTok{0.000949} \SpecialCharTok{**}\ErrorTok{*}
+\NormalTok{lc            }\SpecialCharTok{{-}}\FloatTok{0.3150}     \FloatTok{0.4133}  \SpecialCharTok{{-}}\FloatTok{0.762} \FloatTok{0.470913}    
+\SpecialCharTok{{-}{-}{-}}
+\NormalTok{Signif. codes}\SpecialCharTok{:}  \DecValTok{0}\NormalTok{ ‘}\SpecialCharTok{**}\ErrorTok{*}\NormalTok{’ }\FloatTok{0.001}\NormalTok{ ‘}\SpecialCharTok{**}\NormalTok{’ }\FloatTok{0.01}\NormalTok{ ‘}\SpecialCharTok{*}\NormalTok{’ }\FloatTok{0.05}\NormalTok{ ‘.’ }\FloatTok{0.1}\NormalTok{ ‘ ’ }\DecValTok{1}
+
+\NormalTok{(Dispersion parameter }\ControlFlowTok{for}\NormalTok{ gaussian family taken to be }\FloatTok{270.9752}\NormalTok{)}
+
+\NormalTok{    Null deviance}\SpecialCharTok{:} \FloatTok{10132.9}\NormalTok{  on }\DecValTok{9}\NormalTok{  degrees of freedom}
+\NormalTok{Residual deviance}\SpecialCharTok{:}  \FloatTok{1896.8}\NormalTok{  on }\DecValTok{7}\NormalTok{  degrees of freedom}
+\NormalTok{AIC}\SpecialCharTok{:} \FloatTok{88.832}
+
+\NormalTok{Number of Fisher Scoring iterations}\SpecialCharTok{:} \DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Интерпретация результатов
+множественной
+регрессии}}{Интерпретация результатов множественной регрессии}}\label{ux438ux43dux442ux435ux440ux43fux440ux435ux442ux430ux446ux438ux44f-ux440ux435ux437ux443ux43bux44cux442ux430ux442ux43eux432-ux43cux43dux43eux436ux435ux441ux442ux432ux435ux43dux43dux43eux439-ux440ux435ux433ux440ux435ux441ux441ux438ux438}
+
+Мы исследовали зависимость массы гадюки (w) от длины тела (lt) и длины
+хвоста (lc) с помощью модели:\\
+\textbf{\texttt{w\ =\ b0\ +\ b1*lt\ +\ b2*lc}}
+
+\textbf{Ключевые выводы модели:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Длина тела (lt) сильно влияет на массу}:
+
+  \begin{itemize}
+  \item
+    Коэффициент: +6.03 г/см
+  \item
+    Каждый сантиметр длины тела увеличивает массу на \textasciitilde6 г
+  \item
+    Высокая значимость (p = 0.00095)
+  \end{itemize}
+\item
+  \textbf{Длина хвоста (lc) не влияет значимо на массу}:
+
+  \begin{itemize}
+  \item
+    Коэффициент: -0.315 г/см (незначимый)
+  \item
+    p-значение 0.47 \textgreater{} 0.05 - статистически недостоверно
+  \item
+    После учета длины тела, длина хвоста не добавляет информации
+  \end{itemize}
+\item
+  \textbf{Свободный член (b0)}: -191.3 г\\
+  Отрицательное значение подтверждает нелинейность роста у молодых
+  особей
+\end{enumerate}
+
+\textbf{Качество модели:}
+
+\begin{itemize}
+\item
+  Модель объясняет значительную часть вариации:\\
+  Общая вариация (Null deviance) = 10132.9\\
+  Остаточная вариация (Residual deviance) = 1896.8 → \textbf{Объяснено
+  81\% вариации}
+\item
+  AIC = 88.8 (ниже, чем у модели без lc - 92.1, что указывает на лучшее
+  качество)
+\item
+  Модель быстро сошлась за 2 итерации
+\end{itemize}
+
+\textbf{Биологическая интерпретация:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Масса тела определяется в основном длиной туловища, а не хвоста
+\item
+  Для прогноза массы достаточно учитывать только длину тела
+\item
+  Пример прогноза для особи (lt=50 см, lc=70 см):\\
+  \textbf{\texttt{-191.3\ +\ 6.03*50\ -\ 0.315*70\ ≈\ 111\ г}}
+\end{enumerate}
+
+\begin{quote}
+\textbf{Рекомендация}: При изучении массы гадюк можно исключить длину
+хвоста из модели, так как она не вносит значимого вклада в предсказание.
+Основным морфометрическим показателем остается длина тела.
+\end{quote}
+
+\section{НЕЛИНЕЙНЫЕ
+ЗАВИСИМОСТИ}\label{ux43dux435ux43bux438ux43dux435ux439ux43dux44bux435-ux437ux430ux432ux438ux441ux438ux43cux43eux441ux442ux438}
+
+Экологические данные часто имеют нелинейный характер. Здесь вы
+смоделируете степенную зависимость (аллометрию) между массой и длиной
+тела, используя линеаризацию через логарифмирование, а затем
+визуализируете кривую модели.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Часто в экологии связи имеют степенной характер: w = a0 * lt\^{}a1}
+\CommentTok{\# Линеаризация через логарифмирование}
+\NormalTok{log\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(w) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(lt))}
+
+\CommentTok{\# Преобразование коэффициентов обратно}
+\NormalTok{a0 }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\FunctionTok{coef}\NormalTok{(log\_model)[}\DecValTok{1}\NormalTok{])  }\CommentTok{\# Переход от логарифмов}
+\NormalTok{a1 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(log\_model)[}\DecValTok{2}\NormalTok{]       }\CommentTok{\# Показатель степени}
+
+\CommentTok{\# Визуализация степенной зависимости}
+\FunctionTok{plot}\NormalTok{(lt, w, }
+     \AttributeTok{main =} \StringTok{"Степенная зависимость массы от длины"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Длина тела (см)"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"Масса (г)"}\NormalTok{,}
+     \AttributeTok{pch =} \DecValTok{17}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{curve}\NormalTok{(a0 }\SpecialCharTok{*}\NormalTok{ x}\SpecialCharTok{\^{}}\NormalTok{a1, }\AttributeTok{add =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)  }\CommentTok{\# Кривая модели}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV2.PNG}
+
+}
+
+\caption{Рис. 2.: Расчет степенной функции}
+
+\end{figure}%
+
+\section{ЛОГИСТИЧЕСКАЯ
+РЕГРЕССИЯ}\label{ux43bux43eux433ux438ux441ux442ux438ux447ux435ux441ux43aux430ux44f-ux440ux435ux433ux440ux435ux441ux441ux438ux44f}
+
+Вы изучите моделирование пороговых эффектов в экологии на примере
+смертности дафний в зависимости от концентрации токсиканта. Построив
+логистическую регрессию, вы получите S-образную кривую, характерную для
+таких процессов.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Пример: смертность дафний при разных концентрациях токсиканта}
+\CommentTok{\# Данные:}
+\NormalTok{K }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{126}\NormalTok{, }\DecValTok{158}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{251}\NormalTok{, }\DecValTok{316}\NormalTok{, }\DecValTok{398}\NormalTok{, }\DecValTok{501}\NormalTok{, }\DecValTok{631}\NormalTok{, }\DecValTok{794}\NormalTok{, }\DecValTok{1000}\NormalTok{)}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{)  }\CommentTok{\# Доля погибших}
+\NormalTok{d }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(K, p)}
+
+\CommentTok{\# Построение логистической модели}
+\NormalTok{logit\_model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(p }\SpecialCharTok{\textasciitilde{}}\NormalTok{ K, }\AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(), }\AttributeTok{data =}\NormalTok{ d)}
+
+\CommentTok{\# Визуализация S{-}образной кривой}
+\FunctionTok{plot}\NormalTok{(d}\SpecialCharTok{$}\NormalTok{K, d}\SpecialCharTok{$}\NormalTok{p, }
+     \AttributeTok{xlab =} \StringTok{"Концентрация токсиканта (мг/л)"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"Доля погибших"}\NormalTok{, }
+     \AttributeTok{main =} \StringTok{"Токсическое воздействие на дафний"}\NormalTok{,}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(d}\SpecialCharTok{$}\NormalTok{K, }\FunctionTok{predict}\NormalTok{(logit\_model, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{), }
+      \AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV3.PNG}
+
+}
+
+\caption{Рис. 3.: Расчет логистической регрессии гибели дафний в
+токсиканте}
+
+\end{figure}%
+
+\section{ПЕРЕХОД К
+СЕТЯМ}\label{ux43fux435ux440ux435ux445ux43eux434-ux43a-ux441ux435ux442ux44fux43c}
+
+Сделаем первый шаг к нейронным сетям, построив простейшую сеть без
+скрытых слоев (аналог линейной регрессии) для модели токсичности. Вы
+визуализируете структуру сети и убедитесь, что она дает результат,
+аналогичный линейной модели.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Простейшая нейросеть (аналог линейной регрессии)}
+\NormalTok{nn\_simple }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(p }\SpecialCharTok{\textasciitilde{}}\NormalTok{ K, }\AttributeTok{data =}\NormalTok{ d, }\AttributeTok{hidden =} \DecValTok{0}\NormalTok{)}
+
+\CommentTok{\# Визуализация структуры сети}
+\FunctionTok{plot}\NormalTok{(nn\_simple, }\AttributeTok{rep =} \StringTok{"best"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV4.PNG}
+
+}
+
+\caption{Рис. 4.: Схема нейрона}
+
+\end{figure}%
+
+\section{НЕЙРОНЫ КАК НЕЛИНЕЙНЫЕ
+ПРЕОБРАЗОВАТЕЛИ}\label{ux43dux435ux439ux440ux43eux43dux44b-ux43aux430ux43a-ux43dux435ux43bux438ux43dux435ux439ux43dux44bux435-ux43fux440ux435ux43eux431ux440ux430ux437ux43eux432ux430ux442ux435ux43bux438}
+
+Здесь вы добавите в нейронную сеть скрытый слой с одним нейроном, что
+позволит моделировать нелинейные зависимости. Вы сравните результат
+работы такой сети с логистической регрессией и увидите, как нейронная
+сеть имитирует пороговый эффект.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Сеть с одним скрытым нейроном (имитирует логистическую регрессию)}
+\NormalTok{nn\_1hidden }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(p }\SpecialCharTok{\textasciitilde{}}\NormalTok{ K, }\AttributeTok{data =}\NormalTok{ d, }\AttributeTok{hidden =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{\# Сравнение с логистической регрессией}
+\FunctionTok{plot}\NormalTok{(d}\SpecialCharTok{$}\NormalTok{K, }\FunctionTok{predict}\NormalTok{(logit\_model, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{), }
+     \AttributeTok{type =} \StringTok{"l"}\NormalTok{, }
+     \AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{, }
+     \AttributeTok{lwd =} \DecValTok{2}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Концентрация"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"Смертность"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Сравнение моделей"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(d}\SpecialCharTok{$}\NormalTok{K, }\FunctionTok{predict}\NormalTok{(nn\_1hidden, d), }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"bottomright"}\NormalTok{, }
+       \AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Логистическая регрессия"}\NormalTok{, }\StringTok{"Нейронная сеть (1 нейрон)"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\StringTok{"blue"}\NormalTok{), }
+       \AttributeTok{lty =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{,}
+       \AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV5.PNG}
+
+}
+
+\caption{Рис. 5.: Сравнение работы}
+
+\end{figure}%
+
+\section{КЛАССИФИКАЦИЯ В
+ЭКОЛОГИИ}\label{ux43aux43bux430ux441ux441ux438ux444ux438ux43aux430ux446ux438ux44f-ux432-ux44dux43aux43eux43bux43eux433ux438ux438}
+
+Вы примените нейронные сети для решения задачи классификации -
+определения пола гадюк по морфометрическим признакам. Построив и сравнив
+несколько архитектур сетей (без скрытых нейронов, с одним и тремя
+нейронами), вы оцените их точность.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Загрузка данных по гадюкам (пол, длина тела, длина хвоста, масса)}
+\NormalTok{v }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"vipkar.csv"}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(v, }\DecValTok{3}\NormalTok{)  }\CommentTok{\# Просмотр первых строк данных}
+\end{Highlighting}
+\end{Shaded}
+
+Модель без скрытых нейронов (аналог линейной регрессии)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nv0 }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(ns }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lc, }\AttributeTok{data =}\NormalTok{ v, }\AttributeTok{hidden =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(nv0)  }\CommentTok{\# Визуализация простейшей сети}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV6.PNG}
+
+}
+
+\caption{Рис. 6.: Визуализация простейшей сети}
+
+\end{figure}%
+
+Модель с одним скрытым нейроном
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nv1 }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(ns }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lc, }\AttributeTok{data =}\NormalTok{ v, }\AttributeTok{hidden =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(nv1)  }\CommentTok{\# Схема сети с одним нейроном}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV7.PNG}
+
+}
+
+\caption{Рис. 7.: Схема сети с одним нейроном}
+
+\end{figure}%
+
+Модель с тремя скрытыми нейронами (полноценная нейросеть)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nv3 }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(ns }\SpecialCharTok{\textasciitilde{}}\NormalTok{ lc }\SpecialCharTok{+}\NormalTok{ lt }\SpecialCharTok{+}\NormalTok{ w, }\AttributeTok{data =}\NormalTok{ v, }\AttributeTok{hidden =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(nv3)  }\CommentTok{\# Визуализация сложной сети}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV8.PNG}
+
+}
+
+\caption{Рис. 8.: Модель с тремя скрытыми нейронами}
+
+\end{figure}%
+
+Оценка точности классификации
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(nv3, v)}
+\NormalTok{predicted\_sex }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(predictions)}
+\NormalTok{accuracy }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(v}\SpecialCharTok{$}\NormalTok{ns }\SpecialCharTok{==}\NormalTok{ predicted\_sex)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Точность классификации:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(accuracy}\SpecialCharTok{*}\DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Сравнение разных архитектур нейронных сетей (см. срипт
+\href{https://mombus.github.io/cRab/data/KOROSOV_visual.R}{KOROSOV\_visual.R})
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/KOROSOV9.PNG}
+
+}
+
+\caption{Рис. 9.: Точность определения пола гадюк}
+
+\end{figure}%
+
+\section{ПРОСТРАНСТВЕННОЕ
+МОДЕЛИРОВАНИЕ}\label{ux43fux440ux43eux441ux442ux440ux430ux43dux441ux442ux432ux435ux43dux43dux43eux435-ux43cux43eux434ux435ux43bux438ux440ux43eux432ux430ux43dux438ux435}
+
+В завершение вы построите нейронную сеть для прогнозирования численности
+гадюк на островах по характеристикам биотопов. Вы разделите данные на
+обучающую и тестовую выборки, оцените точность модели и используете ее
+для прогноза в новых условиях.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Данные по островам Кижского архипелага}
+\NormalTok{v }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"kihzsdat.csv"}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(v, }\DecValTok{3}\NormalTok{)  }\CommentTok{\# Структура данных: площадь, биотопы, численность видов}
+
+\CommentTok{\# Случайное разделение данных на обучающую и тестовую выборки}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)  }\CommentTok{\# Для воспроизводимости}
+\NormalTok{train\_indices }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(v), }\DecValTok{12}\NormalTok{)}
+\NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ v[train\_indices, ]}
+\NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ v[}\SpecialCharTok{{-}}\NormalTok{train\_indices, ]}
+
+\CommentTok{\# Построение нейросети с 5 нейронами в скрытом слое}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{neuralnet}\NormalTok{(vb }\SpecialCharTok{\textasciitilde{}}\NormalTok{ fo }\SpecialCharTok{+}\NormalTok{ me }\SpecialCharTok{+}\NormalTok{ bo, }\AttributeTok{data =}\NormalTok{ train\_data, }\AttributeTok{hidden =} \DecValTok{5}\NormalTok{)}
+
+\CommentTok{\# Прогнозирование на обучающей выборке}
+\NormalTok{train\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, train\_data)}
+\NormalTok{train\_accuracy }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{round}\NormalTok{(train\_pred) }\SpecialCharTok{==}\NormalTok{ train\_data}\SpecialCharTok{$}\NormalTok{vb)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Точность на обучающей выборке:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(train\_accuracy}\SpecialCharTok{*}\DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Прогнозирование на тестовой выборке}
+\NormalTok{test\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, test\_data)}
+\NormalTok{test\_accuracy }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{round}\NormalTok{(test\_pred) }\SpecialCharTok{==}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{vb)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Точность на тестовой выборке:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(test\_accuracy}\SpecialCharTok{*}\DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Прогноз для новых условий (пример)}
+\NormalTok{new\_conditions }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{fo =} \FunctionTok{c}\NormalTok{(}\FloatTok{57.9}\NormalTok{, }\FloatTok{35.3}\NormalTok{, }\FloatTok{83.0}\NormalTok{),  }\CommentTok{\# Площадь лесов (\%)}
+  \AttributeTok{me =} \FunctionTok{c}\NormalTok{(}\FloatTok{4.1}\NormalTok{, }\FloatTok{0.0}\NormalTok{, }\FloatTok{7.3}\NormalTok{),     }\CommentTok{\# Площадь лугов (\%)}
+  \AttributeTok{bo =} \FunctionTok{c}\NormalTok{(}\FloatTok{3.4}\NormalTok{, }\FloatTok{7.9}\NormalTok{, }\FloatTok{11.5}\NormalTok{)     }\CommentTok{\# Площадь болот (\%)}
+\NormalTok{)}
+
+\NormalTok{future\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, new\_conditions)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Прогнозируемая численность гадюк:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(future\_pred), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \bookmarksetup{startatroot}
 
@@ -1843,12 +2610,11 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 \chapter{Байесовский
 подход}\label{ux431ux430ux439ux435ux441ux43eux432ux441ux43aux438ux439-ux43fux43eux434ux445ux43eux434}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-5}
+\section{Лекция-Введение}\label{ux43bux435ux43aux446ux438ux44f-ux432ux432ux435ux434ux435ux43dux438ux435}
 
-\section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-4}
-
-Текст. Текст. Текст.
+\[  
+P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\theta)P(\theta)\right]}}  
+\]
 
 \section{Описательная статистика и
 визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-4}
@@ -1860,10 +2626,10 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 \chapter{Продукционные
 модели}\label{ux43fux440ux43eux434ux443ux43aux446ux438ux43eux43dux43dux44bux435-ux43cux43eux434ux435ux43bux438}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-6}
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-5}
 
 \section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-5}
+осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-4}
 
 Текст. Текст. Текст.
 
@@ -1877,10 +2643,10 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 \chapter{Введение в
 прогнозирование}\label{ux432ux432ux435ux434ux435ux43dux438ux435-ux432-ux43fux440ux43eux433ux43dux43eux437ux438ux440ux43eux432ux430ux43dux438ux435}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-7}
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-6}
 
 \section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-6}
+осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-5}
 
 Текст. Текст. Текст.
 
@@ -1894,10 +2660,10 @@ L_{50} = -\frac{\beta_0}{\beta_1}
 \chapter{ПРП и стратегии
 управления}\label{ux43fux440ux43f-ux438-ux441ux442ux440ux430ux442ux435ux433ux438ux438-ux443ux43fux440ux430ux432ux43bux435ux43dux438ux44f}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-8}
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-7}
 
 \section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-7}
+осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-6}
 
 Текст. Текст. Текст.
 
