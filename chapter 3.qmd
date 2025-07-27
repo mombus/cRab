@@ -23,7 +23,7 @@ format: html
 
 Данная карта демонстрирует распределение уловов краба в ходе исследовательской съемки. На ней отображены точки наблюдений, где размер и цвет точек соответствуют величине улова.
 
-![Рис. 1.: Пример карты распределения уловов в съемке](images/KARTOGRAPH1.PNG){fig-align="center" width="70%"}
+![Рис. 1.: Пример карты распределения уловов в съемке](images/KARTOGRAPH1.jpg){fig-align="center" width="70%"}
 
 В скрипте границы карты (лимиты) определяются автоматически с буфером, но чаще их просто устанавливают вручную, например:
 
@@ -98,7 +98,7 @@ ggplot(DATA) +
 
 ## Карта распределения уловов в съемке с береговой линией
 
-![Рис. 2.: Пример карты распределения уловов в съемке с береговой линией](images/KARTOGRAPH2.PNG){fig-align="center" width="70%"}
+![Рис. 2.: Пример карты распределения уловов в съемке с береговой линией](images/KARTOGRAPH2.jpg){fig-align="center" width="70%"}
 
 ```{r}
 #| output: false
@@ -142,7 +142,7 @@ ggplot() +
 
 ## Карта распределения уловов, включая нулевые
 
-![Рис. 3.: Карта распределения уловов, включая нулевые](images/KARTOGRAPH3.PNG){fig-align="center" width="70%"}
+![Рис. 3.: Карта распределения уловов, включая нулевые](images/KARTOGRAPH3.jpg){fig-align="center" width="70%"}
 
 ```{r}
 #| output: false
@@ -190,7 +190,7 @@ ggplot() +
 
 ## Карта распределения уловов, распределенных по квартилям
 
-![Рис. 4.: Карта распределения уловов, распределенных по квартилям](images/KARTOGRAPH4.PNG){fig-align="center" width="70%"}
+![Рис. 4.: Карта распределения уловов, распределенных по квартилям](images/KARTOGRAPH4.jpg){fig-align="center" width="70%"}
 
 ```{r}
 #| output: false
@@ -280,7 +280,7 @@ ggplot() +
 
 ## Карта распределения уловов по фасеткам
 
-![Рис. 5.: Карта распределения уловов по фасеткам](images/KARTOGRAPH5.PNG){fig-align="center" width="80%"}
+![Рис. 5.: Карта распределения уловов по фасеткам](images/KARTOGRAPH5.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -387,9 +387,9 @@ ggplot() +
 
 ## Карта распределения уловов с автокорреляцией LISA
 
-Алгоритм LISA (Local Indicators of Spatial Association) – это набор статистических мер, которые позволяют выявить пространственную кластеризацию или выбросы на уровне отдельных объектов или местоположений в географических данных. В отличие от глобальных показателей пространственной автокорреляции, которые дают общую характеристику пространственной структуры данных, LISA позволяет определить, какие конкретные объекты или области вносят наибольший вклад в пространственную структуру. 
+Алгоритм LISA (Local Indicators of Spatial Association) – это набор статистических мер, которые позволяют выявить пространственную кластеризацию или выбросы на уровне отдельных объектов или местоположений в географических данных. В отличие от глобальных показателей пространственной автокорреляции, которые дают общую характеристику пространственной структуры данных, LISA позволяет определить, какие конкретные объекты или области вносят наибольший вклад в пространственную структуру.
 
-![Рис. 6.: Карта распределения уловов с автокорреляцией LISA](images/KARTOGRAPH6.PNG){fig-align="center" width="80%"}
+![Рис. 6.: Карта распределения уловов с автокорреляцией LISA](images/KARTOGRAPH6.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -513,7 +513,7 @@ theme_minimal() +
 
 ## Карта распределения уловов с автокорреляцией LISA по фасеткам
 
-![Рис. 7.: Карта распределения уловов с автокорреляцией LISA по фасеткам](images/KARTOGRAPH7.PNG){fig-align="center" width="80%"}
+![Рис. 7.: Карта распределения уловов с автокорреляцией LISA по фасеткам](images/KARTOGRAPH7.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -691,7 +691,7 @@ ggplot(data = results_list) +
 
 ## Промысловые карты с квартильным распределением уловов
 
-![Рис. 8.: Промысловые карты с квартильным распределением уловов](images/KARTOGRAPH8.PNG){fig-align="center" width="80%"}
+![Рис. 8.: Промысловые карты с квартильным распределением уловов](images/KARTOGRAPH8.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -781,7 +781,7 @@ ggplot() +
 
 ## Промысловые карты с агрегацией в центрах полигонов (промквадратов)
 
-![Рис. 9.: Промысловые карты с агрегацией в центрах полигонов (промквадратов)](images/KARTOGRAPH9.PNG){fig-align="center" width="80%"}
+![Рис. 9.: Промысловые карты с агрегацией в центрах полигонов (промквадратов)](images/KARTOGRAPH9.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -905,7 +905,7 @@ ggplot() +
 
 ## Промысловые карты - картограммы
 
-![Рис. 10.: Промысловые карты - картограммы](images/KARTOGRAPH10.PNG){fig-align="center" width="80%"}
+![Рис. 10.: Промысловые карты - картограммы](images/KARTOGRAPH10.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -1016,7 +1016,7 @@ ggplot() +
 
 ## Промысловые карты - картограммы по фасеткам
 
-![Рис. 11.: Промысловые карты - картограммы по фасеткам](images/KARTOGRAPH11.PNG){fig-align="center" width="80%"}
+![Рис. 11.: Промысловые карты - картограммы по фасеткам](images/KARTOGRAPH11.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -1072,6 +1072,17 @@ gird_shares_catch <- grid_sf %>%
 # Определяем общий максимум CPUE для единой шкалы цветов
 catch_max <- max(gird_shares_catch$CATCH, na.rm = TRUE)
 
+# Рассчитываем шаг для подписей (в 2 раза реже исходной сетки)
+x_breaks <- seq(xmin, xmax, by = xcs * 2)  # 4 градуса
+y_breaks <- seq(ymin, ymax, by = ycs * 2)  # 1 градус
+
+# Функция для форматирования подписей: пропускаем первую подпись
+format_labels <- function(breaks) {
+  labels <- paste0(breaks, "°")
+  labels[1] <- ""  # Пропускаем первую подпись
+  return(labels)
+}
+
 ggplot() +
   # Контуры сетки
   geom_sf(data = grid_sf, fill = NA, color = "grey80", linewidth = 0.3) +
@@ -1085,24 +1096,32 @@ ggplot() +
   # Фасетирование по годам
   facet_wrap(~ YEAR, nrow = 2) +
   
- # 4. Цветовая шкала viridis option "H" для заливки
+  # Цветовая шкала
   scale_fill_viridis_c(
     option = "H", 
     name = "CPUE",
-    limits = c(0, max(gird_shares_catch$CATCH, na.rm = TRUE)),
+    limits = c(0, catch_max),
     na.value = "transparent"
   ) +
-
- 
+  
   # Область отображения
   coord_sf(
     xlim = c(xmin, xmax), 
     ylim = c(ymin, ymax),
     expand = FALSE
   ) +
-
   
-  # Оформление
+  # Управление подписями осей с символом градуса (пропускаем первую подпись)
+  scale_x_continuous(
+    breaks = x_breaks,
+    labels = format_labels
+  ) +
+  scale_y_continuous(
+    breaks = y_breaks,
+    labels = format_labels
+  ) +
+  
+  # Оформление с тиками на осях
   theme_minimal() +
   theme(
     panel.grid = element_blank(),
@@ -1112,7 +1131,17 @@ ggplot() +
     panel.border = element_rect(fill = NA, color = "black", size = 0.7),
     panel.grid.major = element_line(color = "grey90", size = 0.2),
     strip.background = element_rect(fill = "#E8E5D6", color = "black"),
-    strip.text = element_text(face = "bold", size = 12)
+    strip.text = element_text(face = "bold", size = 12),
+    axis.text.x = element_text(size = 9, angle = 0, margin = margin(t = 5)),
+    axis.text.y = element_text(size = 9, angle = 90, hjust = 0.5, margin = margin(r = 5)),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    
+    # Тики (засечки) на оси
+    axis.ticks = element_line(color = "black", size = 0.5),
+    axis.ticks.length = unit(0.2, "cm"),
+    axis.ticks.x = element_line(color = "black", size = 0.5),
+    axis.ticks.y = element_line(color = "black", size = 0.5)
   ) +
   
   # Настройка легенды
@@ -1123,30 +1152,19 @@ ggplot() +
     frame.colour = "black",
     ticks.colour = "black"
   ))
-    na.value = NA,
-    limits = c(0, max(gird_shares_catch$CATCH, na.rm = TRUE))
-  ) +
 
-  
-  # Область отображения
-  coord_sf(xlim = c(xmin, xmax), ylim = c(ymin, ymax)) +
-  
-  # Оформление
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8, angle = 90, hjust = 0.5),
-    panel.grid = element_line(color = "grey90"),
-    legend.position = "bottom",
-    panel.border = element_rect(fill = NA, color = "black", size = 0.5),
-    strip.background = element_rect(fill = "white", color = "black")
-  ) +
-  guides(fill = guide_colorbar(title = NULL))
+# Сохранение результата
+ggsave("KARTOGRAPH11.jpg", 
+       device = "jpeg", 
+       dpi = 300,
+       width = 7,
+       height = 5,
+       units = "in")
 ```
 
 ## Гибридные карты - картограммы и точки (съемка и промысловые данные)
 
-![Рис. 12.: Гибридные карты - картограммы и точки (съемка и промысловые данные)](images/KARTOGRAPH12.PNG){fig-align="center" width="80%"}
+![Рис. 12.: Гибридные карты - картограммы и точки (съемка и промысловые данные)](images/KARTOGRAPH12.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -1284,7 +1302,7 @@ ggplot() +
 
 ## Карты для "главы Материал и методы"
 
-![Рис. 13.: Карты для "главы Материал и методы"](images/KARTOGRAPH13.PNG){fig-align="center" width="80%"}
+![Рис. 13.: Карты для "главы Материал и методы"](images/KARTOGRAPH13.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -1429,7 +1447,7 @@ ggsave("DATA_MAP.jpg",
 
 ## Карты с картой-врезкой и маршрутом
 
-![Рис. 14.: Карты с картой-врезкой и маршрутом](images/KARTOGRAPH14.PNG){fig-align="center" width="80%"}
+![Рис. 14.: Карты с картой-врезкой и маршрутом](images/KARTOGRAPH14.jpg){fig-align="center" width="80%"}
 
 ```{r}
 #| output: false
@@ -1559,9 +1577,7 @@ MAP <- ggdraw() +
   draw_plot(insetmap,
             height = 0.3,
             x = -0.26,
-            y = 0.55) +
-  # ДОБАВЛЕНИЕ РАМКИ ВОКРУГ ВСЕЙ КОМПОЗИЦИИ
-  theme(plot.background = element_rect(colour = "black", fill = NA, linewidth = 2))
+            y = 0.55) 
 
 # Вывод финальной карты
 print(MAP)
@@ -1573,7 +1589,7 @@ ggsave("DATA_MAP_FRAMED.jpg",
        plot = MAP,
        device = "jpeg", 
        dpi = 600,
-       width = 9,
-       height = 7,
+       width = 7,
+       height = 6,
        units = "in")
 ```
