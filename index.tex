@@ -236,37 +236,7 @@
 
 \chapter{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435}
 
-В эпоху больших языковых моделей (LLM) вопрос об актуальности создания
-структурированных учебников кажется закономерным. Зачем тратить время на
-детальную проработку курса, если современные инструменты способны быстро
-сгенерировать объяснение даже сложных тем --- от статистических формул
-до методов оценки запасов? Однако многолетний опыт работы с
-количественными данными в морской биологии подсказывает: формальные
-алгоритмы не заменят практического понимания, необходимого для адаптации
-теоретических подходов к реальным условиям.
-
-LLM могут описать формулу Бейеса или работу программного обеспечения для
-оценки запасов, но они не научат учитывать специфику конкретного региона
---- например, как интерпретировать противоречивые данные с научных
-съемок или корректировать модели в условиях изменяющегося климата.
-Именно в таких ситуациях ключевую роль играет опыт: годы наблюдений,
-анализ ошибок и постепенная выработка гибких подходов к решению задач.
-
-Этот репозиторий --- собрание проверенных методов, применявшихся при
-решении прикладных задач: от обработки данных CPUE при неполном покрытии
-акватории до моделирования распространения инвазивных видов с учетом
-геоморфологических особенностей. Здесь вы найдете примеры, редко
-встречающиеся в общедоступных источниках: как работать с
-фрагментированными биотопами или оценивать сдвиги в ареалах видов на
-основе долгосрочных наблюдений.
-
-Большие языковые модели --- полезный инструмент, но их ответы часто
-абстрактны. Реальная работа с данными требует не только технических
-навыков, но и умения адаптироваться к уникальным условиям, где
-неопределенность --- норма, а решения рождаются через анализ конкретных
-случаев. Этот учебник направлен на передачу именно такого «живого»
-опыта, который невозможно заменить автоматически сгенерированными
-текстами.
+Здесь будет введение
 
 \bookmarksetup{startatroot}
 
@@ -2556,10 +2526,1754 @@ w = a_0 + a_1 \cdot l_t + a_2 \cdot l_c
 
 \bookmarksetup{startatroot}
 
-\chapter{От регрессии и до нейронных
-сетей}\label{ux43eux442-ux440ux435ux433ux440ux435ux441ux441ux438ux438-ux438-ux434ux43e-ux43dux435ux439ux440ux43eux43dux43dux44bux445-ux441ux435ux442ux435ux439}
+\chapter{Основы
+картографии}\label{ux43eux441ux43dux43eux432ux44b-ux43aux430ux440ux442ux43eux433ux440ux430ux444ux438ux438}
 
 \section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-2}
+
+Примеры карт и скрипты, которые могут быть полезны в рыбохозяйственных,
+гидробиологическских и пр. океанологических исследованиях. На этом
+занятии мы рассмотрим создание карт для визуализации пространственных
+данных в исследованиях водных биоресурсов.
+
+Вы научитесь создавать различные типы карт, используя современные пакеты
+R, такие как \texttt{ggplot2}, \texttt{sf}, \texttt{rnaturalearth} и
+другие. Мы начнем с простых карт распределения уловов по данным съемок,
+затем перейдем к более сложным: картам с береговой линией, картам,
+включающим нулевые уловы, распределению по квартилям. Далее рассмотрим
+фасеточные карты для сравнения лет, карты с пространственной
+автокорреляцией (LISA), а также промысловые карты (включая картограммы)
+и гибридные карты, объединяющие данные съемок и промысла. В заключение
+мы покажем, как создавать карты для раздела ``Материал и методы'' и
+карты с врезками.
+
+Обратите внимание, что примеры карт, представленные в интернете
+(например, в HTML-версии этого документа), могут быть в уменьшенном
+качестве. Однако при работе в R вы можете экспортировать полученные
+графики в векторные (PDF, SVG) или растровые (PNG, TIFF) форматы с
+высоким разрешением (до 600 dpi), что подходит для публикаций в научных
+журналах.
+
+\textbf{Для работы скрипта:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Скачайте файл данных
+  (\href{https://mombus.github.io/cRab/data/KARTOGRAPHIC.xlsx}{KARTOGRAPHIC.xlsx})
+\item
+  Установите рабочую директорию в setwd()
+\item
+  Установите необходимые пакеты :
+  \textbf{\texttt{install.packages(c("readxl",\ "tidyverse,\ "rnaturalearth",\ "sf",\ "viridis"\ ))}}
+  \texttt{и\ др.}
+\end{enumerate}
+
+\section{Карта распределения уловов в
+съемке}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux432-ux441ux44aux435ux43cux43aux435}
+
+Данная карта демонстрирует распределение уловов краба в ходе
+исследовательской съемки. На ней отображены точки наблюдений, где размер
+и цвет точек соответствуют величине улова.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH1.PNG}
+
+}
+
+\caption{Рис. 1.: Пример карты распределения уловов в съемке}
+
+\end{figure}%
+
+В скрипте границы карты (лимиты) определяются автоматически с буфером,
+но чаще их просто устанавливают вручную, например:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{37}
+\NormalTok{xmax }\OtherTok{\textless{}{-}} \DecValTok{49}
+\NormalTok{ymin }\OtherTok{\textless{}{-}} \FloatTok{68.5}
+\NormalTok{ymax }\OtherTok{\textless{}{-}} \FloatTok{70.5}
+\end{Highlighting}
+\end{Shaded}
+
+Скрипт карты целиком:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка памяти и установка рабочей папки}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых пакетов}
+\FunctionTok{library}\NormalTok{(tidyverse)  }\CommentTok{\# Обработка данных и визуализация}
+\FunctionTok{library}\NormalTok{(readxl)     }\CommentTok{\# Чтение Excel{-}файлов}
+
+\CommentTok{\# 1. ЗАГРУЗКА ДАННЫХ}
+\NormalTok{DATA }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)  }\CommentTok{\# Фильтр для 2023 года и съемки CRAB}
+
+\CommentTok{\# 2. АВТОМАТИЧЕСКИЙ РАСЧЕТ ГРАНИЦ С БУФЕРОМ 5\%}
+\CommentTok{\# Расчет диапазонов координат}
+\NormalTok{x\_range }\OtherTok{\textless{}{-}} \FunctionTok{range}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{X, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{y\_range }\OtherTok{\textless{}{-}} \FunctionTok{range}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{Y, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Расчет 5\% буфера}
+\NormalTok{x\_buffer }\OtherTok{\textless{}{-}} \FloatTok{0.05} \SpecialCharTok{*} \FunctionTok{diff}\NormalTok{(x\_range)}
+\NormalTok{y\_buffer }\OtherTok{\textless{}{-}} \FloatTok{0.05} \SpecialCharTok{*} \FunctionTok{diff}\NormalTok{(y\_range)}
+
+\CommentTok{\# Установка границ с буфером}
+\NormalTok{xmin }\OtherTok{\textless{}{-}}\NormalTok{ x\_range[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}}\NormalTok{ x\_buffer}
+\NormalTok{xmax }\OtherTok{\textless{}{-}}\NormalTok{ x\_range[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ x\_buffer}
+\NormalTok{ymin }\OtherTok{\textless{}{-}}\NormalTok{ y\_range[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}}\NormalTok{ y\_buffer}
+\NormalTok{ymax }\OtherTok{\textless{}{-}}\NormalTok{ y\_range[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ y\_buffer}
+
+\CommentTok{\# 3. ВИЗУАЛИЗАЦИЯ ТОЧЕК}
+\FunctionTok{ggplot}\NormalTok{(DATA) }\SpecialCharTok{+}
+  \CommentTok{\# Точки наблюдений с размером и цветом по величине улова}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM, }\AttributeTok{color =}\NormalTok{ PROM), }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Цветовая шкала (виридисная палитра)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Улов"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Шкала размеров точек}
+  \FunctionTok{scale\_size\_continuous}\NormalTok{(}\AttributeTok{name =} \StringTok{"Улов"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройка границ с автоматически рассчитанными значениями}
+  \FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Подписи осей}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Широта"}\NormalTok{, }
+       \AttributeTok{title =} \StringTok{"Распределение уловов краба"}\NormalTok{, }
+       \AttributeTok{subtitle =} \StringTok{"2023 год, тип съемки: CRAB"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Оформление графика}
+  \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов в съемке с береговой
+линией}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux432-ux441ux44aux435ux43cux43aux435-ux441-ux431ux435ux440ux435ux433ux43eux432ux43eux439-ux43bux438ux43dux438ux435ux439}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH2.PNG}
+
+}
+
+\caption{Рис. 2.: Пример карты распределения уловов в съемке с береговой
+линией}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())  }\CommentTok{\# Удаление всех объектов из глобального окружения}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)  }\CommentTok{\# Установка рабочей директории}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)  }\CommentTok{\# Для получения векторных карт мира}
+\FunctionTok{library}\NormalTok{(tidyverse)      }\CommentTok{\# Коллекция пакетов для работы с данными}
+\FunctionTok{library}\NormalTok{(sf)             }\CommentTok{\# Пространственный анализ}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)  }\CommentTok{\# Фильтр данных за 2023 год по типу съемки}
+
+\CommentTok{\# Получение границ России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{)  }\CommentTok{\# Загрузка векторных границ (масштаб 1:10м)}
+
+\CommentTok{\# Установка границ отображаемой области (долгота/широта)}
+\NormalTok{xmin}\OtherTok{=}\DecValTok{37}  \CommentTok{\# Западная граница}
+\NormalTok{xmax}\OtherTok{=}\DecValTok{49}  \CommentTok{\# Восточная граница}
+\NormalTok{ymin}\OtherTok{=}\FloatTok{68.5} \CommentTok{\# Южная граница}
+\NormalTok{ymax}\OtherTok{=}\FloatTok{70.5} \CommentTok{\# Северная граница}
+
+\CommentTok{\# Построение карты}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Базовая карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{) }\SpecialCharTok{+} 
+  \CommentTok{\# Ограничение области отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  \CommentTok{\# Точки наблюдений с размером и цветом по переменной PROM}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM, }\AttributeTok{color =}\NormalTok{ PROM),}
+             \AttributeTok{data =}\NormalTok{ DATA, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая шкала (viridis, вариант H)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов, включая
+нулевые}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux432ux43aux43bux44eux447ux430ux44f-ux43dux443ux43bux435ux432ux44bux435}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH3.PNG}
+
+}
+
+\caption{Рис. 3.: Карта распределения уловов, включая нулевые}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())  }\CommentTok{\# Удаление всех объектов из глобального окружения}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)  }\CommentTok{\# Установка рабочей директории}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)  }\CommentTok{\# Для получения векторных карт мира}
+\FunctionTok{library}\NormalTok{(tidyverse)      }\CommentTok{\# Коллекция пакетов для работы с данными}
+\FunctionTok{library}\NormalTok{(sf)             }\CommentTok{\# Пространственный анализ}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)  }\CommentTok{\# Фильтр данных за 2023 год по типу съемки}
+
+\CommentTok{\# Получение границ России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{)  }\CommentTok{\# Загрузка векторных границ (масштаб 1:10м)}
+
+\CommentTok{\# Установка границ отображаемой области (долгота/широта)}
+\NormalTok{xmin}\OtherTok{=}\DecValTok{37}  \CommentTok{\# Западная граница}
+\NormalTok{xmax}\OtherTok{=}\DecValTok{49}  \CommentTok{\# Восточная граница}
+\NormalTok{ymin}\OtherTok{=}\FloatTok{68.5} \CommentTok{\# Южная граница}
+\NormalTok{ymax}\OtherTok{=}\FloatTok{70.5} \CommentTok{\# Северная граница}
+
+\CommentTok{\# Построение карты}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Базовая карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{) }\SpecialCharTok{+} 
+  \CommentTok{\# Ограничение области отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  \CommentTok{\# Точки наблюдений с размером и цветом по переменной PROM (ненулевые уловы)}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM, }\AttributeTok{color =}\NormalTok{ PROM),}
+             \AttributeTok{data =} \FunctionTok{filter}\NormalTok{(DATA, PROM }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{), }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Точки для нулевых уловов (крестики)}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y),}
+             \AttributeTok{data =} \FunctionTok{filter}\NormalTok{(DATA, PROM }\SpecialCharTok{==} \DecValTok{0}\NormalTok{),}
+             \AttributeTok{shape =} \DecValTok{4}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{stroke =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая шкала (viridis, вариант H)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов, распределенных по
+квартилям}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux43dux44bux445-ux43fux43e-ux43aux432ux430ux440ux442ux438ux43bux44fux43c}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH4.PNG}
+
+}
+
+\caption{Рис. 4.: Карта распределения уловов, распределенных по
+квартилям}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)}
+
+\CommentTok{\# Получение границ России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_as\_sf}\NormalTok{()}
+
+\CommentTok{\# Установка границ отображаемой области}
+\NormalTok{xmin}\OtherTok{=}\DecValTok{37}\NormalTok{; xmax}\OtherTok{=}\DecValTok{49}\NormalTok{; ymin}\OtherTok{=}\FloatTok{68.5}\NormalTok{; ymax}\OtherTok{=}\FloatTok{70.5}
+
+\DocumentationTok{\#\#\#\#\#\#\# ПОДГОТОВКА ДАННЫХ ДЛЯ ВИЗУАЛИЗАЦИИ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+\CommentTok{\# Вычисляем квартили отдельно}
+\NormalTok{quantiles }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{PROM[DATA}\SpecialCharTok{$}\NormalTok{PROM }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{], }\AttributeTok{probs =} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.25}\NormalTok{))}
+
+\CommentTok{\# Создаем 4 категории с реальными диапазонами значений}
+\NormalTok{nonzero\_data }\OtherTok{\textless{}{-}}\NormalTok{ DATA }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(PROM }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{PROM\_cat =} \FunctionTok{cut}\NormalTok{(}
+\NormalTok{      PROM,}
+      \AttributeTok{breaks =}\NormalTok{ quantiles,}
+      \AttributeTok{include.lowest =} \ConstantTok{TRUE}\NormalTok{,}
+      \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{1}\NormalTok{], quantiles[}\DecValTok{2}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{2}\NormalTok{], quantiles[}\DecValTok{3}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{3}\NormalTok{], quantiles[}\DecValTok{4}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{4}\NormalTok{], quantiles[}\DecValTok{5}\NormalTok{])}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\CommentTok{\# Построение карты}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Базовая карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"gray40"}\NormalTok{) }\SpecialCharTok{+} 
+  \CommentTok{\# Ограничение области отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  \CommentTok{\# Точки наблюдений с категориальным размером}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ nonzero\_data,}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM\_cat, }\AttributeTok{color =}\NormalTok{ PROM),}
+    \AttributeTok{alpha =} \FloatTok{0.7}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Точки для нулевых уловов (крестики)}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =} \FunctionTok{filter}\NormalTok{(DATA, PROM }\SpecialCharTok{==} \DecValTok{0}\NormalTok{),}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y),}
+    \AttributeTok{shape =} \DecValTok{4}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{stroke =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая шкала (непрерывная)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{, }\AttributeTok{name =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Ручная настройка размеров для категорий}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"Улов (экз./ч)"}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{8}\NormalTok{),  }\CommentTok{\# Размеры точек для категорий}
+    \AttributeTok{drop =} \ConstantTok{FALSE}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Настройки темы}
+  \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Распределение уловов краба (2023)"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Черные крестики {-} нулевые уловы"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }
+    \AttributeTok{y =} \StringTok{"Широта"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов по
+фасеткам}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux43fux43e-ux444ux430ux441ux435ux442ux43aux430ux43c}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH5.PNG}
+
+}
+
+\caption{Рис. 5.: Карта распределения уловов по фасеткам}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Установка и подключение библиотек (если не установлено — раскомментируй)}
+\CommentTok{\# install.packages(c("rnaturalearth", "tidyverse", "sf", "readxl", "viridis"))}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+\FunctionTok{library}\NormalTok{(readxl)}
+\FunctionTok{library}\NormalTok{(viridis)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных (убираем фильтр по году, чтобы работать со всеми годами)}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)}
+
+\CommentTok{\# Получение границ России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_as\_sf}\NormalTok{()}
+
+\CommentTok{\# Установка границ отображаемой области}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{37}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{49}
+\NormalTok{ymin }\OtherTok{\textless{}{-}} \FloatTok{68.5}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \FloatTok{70.5}
+
+\CommentTok{\# Вычисляем общие квартили для всех лет (чтобы категории были сопоставимыми)}
+\NormalTok{quantiles }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{PROM[DATA}\SpecialCharTok{$}\NormalTok{PROM }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{], }\AttributeTok{probs =} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.25}\NormalTok{))}
+
+\CommentTok{\# Создаем данные с ненулевыми уловами и категориями}
+\NormalTok{nonzero\_data }\OtherTok{\textless{}{-}}\NormalTok{ DATA }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(PROM }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+\AttributeTok{PROM\_cat =} \FunctionTok{cut}\NormalTok{(}
+\NormalTok{  PROM,}
+  \AttributeTok{breaks =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, quantiles[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{4}\NormalTok{], }\ConstantTok{Inf}\NormalTok{),}
+  \AttributeTok{include.lowest =} \ConstantTok{TRUE}\NormalTok{,}
+  \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}
+    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%d {-} \%d"}\NormalTok{, }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{1}\NormalTok{]), }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{2}\NormalTok{])),}
+    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%d {-} \%d"}\NormalTok{, }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{2}\NormalTok{]), }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{3}\NormalTok{])),}
+    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%d {-} \%d"}\NormalTok{, }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{3}\NormalTok{]), }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{4}\NormalTok{])),}
+    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%d {-} \%d"}\NormalTok{, }\FunctionTok{floor}\NormalTok{(quantiles[}\DecValTok{4}\NormalTok{]), }\FunctionTok{floor}\NormalTok{(}\FunctionTok{max}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{PROM)))}
+\NormalTok{  )}
+\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\# Отдельно выделяем точки с нулевым уловом}
+\NormalTok{zero\_data }\OtherTok{\textless{}{-}}\NormalTok{ DATA }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(PROM }\SpecialCharTok{==} \DecValTok{0}\NormalTok{)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ВИЗУАЛИЗАЦИЯ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Фасеточная карта по годам}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Граница России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"gray40"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Ограничение области отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Точки с уловом}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ nonzero\_data,}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM\_cat, }\AttributeTok{color =}\NormalTok{ PROM),}
+    \AttributeTok{alpha =} \FloatTok{0.7}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Нулевые уловы — крестики}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ zero\_data,}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y),}
+    \AttributeTok{shape =} \DecValTok{4}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{stroke =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Цветовая шкала}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{, }\AttributeTok{name =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройка размеров точек по категориям}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"Улов (экз./ч)"}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{),}
+    \AttributeTok{drop =} \ConstantTok{FALSE}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Фасет по годам}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ YEAR, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{, }\AttributeTok{labeller =}\NormalTok{ label\_value) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Тема и заголовок}
+  \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Распределение уловов краба по годам"}\NormalTok{,}
+    \AttributeTok{subtitle =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }
+    \AttributeTok{y =} \StringTok{"Широта"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов с автокорреляцией
+LISA}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux441-ux430ux432ux442ux43eux43aux43eux440ux440ux435ux43bux44fux446ux438ux435ux439-lisa}
+
+Алгоритм LISA (Local Indicators of Spatial Association) -- это~набор
+статистических мер, которые позволяют выявить пространственную
+кластеризацию или выбросы на уровне отдельных объектов или
+местоположений в географических данных.~В отличие от глобальных
+показателей пространственной автокорреляции, которые дают общую
+характеристику пространственной структуры данных, LISA позволяет
+определить, какие конкретные объекты или области вносят наибольший вклад
+в пространственную структуру.~
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH6.PNG}
+
+}
+
+\caption{Рис. 6.: Карта распределения уловов с автокорреляцией LISA}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+\FunctionTok{library}\NormalTok{(spdep)}
+\FunctionTok{library}\NormalTok{(ggspatial)}
+\FunctionTok{library}\NormalTok{(readxl)}
+
+\CommentTok{\# 1. ЗАГРУЗКА И ПОДГОТОВКА ДАННЫХ}
+\NormalTok{DATA }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)}
+
+\CommentTok{\# Проверка названий колонок}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{names}\NormalTok{(DATA))  }\CommentTok{\# Убедитесь, что координаты названы правильно}
+
+\CommentTok{\# Преобразование в пространственные данные (замените X/Y на ваши названия)}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# 2. ПОЛУЧЕНИЕ КАРТЫ РОССИИ}
+\CommentTok{\# Задаем границы области}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{37}
+\NormalTok{xmax }\OtherTok{\textless{}{-}} \DecValTok{49}
+\NormalTok{ymin }\OtherTok{\textless{}{-}} \FloatTok{68.5}
+\NormalTok{ymax }\OtherTok{\textless{}{-}} \FloatTok{70.5}
+
+\CommentTok{\# Создаём ограничивающий прямоугольник}
+\NormalTok{bbox }\OtherTok{\textless{}{-}} \FunctionTok{st\_bbox}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{xmin =}\NormalTok{ xmin, }\AttributeTok{xmax =}\NormalTok{ xmax, }\AttributeTok{ymin =}\NormalTok{ ymin, }\AttributeTok{ymax =}\NormalTok{ ymax), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+\NormalTok{bbox\_poly }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sfc}\NormalTok{(bbox)}
+
+\CommentTok{\# Карта России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{, }\AttributeTok{scale =} \DecValTok{10}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_as\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_crop}\NormalTok{(bbox)  }\CommentTok{\# Обрезка без st\_intersection}
+
+\CommentTok{\# 3. ПОДГОТОВКА ТОЧЕК}
+\CommentTok{\# Удаление дубликатов по координатам}
+\NormalTok{coords }\OtherTok{\textless{}{-}} \FunctionTok{st\_coordinates}\NormalTok{(points\_sf)}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}}\NormalTok{ points\_sf[}\SpecialCharTok{!}\FunctionTok{duplicated}\NormalTok{(coords), , drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+
+\CommentTok{\# Перевод в UTM}
+\NormalTok{points\_utm }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(points\_sf, }\AttributeTok{crs =} \DecValTok{32638}\NormalTok{)}
+
+\CommentTok{\# 4. АНАЛИЗ LISA}
+\CommentTok{\# Матрица весов}
+\NormalTok{knn }\OtherTok{\textless{}{-}} \FunctionTok{knearneigh}\NormalTok{(points\_utm, }\AttributeTok{k =} \DecValTok{4}\NormalTok{)}
+\NormalTok{nb }\OtherTok{\textless{}{-}} \FunctionTok{knn2nb}\NormalTok{(knn)}
+\NormalTok{listw }\OtherTok{\textless{}{-}} \FunctionTok{nb2listw}\NormalTok{(nb, }\AttributeTok{style =} \StringTok{"W"}\NormalTok{)}
+
+\CommentTok{\# Локальный Моран}
+\NormalTok{local\_moran }\OtherTok{\textless{}{-}} \FunctionTok{localmoran}\NormalTok{(points\_utm}\SpecialCharTok{$}\NormalTok{PROM, listw)}
+
+\CommentTok{\# Добавляем кластеры}
+\NormalTok{points\_utm }\OtherTok{\textless{}{-}}\NormalTok{ points\_utm }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Local\_I =}\NormalTok{ local\_moran[, }\StringTok{"Ii"}\NormalTok{],}
+    \AttributeTok{P\_value =}\NormalTok{ local\_moran[, }\StringTok{"Pr(z != E(Ii))"}\NormalTok{],}
+    \AttributeTok{Mean\_PROM =} \FunctionTok{mean}\NormalTok{(PROM, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),  }\CommentTok{\# Добавляем среднее значение}
+    \AttributeTok{Cluster =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      Local\_I }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textgreater{}}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"High{-}High"}\NormalTok{,}
+\NormalTok{      Local\_I }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}=}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"Low{-}Low"}\NormalTok{,  }\CommentTok{\# Включаем PROM == 0}
+\NormalTok{      Local\_I }\SpecialCharTok{\textless{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textgreater{}}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"High{-}Low"}\NormalTok{,}
+\NormalTok{      Local\_I }\SpecialCharTok{\textless{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}=}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"Low{-}High"}\NormalTok{,  }\CommentTok{\# PROM == 0 попадает сюда}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Not significant"}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\CommentTok{\# Обратно в WGS84}
+\NormalTok{points\_result }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(points\_utm, }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# 5. ВИЗУАЛИЗАЦИЯ}
+\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"High{-}High"} \OtherTok{=} \StringTok{"red"}\NormalTok{,}
+  \StringTok{"Low{-}Low"} \OtherTok{=} \StringTok{"blue"}\NormalTok{,}
+  \StringTok{"High{-}Low"} \OtherTok{=} \StringTok{"pink"}\NormalTok{,}
+  \StringTok{"Low{-}High"} \OtherTok{=} \StringTok{"lightblue"}\NormalTok{,}
+  \StringTok{"Not significant"} \OtherTok{=} \StringTok{"gray"}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Все точки (включая PROM == 0) — в одном слое}
+  \FunctionTok{geom\_sf}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ points\_result,}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ Cluster, }\AttributeTok{size =}\NormalTok{ PROM),}
+    \AttributeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройки координат и масштаба}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax), }\AttributeTok{expand =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotation\_scale}\NormalTok{(}\AttributeTok{location =} \StringTok{"tl"}\NormalTok{, }\AttributeTok{width\_hint =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Цвет и размер}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cluster\_colors) }\SpecialCharTok{+}
+  \FunctionTok{scale\_size\_continuous}\NormalTok{(}\AttributeTok{range =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{8}\NormalTok{), }\AttributeTok{name =} \StringTok{"Величина улова"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Заголовки и тема}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Пространственная автокорреляция уловов краба (LISA)"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"2023 год, тип съемки: CRAB"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Тип кластера"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+\FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{colour =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{)  }\CommentTok{\# Рамка вокруг карты}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карта распределения уловов с автокорреляцией LISA по
+фасеткам}\label{ux43aux430ux440ux442ux430-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux443ux43bux43eux432ux43eux432-ux441-ux430ux432ux442ux43eux43aux43eux440ux440ux435ux43bux44fux446ux438ux435ux439-lisa-ux43fux43e-ux444ux430ux441ux435ux442ux43aux430ux43c}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH7.PNG}
+
+}
+
+\caption{Рис. 7.: Карта распределения уловов с автокорреляцией LISA по
+фасеткам}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка памяти и установка рабочей папки}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых пакетов}
+\FunctionTok{library}\NormalTok{(rnaturalearth)  }\CommentTok{\# Географические карты}
+\FunctionTok{library}\NormalTok{(tidyverse)      }\CommentTok{\# Обработка данных и визуализация}
+\FunctionTok{library}\NormalTok{(sf)             }\CommentTok{\# Пространственные данные}
+\FunctionTok{library}\NormalTok{(spdep)          }\CommentTok{\# Пространственная статистика}
+\FunctionTok{library}\NormalTok{(ggspatial)      }\CommentTok{\# Дополнения для карт в ggplot}
+\FunctionTok{library}\NormalTok{(readxl)         }\CommentTok{\# Чтение Excel{-}файлов}
+
+\CommentTok{\# 1. ЗАГРУЗКА И ПРЕОБРАЗОВАНИЕ ДАННЫХ}
+\CommentTok{\# {-} Чтение данных из Excel}
+\CommentTok{\# {-} Фильтрация только данных по крабу}
+\NormalTok{DATA }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)}
+
+\CommentTok{\# Преобразование в пространственный объект с координатами}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# 2. ПОДГОТОВКА КАРТОГРАФИЧЕСКОЙ ОСНОВЫ}
+\CommentTok{\# {-} Определение границ области исследования}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{37}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{49}\NormalTok{; ymin }\OtherTok{\textless{}{-}} \FloatTok{68.5}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \FloatTok{70.7}
+
+\CommentTok{\# {-} Создание ограничивающего прямоугольника}
+\NormalTok{bbox }\OtherTok{\textless{}{-}} \FunctionTok{st\_bbox}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{xmin =}\NormalTok{ xmin, }\AttributeTok{xmax =}\NormalTok{ xmax, }\AttributeTok{ymin =}\NormalTok{ ymin, }\AttributeTok{ymax =}\NormalTok{ ymax), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# {-} Загрузка и обрезка карты России по заданным границам}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{, }\AttributeTok{scale =} \DecValTok{10}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_as\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_crop}\NormalTok{(bbox)}
+
+\CommentTok{\# 3. ФУНКЦИЯ ДЛЯ ПРОСТРАНСТВЕННОГО АНАЛИЗА ПО ГОДАМ}
+\NormalTok{analyze\_year }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data\_year) \{}
+  \CommentTok{\# Удаление дубликатов координат}
+\NormalTok{  coords }\OtherTok{\textless{}{-}} \FunctionTok{st\_coordinates}\NormalTok{(data\_year)}
+\NormalTok{  data\_year }\OtherTok{\textless{}{-}}\NormalTok{ data\_year[}\SpecialCharTok{!}\FunctionTok{duplicated}\NormalTok{(coords), , drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+  
+  \CommentTok{\# Перепроецирование в UTM для точных расчетов}
+\NormalTok{  points\_utm }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(data\_year, }\AttributeTok{crs =} \DecValTok{32638}\NormalTok{)}
+  
+  \CommentTok{\# Построение матрицы пространственных весов (4 ближайших соседа)}
+\NormalTok{  knn }\OtherTok{\textless{}{-}} \FunctionTok{knearneigh}\NormalTok{(points\_utm, }\AttributeTok{k =} \DecValTok{4}\NormalTok{)}
+\NormalTok{  nb }\OtherTok{\textless{}{-}} \FunctionTok{knn2nb}\NormalTok{(knn)}
+\NormalTok{  listw }\OtherTok{\textless{}{-}} \FunctionTok{nb2listw}\NormalTok{(nb, }\AttributeTok{style =} \StringTok{"W"}\NormalTok{)  }\CommentTok{\# Стандартизованная матрица}
+  
+  \CommentTok{\# Расчет локальной пространственной автокорреляции (LISA)}
+\NormalTok{  local\_moran }\OtherTok{\textless{}{-}} \FunctionTok{localmoran}\NormalTok{(points\_utm}\SpecialCharTok{$}\NormalTok{PROM, listw)}
+  
+  \CommentTok{\# Классификация кластеров на основе результатов}
+\NormalTok{  points\_utm }\OtherTok{\textless{}{-}}\NormalTok{ points\_utm }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}
+      \AttributeTok{Local\_I =}\NormalTok{ local\_moran[, }\StringTok{"Ii"}\NormalTok{],}
+      \AttributeTok{P\_value =}\NormalTok{ local\_moran[, }\StringTok{"Pr(z != E(Ii))"}\NormalTok{],}
+      \AttributeTok{Mean\_PROM =} \FunctionTok{mean}\NormalTok{(PROM, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+      \AttributeTok{Cluster =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{        Local\_I }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textgreater{}}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"High{-}High"}\NormalTok{,     }\CommentTok{\# Горячая точка}
+\NormalTok{        Local\_I }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}=}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"Low{-}Low"}\NormalTok{,      }\CommentTok{\# Холодная точка}
+\NormalTok{        Local\_I }\SpecialCharTok{\textless{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textgreater{}}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"High{-}Low"}\NormalTok{,      }\CommentTok{\# Выброс (высокий среди низких)}
+\NormalTok{        Local\_I }\SpecialCharTok{\textless{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}=}\NormalTok{ Mean\_PROM }\SpecialCharTok{\textasciitilde{}} \StringTok{"Low{-}High"}\NormalTok{,     }\CommentTok{\# Выброс (низкий среди высоких)}
+        \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Not significant"}                          \CommentTok{\# Незначимые}
+\NormalTok{      )}
+\NormalTok{    )}
+  
+  \CommentTok{\# Возврат в географические координаты}
+  \FunctionTok{st\_transform}\NormalTok{(points\_utm, }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+\NormalTok{\}}
+
+\CommentTok{\# 4. ОБРАБОТКА ДАННЫХ ПО ГОДАМ}
+\CommentTok{\# {-} Разделение данных по годам}
+\CommentTok{\# {-} Применение анализа для каждого года}
+\CommentTok{\# {-} Объединение результатов}
+\NormalTok{results\_list }\OtherTok{\textless{}{-}}\NormalTok{ DATA }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_split}\NormalTok{(YEAR) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{lapply}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(group) \{}
+    \FunctionTok{analyze\_year}\NormalTok{(}\FunctionTok{st\_as\_sf}\NormalTok{(group, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{))}
+\NormalTok{  \}) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{bind\_rows}\NormalTok{()}
+
+\CommentTok{\# 5. КАТЕГОРИЗАЦИЯ УЛОВОВ}
+\CommentTok{\# {-} Расчет квантилей для всего набора данных}
+\NormalTok{PROM\_breaks }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(results\_list}\SpecialCharTok{$}\NormalTok{PROM, }
+                         \AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\DecValTok{1}\NormalTok{), }
+                         \AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{round}\NormalTok{(}\DecValTok{1}\NormalTok{)  }\CommentTok{\# Округление значений}
+
+\CommentTok{\# {-} Создание меток с реальными диапазонами}
+\NormalTok{PROM\_labels }\OtherTok{\textless{}{-}} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, PROM\_breaks[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{], PROM\_breaks[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{5}\NormalTok{])}
+
+\CommentTok{\# {-} Добавление категорий уловов в данные}
+\NormalTok{results\_list }\OtherTok{\textless{}{-}}\NormalTok{ results\_list }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{PROM\_category =} \FunctionTok{cut}\NormalTok{(}
+\NormalTok{      PROM, }
+      \AttributeTok{breaks =}\NormalTok{ PROM\_breaks, }
+      \AttributeTok{labels =}\NormalTok{ PROM\_labels,}
+      \AttributeTok{include.lowest =} \ConstantTok{TRUE}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\CommentTok{\# 6. ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ}
+\CommentTok{\# Цветовая схема для типов кластеров}
+\NormalTok{cluster\_colors }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"High{-}High"} \OtherTok{=} \StringTok{"red"}\NormalTok{,       }\CommentTok{\# Горячие точки}
+  \StringTok{"Low{-}Low"} \OtherTok{=} \StringTok{"blue"}\NormalTok{,        }\CommentTok{\# Холодные точки}
+  \StringTok{"High{-}Low"} \OtherTok{=} \StringTok{"pink"}\NormalTok{,       }\CommentTok{\# Выбросы высокие}
+  \StringTok{"Low{-}High"} \OtherTok{=} \StringTok{"lightblue"}\NormalTok{,  }\CommentTok{\# Выбросы низкие}
+  \StringTok{"Not significant"} \OtherTok{=} \StringTok{"gray"} \CommentTok{\# Незначимые}
+\NormalTok{)}
+
+\CommentTok{\# Построение карты}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ results\_list) }\SpecialCharTok{+}
+  \CommentTok{\# Базовая карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"\#E8E5D6"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{inherit.aes =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Точки наблюдений с цветом по кластерам и размером по уловам}
+  \FunctionTok{geom\_sf}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ Cluster, }\AttributeTok{size =}\NormalTok{ PROM\_category), }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Разделение на панели по годам}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ YEAR, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Установка границ карты}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax), }\AttributeTok{expand =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройка легенды для кластеров}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}
+    \AttributeTok{values =}\NormalTok{ cluster\_colors,}
+    \AttributeTok{name =} \StringTok{"Тип кластера"}\NormalTok{,}
+    \AttributeTok{guide =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{nrow =} \DecValTok{2}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройка легенды для уловов (реальные диапазоны)}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"Величина улова"}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{),  }\CommentTok{\# Размеры точек для 4{-}х категорий}
+    \AttributeTok{breaks =} \FunctionTok{levels}\NormalTok{(results\_list}\SpecialCharTok{$}\NormalTok{PROM\_category),}
+    \AttributeTok{guide =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{nrow =} \DecValTok{2}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Заголовки и подписи}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Пространственная автокорреляция уловов краба (LISA)"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Тип съемки: CRAB"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Оформление графика}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{, }\AttributeTok{margin =} \FunctionTok{margin}\NormalTok{(}\AttributeTok{t =} \DecValTok{5}\NormalTok{)),}
+    \AttributeTok{axis.text.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{, }\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{margin =} \FunctionTok{margin}\NormalTok{(}\AttributeTok{r =} \DecValTok{5}\NormalTok{)),}
+    \AttributeTok{panel.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"\#F0F8FF"}\NormalTok{, }\AttributeTok{color =} \ConstantTok{NA}\NormalTok{),  }\CommentTok{\# Фон океана}
+    \AttributeTok{panel.grid.major =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dotted"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,           }\CommentTok{\# Легенда внизу}
+    \AttributeTok{legend.box =} \StringTok{"horizontal"}\NormalTok{,            }\CommentTok{\# Горизонтальное расположение}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.7}\NormalTok{),}
+    \AttributeTok{strip.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.7}\NormalTok{),  }\CommentTok{\# Заголовки панелей}
+    \AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{11}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Разметка осей (долгота с шагом 2°, широта с шагом 1°)}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\FunctionTok{floor}\NormalTok{(xmin), }\FunctionTok{ceiling}\NormalTok{(xmax), }\AttributeTok{by =} \DecValTok{2}\NormalTok{),}
+    \AttributeTok{labels =} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{paste0}\NormalTok{(x, }\StringTok{"°E"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\FunctionTok{floor}\NormalTok{(ymin), }\FunctionTok{ceiling}\NormalTok{(ymax), }\AttributeTok{by =} \DecValTok{1}\NormalTok{),  }
+    \AttributeTok{labels =} \ControlFlowTok{function}\NormalTok{(y) }\FunctionTok{paste0}\NormalTok{(y, }\StringTok{"°N"}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Промысловые карты с квартильным распределением
+уловов}\label{ux43fux440ux43eux43cux44bux441ux43bux43eux432ux44bux435-ux43aux430ux440ux442ux44b-ux441-ux43aux432ux430ux440ux442ux438ux43bux44cux43dux44bux43c-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux435ux43c-ux443ux43bux43eux432ux43eux432}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH8.PNG}
+
+}
+
+\caption{Рис. 8.: Промысловые карты с квартильным распределением уловов}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"FISHERY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{)}
+
+\CommentTok{\# Получение границ России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_as\_sf}\NormalTok{()}
+
+\CommentTok{\# Установка границ отображаемой области}
+\NormalTok{xmin}\OtherTok{=}\DecValTok{37}\NormalTok{; xmax}\OtherTok{=}\DecValTok{48}\NormalTok{; ymin}\OtherTok{=}\FloatTok{68.6}\NormalTok{; ymax}\OtherTok{=}\DecValTok{71}
+
+\DocumentationTok{\#\#\#\#\#\#\# ПОДГОТОВКА ДАННЫХ ДЛЯ ВИЗУАЛИЗАЦИИ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+\CommentTok{\# Вычисляем квартили отдельно}
+\NormalTok{quantiles }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{CPUE[DATA}\SpecialCharTok{$}\NormalTok{CPUE }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{], }\AttributeTok{probs =} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.25}\NormalTok{))}
+
+\CommentTok{\# Создаем 4 категории с реальными диапазонами значений}
+\NormalTok{nonzero\_data }\OtherTok{\textless{}{-}}\NormalTok{ DATA }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(CPUE }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{CPUE\_cat =} \FunctionTok{cut}\NormalTok{(}
+\NormalTok{      CPUE,}
+      \AttributeTok{breaks =}\NormalTok{ quantiles,}
+      \AttributeTok{include.lowest =} \ConstantTok{TRUE}\NormalTok{,}
+      \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{1}\NormalTok{], quantiles[}\DecValTok{2}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{2}\NormalTok{], quantiles[}\DecValTok{3}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{3}\NormalTok{], quantiles[}\DecValTok{4}\NormalTok{]),}
+        \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.1f {-} \%.1f"}\NormalTok{, quantiles[}\DecValTok{4}\NormalTok{], quantiles[}\DecValTok{5}\NormalTok{])}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\CommentTok{\# Построение карты}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Базовая карта России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"gray40"}\NormalTok{) }\SpecialCharTok{+} 
+  \CommentTok{\# Ограничение области отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  \CommentTok{\# Точки наблюдений с категориальным размером}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ nonzero\_data,}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ CPUE\_cat, }\AttributeTok{color =}\NormalTok{ CPUE),}
+    \AttributeTok{alpha =} \FloatTok{0.7}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Точки для нулевых уловов (крестики)}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =} \FunctionTok{filter}\NormalTok{(DATA, CPUE }\SpecialCharTok{==} \DecValTok{0}\NormalTok{),}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y),}
+    \AttributeTok{shape =} \DecValTok{4}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{stroke =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая шкала (непрерывная)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{option =} \StringTok{"H"}\NormalTok{, }\AttributeTok{name =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Ручная настройка размеров для категорий}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"CPUE"}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{8}\NormalTok{),  }\CommentTok{\# Размеры точек для категорий}
+    \AttributeTok{drop =} \ConstantTok{FALSE}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Настройки темы}
+  \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Распределение CPUE краба (2023)"}\NormalTok{,}
+    \AttributeTok{subtitle =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }
+    \AttributeTok{y =} \StringTok{"Широта"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Промысловые карты с агрегацией в центрах полигонов
+(промквадратов)}\label{ux43fux440ux43eux43cux44bux441ux43bux43eux432ux44bux435-ux43aux430ux440ux442ux44b-ux441-ux430ux433ux440ux435ux433ux430ux446ux438ux435ux439-ux432-ux446ux435ux43dux442ux440ux430ux445-ux43fux43eux43bux438ux433ux43eux43dux43eux432-ux43fux440ux43eux43cux43aux432ux430ux434ux440ux430ux442ux43eux432}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH9.PNG}
+
+}
+
+\caption{Рис. 9.: Промысловые карты с агрегацией в центрах полигонов
+(промквадратов)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"FISHERY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{)}
+
+\CommentTok{\# Преобразуем CPUE в пространственные точки}
+\NormalTok{spec\_points }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Карта России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }
+
+\CommentTok{\# Параметры карты и сетки}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{32}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{48}\NormalTok{; ymin }\OtherTok{\textless{}{-}} \DecValTok{68}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \DecValTok{72}
+\NormalTok{xcs }\OtherTok{\textless{}{-}} \DecValTok{1}\NormalTok{; ycs }\OtherTok{\textless{}{-}} \FloatTok{0.25}
+
+
+\CommentTok{\# Создание основного датафрейма и пространственных объектов}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Создание сетки}
+\NormalTok{grid\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_make\_grid}\NormalTok{(points\_sf, }
+                        \AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(xcs, ycs),}
+                        \AttributeTok{n =} \FunctionTok{c}\NormalTok{(}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (xmax }\SpecialCharTok{{-}}\NormalTok{ xmin)}\SpecialCharTok{/}\NormalTok{xcs, }\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (ymax }\SpecialCharTok{{-}}\NormalTok{ ymin)}\SpecialCharTok{/}\NormalTok{ycs),}
+                        \AttributeTok{offset =} \FunctionTok{c}\NormalTok{(xmin }\SpecialCharTok{{-}}\NormalTok{ xcs, ymin }\SpecialCharTok{{-}}\NormalTok{ ycs)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{cell\_id =} \FunctionTok{row\_number}\NormalTok{())}
+
+\CommentTok{\# Присоединяем точки Catch к сетке и агрегируем по ячейкам и годам}
+\NormalTok{shares\_df\_catch }\OtherTok{\textless{}{-}} \FunctionTok{st\_join}\NormalTok{(points\_sf, grid\_sf) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_drop\_geometry}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(cell\_id, YEAR) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Count =} \FunctionTok{n}\NormalTok{(),}
+    \AttributeTok{CATCH =} \FunctionTok{mean}\NormalTok{(CPUE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ungroup}\NormalTok{()}
+
+\CommentTok{\# Присоединяем статистику Catch к сетке}
+\NormalTok{gird\_shares\_catch }\OtherTok{\textless{}{-}} \FunctionTok{right\_join}\NormalTok{(grid\_sf, shares\_df\_catch, }\AttributeTok{by =} \StringTok{"cell\_id"}\NormalTok{)}
+
+
+
+\CommentTok{\# Центроиды сетки по W}
+\NormalTok{CENTROIDS\_W }\OtherTok{\textless{}{-}}\NormalTok{ gird\_shares\_catch }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_centroid}\NormalTok{()}
+
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\# ВИЗУАЛИЗАЦИЯ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# 1. Сетка без заливки}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ grid\_sf, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey80"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 2. Границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"grey95"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 3. Центроиды ячеек с CATCH (цвет и размер по значению)}
+  \FunctionTok{geom\_sf}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ CENTROIDS\_W, }
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{size =}\NormalTok{ CATCH, }\AttributeTok{color =}\NormalTok{ CATCH),}
+    \AttributeTok{shape =} \DecValTok{16}\NormalTok{, }
+    \AttributeTok{alpha =} \FloatTok{0.7}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 4. Цветовая шкала (viridis как в первом скрипте)}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}
+    \AttributeTok{option =} \StringTok{"H"}\NormalTok{, }
+    \AttributeTok{name =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 5. Шкала размера центроидов}
+  \FunctionTok{scale\_size\_continuous}\NormalTok{(}
+    \AttributeTok{range =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{), }
+    \AttributeTok{name =} \StringTok{"CPUE"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 6. Обрезаем область отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }
+    \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax),}
+    \AttributeTok{expand =} \ConstantTok{FALSE}  \CommentTok{\# Точное соответствие границ}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 7. Шкалы для осей координат}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(xmin, xmax, }\AttributeTok{by =} \DecValTok{2}\NormalTok{),  }\CommentTok{\# Метки каждые 2 градуса}
+    \AttributeTok{name =} \StringTok{"Долгота"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(ymin, ymax, }\AttributeTok{by =} \FloatTok{0.5}\NormalTok{),  }\CommentTok{\# Метки каждые 0.5 градуса}
+    \AttributeTok{name =} \StringTok{"Широта"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 8. Тема оформления}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.5}\NormalTok{),}
+    \CommentTok{\# Добавляем сетку для осей координат}
+    \AttributeTok{panel.grid.major =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray90"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.2}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 9. Явное указание названий осей (дублируем для надежности)}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Широта"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Промысловые карты -
+картограммы}\label{ux43fux440ux43eux43cux44bux441ux43bux43eux432ux44bux435-ux43aux430ux440ux442ux44b---ux43aux430ux440ux442ux43eux433ux440ux430ux43cux43cux44b}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH10.PNG}
+
+}
+
+\caption{Рис. 10.: Промысловые карты - картограммы}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых библиотек}
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# ЗАГРУЗКА ДАННЫХ И ПОДГОТОВКА ПРОСТРАНСТВЕННЫХ ОБЪЕКТОВ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"FISHERY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==} \DecValTok{2023}\NormalTok{)}
+
+\CommentTok{\# Преобразуем CPUE в пространственные точки}
+\NormalTok{spec\_points }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Карта России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }
+
+\CommentTok{\# Параметры карты и сетки}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{32}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{48}\NormalTok{; ymin }\OtherTok{\textless{}{-}} \DecValTok{68}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \DecValTok{72}
+\NormalTok{xcs }\OtherTok{\textless{}{-}} \DecValTok{1}\NormalTok{; ycs }\OtherTok{\textless{}{-}} \FloatTok{0.25}
+
+
+\CommentTok{\# Создание основного датафрейма и пространственных объектов}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Создание сетки}
+\NormalTok{grid\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_make\_grid}\NormalTok{(points\_sf, }
+                        \AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(xcs, ycs),}
+                        \AttributeTok{n =} \FunctionTok{c}\NormalTok{(}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (xmax }\SpecialCharTok{{-}}\NormalTok{ xmin)}\SpecialCharTok{/}\NormalTok{xcs, }\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (ymax }\SpecialCharTok{{-}}\NormalTok{ ymin)}\SpecialCharTok{/}\NormalTok{ycs),}
+                        \AttributeTok{offset =} \FunctionTok{c}\NormalTok{(xmin }\SpecialCharTok{{-}}\NormalTok{ xcs, ymin }\SpecialCharTok{{-}}\NormalTok{ ycs)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{cell\_id =} \FunctionTok{row\_number}\NormalTok{())}
+
+\CommentTok{\# Присоединяем точки Catch к сетке и агрегируем по ячейкам и годам}
+\NormalTok{shares\_df\_catch }\OtherTok{\textless{}{-}} \FunctionTok{st\_join}\NormalTok{(points\_sf, grid\_sf) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_drop\_geometry}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(cell\_id, YEAR) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Count =} \FunctionTok{n}\NormalTok{(),}
+    \AttributeTok{CATCH =} \FunctionTok{mean}\NormalTok{(CPUE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ungroup}\NormalTok{()}
+
+\CommentTok{\# Присоединяем статистику Catch к сетке}
+\NormalTok{gird\_shares\_catch }\OtherTok{\textless{}{-}} \FunctionTok{right\_join}\NormalTok{(grid\_sf, shares\_df\_catch, }\AttributeTok{by =} \StringTok{"cell\_id"}\NormalTok{)}
+
+
+
+\CommentTok{\# Центроиды сетки по W}
+\NormalTok{CENTROIDS\_W }\OtherTok{\textless{}{-}}\NormalTok{ gird\_shares\_catch }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_centroid}\NormalTok{()}
+
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\# ВИЗУАЛИЗАЦИЯ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# 1. Сетка без заливки}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ grid\_sf, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey80"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 2. Границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"grey95"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 3. Заливка по улову с палитрой viridis option "H"}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ gird\_shares\_catch, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ CATCH), }\AttributeTok{color =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 4. Цветовая шкала viridis option "H" для заливки}
+  \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{(}
+    \AttributeTok{option =} \StringTok{"H"}\NormalTok{, }
+    \AttributeTok{name =} \StringTok{"CPUE"}\NormalTok{,}
+    \AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
+    \AttributeTok{na.value =} \StringTok{"transparent"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 5. Обрезаем область отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }
+    \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax),}
+    \AttributeTok{expand =} \ConstantTok{FALSE}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 6. Шкалы для осей координат}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(xmin, xmax, }\AttributeTok{by =} \DecValTok{2}\NormalTok{),}
+    \AttributeTok{name =} \StringTok{"Долгота"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(ymin, ymax, }\AttributeTok{by =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{name =} \StringTok{"Широта"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# 7. Тема оформления}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{panel.grid.major =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray90"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.2}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Долгота"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Широта"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Промысловые карты - картограммы по
+фасеткам}\label{ux43fux440ux43eux43cux44bux441ux43bux43eux432ux44bux435-ux43aux430ux440ux442ux44b---ux43aux430ux440ux442ux43eux433ux440ux430ux43cux43cux44b-ux43fux43e-ux444ux430ux441ux435ux442ux43aux430ux43c}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH11.PNG}
+
+}
+
+\caption{Рис. 11.: Промысловые карты - картограммы по фасеткам}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ggspatial)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# READ DATA AND PREPARE SPATIAL OBJECTS \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"FISHERY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{\textgreater{}} \DecValTok{2020} \SpecialCharTok{\&}\NormalTok{ YEAR }\SpecialCharTok{\textless{}} \DecValTok{2025}\NormalTok{)}
+
+\CommentTok{\# Карта России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }
+
+\CommentTok{\# Параметры карты и сетки}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{32}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{48}\NormalTok{; ymin }\OtherTok{\textless{}{-}} \DecValTok{68}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \DecValTok{72}
+\NormalTok{xcs }\OtherTok{\textless{}{-}} \DecValTok{2}\NormalTok{; ycs }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+
+\CommentTok{\# Преобразование в пространственные объекты}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Создание сетки}
+\NormalTok{grid\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_make\_grid}\NormalTok{(}
+\NormalTok{  points\_sf,}
+  \AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(xcs, ycs),}
+  \AttributeTok{n =} \FunctionTok{c}\NormalTok{(}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (xmax }\SpecialCharTok{{-}}\NormalTok{ xmin)}\SpecialCharTok{/}\NormalTok{xcs, }\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (ymax }\SpecialCharTok{{-}}\NormalTok{ ymin)}\SpecialCharTok{/}\NormalTok{ycs),}
+  \AttributeTok{offset =} \FunctionTok{c}\NormalTok{(xmin }\SpecialCharTok{{-}}\NormalTok{ xcs, ymin }\SpecialCharTok{{-}}\NormalTok{ ycs)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{cell\_id =} \FunctionTok{row\_number}\NormalTok{())}
+
+\CommentTok{\# Агрегация данных по сетке и годам}
+\NormalTok{shares\_df\_catch }\OtherTok{\textless{}{-}}\NormalTok{ points\_sf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_join}\NormalTok{(grid\_sf) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_drop\_geometry}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(cell\_id, YEAR) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{CATCH =} \FunctionTok{mean}\NormalTok{(CPUE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Присоединение статистики к сетке}
+\NormalTok{gird\_shares\_catch }\OtherTok{\textless{}{-}}\NormalTok{ grid\_sf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{right\_join}\NormalTok{(shares\_df\_catch, }\AttributeTok{by =} \StringTok{"cell\_id"}\NormalTok{)}
+
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\# ВИЗУАЛИЗАЦИЯ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Определяем общий максимум CPUE для единой шкалы цветов}
+\NormalTok{catch\_max }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Контуры сетки}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ grid\_sf, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey80"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Заливка по улову с цветовой схемой viridis}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ gird\_shares\_catch, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ CATCH), }\AttributeTok{color =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"\#E8E5D6"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Фасетирование по годам}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ YEAR, }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  
+ \CommentTok{\# 4. Цветовая шкала viridis option "H" для заливки}
+  \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{(}
+    \AttributeTok{option =} \StringTok{"H"}\NormalTok{, }
+    \AttributeTok{name =} \StringTok{"CPUE"}\NormalTok{,}
+    \AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
+    \AttributeTok{na.value =} \StringTok{"transparent"}
+\NormalTok{  ) }\SpecialCharTok{+}
+
+ 
+  \CommentTok{\# Область отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }
+    \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax),}
+    \AttributeTok{expand =} \ConstantTok{FALSE}
+\NormalTok{  ) }\SpecialCharTok{+}
+
+  
+  \CommentTok{\# Оформление}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{legend.key.width =} \FunctionTok{unit}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\StringTok{"cm"}\NormalTok{),}
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{vjust =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{size =} \DecValTok{12}\NormalTok{),}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.7}\NormalTok{),}
+    \AttributeTok{panel.grid.major =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.2}\NormalTok{),}
+    \AttributeTok{strip.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"\#E8E5D6"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{),}
+    \AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{12}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Настройка легенды}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_colorbar}\NormalTok{(}
+    \AttributeTok{title.position =} \StringTok{"top"}\NormalTok{,}
+    \AttributeTok{title.hjust =} \FloatTok{0.5}\NormalTok{,}
+    \AttributeTok{barwidth =} \DecValTok{15}\NormalTok{,}
+    \AttributeTok{frame.colour =} \StringTok{"black"}\NormalTok{,}
+    \AttributeTok{ticks.colour =} \StringTok{"black"}
+\NormalTok{  ))}
+\NormalTok{    na.value }\OtherTok{=} \ConstantTok{NA}\NormalTok{,}
+\NormalTok{    limits }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+  \ErrorTok{)} \SpecialCharTok{+}
+
+  
+  \CommentTok{\# Область отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Оформление}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{),}
+    \AttributeTok{axis.text.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{, }\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{strip.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_colorbar}\NormalTok{(}\AttributeTok{title =} \ConstantTok{NULL}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Гибридные карты - картограммы и точки (съемка и промысловые
+данные)}\label{ux433ux438ux431ux440ux438ux434ux43dux44bux435-ux43aux430ux440ux442ux44b---ux43aux430ux440ux442ux43eux433ux440ux430ux43cux43cux44b-ux438-ux442ux43eux447ux43aux438-ux441ux44aux435ux43cux43aux430-ux438-ux43fux440ux43eux43cux44bux441ux43bux43eux432ux44bux435-ux434ux430ux43dux43dux44bux435}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH12.PNG}
+
+}
+
+\caption{Рис. 12.: Гибридные карты - картограммы и точки (съемка и
+промысловые данные)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{)}
+
+\FunctionTok{library}\NormalTok{(rnaturalearth)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(ggspatial)}
+\FunctionTok{library}\NormalTok{(sf)}
+
+\DocumentationTok{\#\#\#\#\#\#\# READ DATA AND PREPARE SPATIAL OBJECTS \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+
+\CommentTok{\# Чтение и фильтрация данных}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"FISHERY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{\textgreater{}} \DecValTok{2020} \SpecialCharTok{\&}\NormalTok{ YEAR }\SpecialCharTok{\textless{}} \DecValTok{2025}\NormalTok{)}
+
+\NormalTok{SURVEY }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{\textgreater{}} \DecValTok{2020} \SpecialCharTok{\&}\NormalTok{ YEAR }\SpecialCharTok{\textless{}} \DecValTok{2025}\NormalTok{, SURV }\SpecialCharTok{==} \StringTok{"CRAB"}\NormalTok{)}
+
+\CommentTok{\# Создание 4 категорий для переменной PROM}
+\NormalTok{breaks }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(SURVEY}\SpecialCharTok{$}\NormalTok{PROM, }
+                   \AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\DecValTok{1}\NormalTok{), }
+                   \AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{SURVEY}\SpecialCharTok{$}\NormalTok{PROM\_cat }\OtherTok{\textless{}{-}} \FunctionTok{cut}\NormalTok{(SURVEY}\SpecialCharTok{$}\NormalTok{PROM,}
+                       \AttributeTok{breaks =}\NormalTok{ breaks,}
+                       \AttributeTok{include.lowest =} \ConstantTok{TRUE}\NormalTok{,}
+                       \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Q1 (Low)"}\NormalTok{, }\StringTok{"Q2"}\NormalTok{, }\StringTok{"Q3"}\NormalTok{, }\StringTok{"Q4 (High)"}\NormalTok{))}
+
+\CommentTok{\# Карта России}
+\NormalTok{russia }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{country =} \StringTok{"Russia"}\NormalTok{) }
+
+\CommentTok{\# Параметры карты и сетки}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{32}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{48}\NormalTok{; ymin }\OtherTok{\textless{}{-}} \DecValTok{68}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \DecValTok{72}
+\NormalTok{xcs }\OtherTok{\textless{}{-}} \DecValTok{2}\NormalTok{; ycs }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+
+\CommentTok{\# Преобразование в пространственные объекты}
+\NormalTok{points\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(DATA, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+\NormalTok{survey\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(SURVEY, }\AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+
+\CommentTok{\# Создание сетки}
+\NormalTok{grid\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_make\_grid}\NormalTok{(}
+\NormalTok{  points\_sf,}
+  \AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(xcs, ycs),}
+  \AttributeTok{n =} \FunctionTok{c}\NormalTok{(}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (xmax }\SpecialCharTok{{-}}\NormalTok{ xmin)}\SpecialCharTok{/}\NormalTok{xcs, }\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (ymax }\SpecialCharTok{{-}}\NormalTok{ ymin)}\SpecialCharTok{/}\NormalTok{ycs),}
+  \AttributeTok{offset =} \FunctionTok{c}\NormalTok{(xmin }\SpecialCharTok{{-}}\NormalTok{ xcs, ymin }\SpecialCharTok{{-}}\NormalTok{ ycs)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{cell\_id =} \FunctionTok{row\_number}\NormalTok{())}
+
+\CommentTok{\# Агрегация данных по сетке и годам}
+\NormalTok{shares\_df\_catch }\OtherTok{\textless{}{-}}\NormalTok{ points\_sf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_join}\NormalTok{(grid\_sf) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_drop\_geometry}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(cell\_id, YEAR) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{CATCH =} \FunctionTok{mean}\NormalTok{(CPUE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Присоединение статистики к сетке}
+\NormalTok{gird\_shares\_catch }\OtherTok{\textless{}{-}}\NormalTok{ grid\_sf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{right\_join}\NormalTok{(shares\_df\_catch, }\AttributeTok{by =} \StringTok{"cell\_id"}\NormalTok{)}
+
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\# ВИЗУАЛИЗАЦИЯ \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Контуры сетки}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ grid\_sf, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"grey80"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Заливка по улову (средний CPUE)}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ gird\_shares\_catch, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ CATCH)) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia, }\AttributeTok{fill =} \StringTok{"\#E8E5D6"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Точки SURVEY: голубые с черной окантовкой}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ survey\_sf, }
+          \FunctionTok{aes}\NormalTok{(}\AttributeTok{size =}\NormalTok{ PROM\_cat),}
+          \AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{,    }\CommentTok{\# Голубая заливка}
+          \AttributeTok{color =} \StringTok{"black"}\NormalTok{,        }\CommentTok{\# Черная окантовка}
+          \AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{,}
+          \AttributeTok{shape =} \DecValTok{21}\NormalTok{,             }\CommentTok{\# Круг с обводкой}
+          \AttributeTok{stroke =} \FloatTok{0.5}\NormalTok{,           }\CommentTok{\# Толщина окантовки}
+          \AttributeTok{show.legend =} \StringTok{"point"}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Фасетирование по годам}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ YEAR, }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Цветовая шкала для заливки}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}
+    \AttributeTok{low =} \StringTok{"white"}\NormalTok{, }
+    \AttributeTok{high =} \StringTok{"red"}\NormalTok{,}
+    \AttributeTok{na.value =} \ConstantTok{NA}\NormalTok{,}
+    \AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(gird\_shares\_catch}\SpecialCharTok{$}\NormalTok{CATCH, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
+    \AttributeTok{name =} \StringTok{"Catch (CPUE)"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Шкала размеров для точек}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"PROM Category"}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\FloatTok{2.5}\NormalTok{, }\FloatTok{3.5}\NormalTok{, }\FloatTok{4.5}\NormalTok{)  }\CommentTok{\# Размеры точек для 4 категорий}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \DocumentationTok{\#\#\# ОСИ С ГЕОГРАФИЧЕСКИМИ КООРДИНАТАМИ }\AlertTok{\#\#\#}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{38}\NormalTok{, }\DecValTok{44}\NormalTok{, }\DecValTok{48}\NormalTok{),                    }
+    \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"32°E"}\NormalTok{, }\StringTok{"38°E"}\NormalTok{, }\StringTok{"44°E"}\NormalTok{, }\StringTok{"48°E"}\NormalTok{),    }
+    \AttributeTok{name =} \ConstantTok{NULL}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{c}\NormalTok{(}\FloatTok{68.5}\NormalTok{, }\FloatTok{69.5}\NormalTok{, }\FloatTok{70.5}\NormalTok{, }\FloatTok{71.5}\NormalTok{),          }
+    \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"68.5°N"}\NormalTok{, }\StringTok{"69.5°N"}\NormalTok{, }\StringTok{"70.5°N"}\NormalTok{, }\StringTok{"71.5°N"}\NormalTok{),}
+    \AttributeTok{name =} \ConstantTok{NULL}
+\NormalTok{  ) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Область отображения}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(ymin, ymax)) }\SpecialCharTok{+}
+  
+  \CommentTok{\# Оформление}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{),}
+    \AttributeTok{axis.text.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{, }\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{legend.box =} \StringTok{"horizontal"}\NormalTok{,  }\CommentTok{\# Размещение легенд в одну строку}
+    \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{strip.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Управление легендами}
+  \FunctionTok{guides}\NormalTok{(}
+    \AttributeTok{fill =} \FunctionTok{guide\_colorbar}\NormalTok{(}\AttributeTok{title.position =} \StringTok{"top"}\NormalTok{, }\AttributeTok{title.hjust =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{size =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title.position =} \StringTok{"top"}\NormalTok{, }\AttributeTok{title.hjust =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карты для ``главы Материал и
+методы''}\label{ux43aux430ux440ux442ux44b-ux434ux43bux44f-ux433ux43bux430ux432ux44b-ux43cux430ux442ux435ux440ux438ux430ux43b-ux438-ux43cux435ux442ux43eux434ux44b}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH13.PNG}
+
+}
+
+\caption{Рис. 13.: Карты для ``главы Материал и методы''}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{()) }\CommentTok{\# Удаление всех объектов из глобального окружения}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{) }\CommentTok{\# Установка рабочей директории}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ЗАГРУЗКА ПАКЕТОВ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\FunctionTok{library}\NormalTok{(sf)          }\CommentTok{\# Пространственные операции с векторными данными}
+\FunctionTok{library}\NormalTok{(marmap)      }\CommentTok{\# Работа с батиметрическими данными (карты глубин)}
+\FunctionTok{library}\NormalTok{(tidyverse)   }\CommentTok{\# Коллекция пакетов для обработки данных (dplyr, ggplot2 и др.)}
+\FunctionTok{library}\NormalTok{(rnaturalearth) }\CommentTok{\# Векторные картографические данные (границы, береговые линии)}
+\FunctionTok{library}\NormalTok{(ggspatial)   }\CommentTok{\# Инструменты для пространственной визуализации в ggplot}
+\FunctionTok{library}\NormalTok{(readxl)      }\CommentTok{\# Импорт данных из Excel{-}файлов}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ЗАГРУЗКА ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Чтение данных из Excel{-}листа}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{)}
+
+\CommentTok{\# Фильтрация данных:}
+\NormalTok{SUMMER }\OtherTok{\textless{}{-}}\NormalTok{ DATA[DATA}\SpecialCharTok{$}\NormalTok{SURV }\SpecialCharTok{==} \StringTok{"SUM"} \SpecialCharTok{\&}\NormalTok{ DATA}\SpecialCharTok{$}\NormalTok{YEAR }\SpecialCharTok{==} \DecValTok{2024}\NormalTok{, ] }\CommentTok{\# Летние исследования 2024}
+\NormalTok{CRAB }\OtherTok{\textless{}{-}}\NormalTok{ DATA[DATA}\SpecialCharTok{$}\NormalTok{SURV }\SpecialCharTok{==} \StringTok{"CRAB"} \SpecialCharTok{\&}\NormalTok{ DATA}\SpecialCharTok{$}\NormalTok{YEAR }\SpecialCharTok{==} \DecValTok{2024}\NormalTok{, ]   }\CommentTok{\# Крабовые исследования 2024}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ПОДГОТОВКА КАРТОГРАФИЧЕСКОЙ ОСНОВЫ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Загрузка векторных границ России}
+\NormalTok{russia\_map }\OtherTok{\textless{}{-}} \FunctionTok{ne\_states}\NormalTok{(}\AttributeTok{country =} \StringTok{"russia"}\NormalTok{, }\AttributeTok{returnclass =} \StringTok{"sf"}\NormalTok{)}
+
+\CommentTok{\# Загрузка береговой линии мирового океана}
+\NormalTok{coast }\OtherTok{\textless{}{-}} \FunctionTok{ne\_coastline}\NormalTok{(}\AttributeTok{scale =} \DecValTok{10}\NormalTok{, }\AttributeTok{returnclass =} \StringTok{"sf"}\NormalTok{)}
+
+\CommentTok{\# Создание сетки для навигации (5° по долготе, 1° по широте)}
+\NormalTok{ga\_grid }\OtherTok{\textless{}{-}}\NormalTok{ russia\_map }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_make\_grid}\NormalTok{(}\AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{offset =} \FunctionTok{c}\NormalTok{(}\DecValTok{30}\NormalTok{, }\DecValTok{67}\NormalTok{))}
+
+\CommentTok{\# Установка границ региона интереса}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{30}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{58}
+\NormalTok{ymin }\OtherTok{\textless{}{-}} \DecValTok{67}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \FloatTok{72.5}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# БАТИМЕТРИЧЕСКИЕ ДАННЫЕ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Загрузка данных о глубинах из базы NOAA}
+\NormalTok{bat }\OtherTok{\textless{}{-}} \FunctionTok{getNOAA.bathy}\NormalTok{(}
+  \AttributeTok{lon1 =}\NormalTok{ xmin, }\AttributeTok{lon2 =}\NormalTok{ xmax,}
+  \AttributeTok{lat1 =}\NormalTok{ ymin, }\AttributeTok{lat2 =}\NormalTok{ ymax,}
+  \AttributeTok{resolution =} \DecValTok{1}\NormalTok{,   }\CommentTok{\# Разрешение данных (1 минута дуги)}
+  \AttributeTok{keep =} \ConstantTok{TRUE}       \CommentTok{\# Сохранить кэш на диске}
+\NormalTok{)}
+
+\CommentTok{\# Преобразование в таблицу XYZ (долгота, широта, глубина)}
+\NormalTok{bat\_xyz }\OtherTok{\textless{}{-}} \FunctionTok{as.xyz}\NormalTok{(bat)}
+
+\CommentTok{\# Создание цветовой схемы для глубин:}
+\NormalTok{breaks }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{10000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{7000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{6000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{5000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{4000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{3000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{2000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1000}\NormalTok{, }
+            \SpecialCharTok{{-}}\DecValTok{500}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{200}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{50}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{150}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{300}\NormalTok{, }\DecValTok{400}\NormalTok{, }\DecValTok{500}\NormalTok{, }\DecValTok{1000}\NormalTok{, }\DecValTok{3000}\NormalTok{)}
+\NormalTok{cols }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"\#5e99d6"}\NormalTok{, }\StringTok{"\#669cd4"}\NormalTok{, }\StringTok{"\#6c9fd4"}\NormalTok{, }\StringTok{"\#96bce3"}\NormalTok{, }\StringTok{"\#AEC8E3"}\NormalTok{, }\StringTok{"\#a6c4e3"}\NormalTok{,}
+  \StringTok{"\#AEC8E3"}\NormalTok{, }\StringTok{"\#BBD0EB"}\NormalTok{, }\StringTok{"\#C7DCF1"}\NormalTok{, }\StringTok{"\#DAECFA"}\NormalTok{, }\StringTok{"\#D2E5F6"}\NormalTok{, }\StringTok{"\#e1f2d8"}\NormalTok{,}
+  \StringTok{"\#B8D3AA"}\NormalTok{, }\StringTok{"\#b3b387"}\NormalTok{, }\StringTok{"\#9EC187"}\NormalTok{, }\StringTok{"\#C7D097"}\NormalTok{, }\StringTok{"\#DADBAF"}\NormalTok{, }\StringTok{"\#F3F0C7"}\NormalTok{,}
+  \StringTok{"\#E6DBA8"}\NormalTok{, }\StringTok{"\#DACFA1"}\NormalTok{, }\StringTok{"\#D1BF81"}\NormalTok{, }\StringTok{"\#C69D45"}
+\NormalTok{)}
+
+\CommentTok{\# Категоризация глубин для визуализации}
+\NormalTok{bat\_xyz}\SpecialCharTok{$}\NormalTok{V4 }\OtherTok{\textless{}{-}} \FunctionTok{cut}\NormalTok{(bat\_xyz}\SpecialCharTok{$}\NormalTok{V3, }\AttributeTok{breaks =}\NormalTok{ breaks)}
+\NormalTok{niveles }\OtherTok{\textless{}{-}} \FunctionTok{levels}\NormalTok{(bat\_xyz}\SpecialCharTok{$}\NormalTok{V4)  }\CommentTok{\# Сохранение уровней для легенды}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ПОСТРОЕНИЕ БАЗОВОЙ КАРТЫ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{map }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Векторные границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia\_map) }\SpecialCharTok{+}
+  \CommentTok{\# Батиметрическая подложка (цвет = глубина)}
+  \FunctionTok{geom\_tile}\NormalTok{(}\AttributeTok{data =}\NormalTok{ bat\_xyz, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ V1, }\AttributeTok{y =}\NormalTok{ V2, }\AttributeTok{fill =}\NormalTok{ V4), }\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая схема для глубин}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{name =} \StringTok{"Глубина"}\NormalTok{, }\AttributeTok{values =}\NormalTok{ cols, }\AttributeTok{breaks =}\NormalTok{ niveles) }\SpecialCharTok{+}
+  \CommentTok{\# Наложение сетки}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ ga\_grid, }\AttributeTok{alpha =} \FloatTok{0.01}\NormalTok{, }\AttributeTok{linetype =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Береговая линия}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ coast, }\AttributeTok{linewidth =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Ограничение области карты}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{56}\NormalTok{), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\FloatTok{68.5}\NormalTok{, }\FloatTok{72.3}\NormalTok{)) }\SpecialCharTok{+}
+  \CommentTok{\# Масштабная линейка (top{-}left)}
+  \FunctionTok{annotation\_scale}\NormalTok{(}\AttributeTok{location =} \StringTok{"tl"}\NormalTok{, }\AttributeTok{width\_hint =} \FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Оформление}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{fill =} \StringTok{"Глубина (м)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{colour =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ДОБАВЛЕНИЕ АННОТАЦИЙ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{map }\OtherTok{\textless{}{-}}\NormalTok{ map }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \DecValTok{40}\NormalTok{, }\AttributeTok{y =} \FloatTok{72.1}\NormalTok{, }\AttributeTok{size =} \DecValTok{5}\NormalTok{, }
+           \AttributeTok{label =} \StringTok{"Баренцево море"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \FloatTok{52.2}\NormalTok{, }\AttributeTok{y =} \FloatTok{69.1}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{, }
+           \AttributeTok{label =} \StringTok{"о. Колгуев"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \DecValTok{33}\NormalTok{, }\AttributeTok{y =} \FloatTok{68.9}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{, }
+           \AttributeTok{label =} \StringTok{"Кольский"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \DecValTok{33}\NormalTok{, }\AttributeTok{y =} \FloatTok{68.6}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{, }
+           \AttributeTok{label =} \StringTok{"п{-}ов"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ДОБАВЛЕНИЕ ТОЧЕК НАБЛЮДЕНИЙ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{map }\OtherTok{\textless{}{-}}\NormalTok{ map }\SpecialCharTok{+}
+  \CommentTok{\# Точки исследований краба (синие)}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ CRAB, }
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X }\SpecialCharTok{+} \FloatTok{0.2}\NormalTok{, }\AttributeTok{y =}\NormalTok{ Y), }\CommentTok{\# Смещение для визуального разделения}
+    \AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#1E90FF"}\NormalTok{, }
+    \AttributeTok{shape =} \DecValTok{21}\NormalTok{, }\AttributeTok{alpha =} \DecValTok{1}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# Точки летних исследований (оранжевые)}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ SUMMER, }
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y), }
+    \AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#FFA500"}\NormalTok{, }
+    \AttributeTok{shape =} \DecValTok{21}\NormalTok{, }\AttributeTok{alpha =} \DecValTok{1}
+\NormalTok{  )}
+
+\CommentTok{\# Вывод финальной карты}
+\FunctionTok{print}\NormalTok{(map)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# СОХРАНЕНИЕ РЕЗУЛЬТАТА}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"DATA\_MAP.jpg"}\NormalTok{, }
+       \AttributeTok{plot =}\NormalTok{ map,          }\CommentTok{\# Используем явное указание объекта}
+       \AttributeTok{device =} \StringTok{"jpeg"}\NormalTok{, }
+       \AttributeTok{dpi =} \DecValTok{600}\NormalTok{,           }\CommentTok{\# Высокое разрешение}
+       \AttributeTok{width =} \DecValTok{7}\NormalTok{,           }\CommentTok{\# Ширина в дюймах}
+       \AttributeTok{height =} \DecValTok{5}\NormalTok{,          }\CommentTok{\# Высота в дюймах}
+       \AttributeTok{units =} \StringTok{"in"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Карты с картой-врезкой и
+маршрутом}\label{ux43aux430ux440ux442ux44b-ux441-ux43aux430ux440ux442ux43eux439-ux432ux440ux435ux437ux43aux43eux439-ux438-ux43cux430ux440ux448ux440ux443ux442ux43eux43c}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KARTOGRAPH14.PNG}
+
+}
+
+\caption{Рис. 14.: Карты с картой-врезкой и маршрутом}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Очистка окружения и установка рабочей директории}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{()) }\CommentTok{\# Удаление всех объектов из глобального окружения}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COURSES/KARTOGRAPH/"}\NormalTok{) }\CommentTok{\# Установка рабочей директории}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ЗАГРУЗКА ПАКЕТОВ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\FunctionTok{library}\NormalTok{(sf)          }\CommentTok{\# Пространственные операции с векторными данными}
+\FunctionTok{library}\NormalTok{(marmap)      }\CommentTok{\# Работа с батиметрическими данными (карты глубин)}
+\FunctionTok{library}\NormalTok{(tidyverse)   }\CommentTok{\# Коллекция пакетов для обработки данных}
+\FunctionTok{library}\NormalTok{(rnaturalearth) }\CommentTok{\# Векторные картографические данные}
+\FunctionTok{library}\NormalTok{(ggspatial)   }\CommentTok{\# Инструменты для пространственной визуализации}
+\FunctionTok{library}\NormalTok{(readxl)      }\CommentTok{\# Импорт данных из Excel}
+\FunctionTok{library}\NormalTok{(ggOceanMaps) }\CommentTok{\# Специализированные карты океанов}
+\FunctionTok{library}\NormalTok{(cowplot)     }\CommentTok{\# Компоновка графиков и добавление элементов}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ЗАГРУЗКА ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Чтение данных из Excel}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{)}
+
+\CommentTok{\# Фильтрация данных (крабовые исследования 2022)}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ DATA[DATA}\SpecialCharTok{$}\NormalTok{SURV }\SpecialCharTok{==} \StringTok{"CRAB"} \SpecialCharTok{\&}\NormalTok{ DATA}\SpecialCharTok{$}\NormalTok{YEAR }\SpecialCharTok{==} \DecValTok{2022}\NormalTok{, ]}
+
+\CommentTok{\# Загрузка векторных границ России}
+\NormalTok{russia\_map }\OtherTok{\textless{}{-}} \FunctionTok{ne\_states}\NormalTok{(}\AttributeTok{country =} \StringTok{"russia"}\NormalTok{, }\AttributeTok{returnclass =} \StringTok{"sf"}\NormalTok{)}
+
+\CommentTok{\# Установка границ региона интереса}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \DecValTok{35}\NormalTok{; xmax }\OtherTok{\textless{}{-}} \DecValTok{50}
+\NormalTok{ymin }\OtherTok{\textless{}{-}} \FloatTok{67.2}\NormalTok{; ymax }\OtherTok{\textless{}{-}} \DecValTok{71}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# БАТИМЕТРИЧЕСКИЕ ДАННЫЕ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Загрузка данных о глубинах}
+\NormalTok{bat }\OtherTok{\textless{}{-}} \FunctionTok{getNOAA.bathy}\NormalTok{(xmin, xmax, ymin, ymax, }\AttributeTok{resolution =} \DecValTok{1}\NormalTok{, }\AttributeTok{keep =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{bat\_xyz }\OtherTok{\textless{}{-}} \FunctionTok{as.xyz}\NormalTok{(bat)}
+
+\CommentTok{\# Определение цветовых уровней для глубин}
+\NormalTok{breaks }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{10000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{7000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{6000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{5000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{4000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{3000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{2000}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1000}\NormalTok{, }
+            \SpecialCharTok{{-}}\DecValTok{500}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{200}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{50}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{150}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{300}\NormalTok{, }\DecValTok{400}\NormalTok{, }\DecValTok{500}\NormalTok{, }\DecValTok{1000}\NormalTok{, }\DecValTok{3000}\NormalTok{)}
+\NormalTok{cols }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"\#5e99d6"}\NormalTok{, }\StringTok{"\#669cd4"}\NormalTok{, }\StringTok{"\#6c9fd4"}\NormalTok{, }\StringTok{"\#96bce3"}\NormalTok{, }\StringTok{"\#AEC8E3"}\NormalTok{, }\StringTok{"\#a6c4e3"}\NormalTok{,}
+  \StringTok{"\#AEC8E3"}\NormalTok{, }\StringTok{"\#BBD0EB"}\NormalTok{, }\StringTok{"\#C7DCF1"}\NormalTok{, }\StringTok{"\#DAECFA"}\NormalTok{, }\StringTok{"\#D2E5F6"}\NormalTok{, }\StringTok{"\#e1f2d8"}\NormalTok{,}
+  \StringTok{"\#B8D3AA"}\NormalTok{, }\StringTok{"\#b3b387"}\NormalTok{, }\StringTok{"\#9EC187"}\NormalTok{, }\StringTok{"\#C7D097"}\NormalTok{, }\StringTok{"\#DADBAF"}\NormalTok{, }\StringTok{"\#F3F0C7"}\NormalTok{,}
+  \StringTok{"\#E6DBA8"}\NormalTok{, }\StringTok{"\#DACFA1"}\NormalTok{, }\StringTok{"\#D1BF81"}\NormalTok{, }\StringTok{"\#C69D45"}
+\NormalTok{)}
+
+\CommentTok{\# Категоризация глубин}
+\NormalTok{bat\_xyz}\SpecialCharTok{$}\NormalTok{V4 }\OtherTok{\textless{}{-}} \FunctionTok{cut}\NormalTok{(bat\_xyz}\SpecialCharTok{$}\NormalTok{V3, }\AttributeTok{breaks =}\NormalTok{ breaks)}
+\NormalTok{niveles }\OtherTok{\textless{}{-}} \FunctionTok{levels}\NormalTok{(bat\_xyz}\SpecialCharTok{$}\NormalTok{V4)}
+
+\CommentTok{\# Создание координатной сетки}
+\NormalTok{ga\_grid }\OtherTok{\textless{}{-}}\NormalTok{ russia\_map }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{st\_make\_grid}\NormalTok{(}\AttributeTok{cellsize =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\FloatTok{0.5}\NormalTok{), }\AttributeTok{offset =} \FunctionTok{c}\NormalTok{(}\DecValTok{34}\NormalTok{, }\DecValTok{67}\NormalTok{))}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ПОСТРОЕНИЕ ОСНОВНОЙ КАРТЫ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{map }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Векторные границы России}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ russia\_map) }\SpecialCharTok{+}
+  \CommentTok{\# Батиметрическая подложка}
+  \FunctionTok{geom\_tile}\NormalTok{(}\AttributeTok{data =}\NormalTok{ bat\_xyz, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ V1, }\AttributeTok{y =}\NormalTok{ V2, }\AttributeTok{fill =}\NormalTok{ V4), }\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ cols, }\AttributeTok{breaks =}\NormalTok{ niveles) }\SpecialCharTok{+}
+  \CommentTok{\# Контур нулевой глубины (береговая линия)}
+  \FunctionTok{geom\_contour}\NormalTok{(}\AttributeTok{data =}\NormalTok{ bat\_xyz, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ V1, }\AttributeTok{y =}\NormalTok{ V2, }\AttributeTok{z =}\NormalTok{ V3), }
+               \AttributeTok{breaks =} \DecValTok{0}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+} 
+  \CommentTok{\# Координатная сетка}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ ga\_grid, }\AttributeTok{alpha =} \FloatTok{0.01}\NormalTok{, }\AttributeTok{linetype =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Ограничение области карты}
+  \FunctionTok{coord\_sf}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{36}\NormalTok{, }\DecValTok{49}\NormalTok{), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\FloatTok{67.4}\NormalTok{, }\FloatTok{70.8}\NormalTok{)) }\SpecialCharTok{+} 
+  \CommentTok{\# Масштабная линейка}
+  \FunctionTok{annotation\_scale}\NormalTok{(}\AttributeTok{location =} \StringTok{"tr"}\NormalTok{, }\AttributeTok{width\_hint =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Географические подписи}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \DecValTok{47}\NormalTok{, }\AttributeTok{y =} \FloatTok{70.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{5}\NormalTok{, }
+           \AttributeTok{label =} \StringTok{"Баренцево море"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \FloatTok{48.4}\NormalTok{, }\AttributeTok{y =} \FloatTok{68.62}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{,}
+           \AttributeTok{label =} \StringTok{"о. Колгуев"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \FloatTok{37.5}\NormalTok{, }\AttributeTok{y =} \FloatTok{67.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{5}\NormalTok{,}
+           \AttributeTok{label =} \StringTok{"Кольский п{-}ов"}\NormalTok{, }\AttributeTok{fontface =} \StringTok{"bold"}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Маршрут и точки исследований}
+  \FunctionTok{geom\_path}\NormalTok{(}\AttributeTok{data =}\NormalTok{ DATA, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ DATA, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y), }
+             \AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"white"}\NormalTok{, }
+             \AttributeTok{shape =} \DecValTok{21}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# ДОБАВЛЕНИЕ РАМКИ {-} ключевое изменение}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{colour =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{1.5}\NormalTok{))}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# СОЗДАНИЕ ВСТАВКИ{-}ЛОКАЦИИ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# Область для вставки}
+\NormalTok{ins }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lon =} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{70}\NormalTok{, }\DecValTok{70}\NormalTok{), }\AttributeTok{lat =} \FunctionTok{c}\NormalTok{(}\DecValTok{67}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{67}\NormalTok{))}
+
+\CommentTok{\# Получение данных для вставки}
+\NormalTok{mar\_bathy }\OtherTok{\textless{}{-}} \FunctionTok{getNOAA.bathy}\NormalTok{(}\DecValTok{9}\NormalTok{, }\DecValTok{71}\NormalTok{, }\FloatTok{66.5}\NormalTok{, }\DecValTok{83}\NormalTok{, }\AttributeTok{res =} \DecValTok{4}\NormalTok{, }\AttributeTok{keep =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{bathy }\OtherTok{\textless{}{-}} \FunctionTok{raster\_bathymetry}\NormalTok{(stars}\SpecialCharTok{::}\FunctionTok{st\_as\_stars}\NormalTok{(marmap}\SpecialCharTok{::}\FunctionTok{as.raster}\NormalTok{(mar\_bathy)), }
+                           \AttributeTok{depths =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# Построение вставки}
+\NormalTok{insetmap }\OtherTok{\textless{}{-}} \FunctionTok{basemap}\NormalTok{(ins, }\AttributeTok{shapefiles =} \FunctionTok{list}\NormalTok{(}\AttributeTok{land =}\NormalTok{ dd\_land, }\AttributeTok{bathy =}\NormalTok{ bathy), }
+                   \AttributeTok{bathy.style =} \StringTok{"rub"}\NormalTok{, }\AttributeTok{legends =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Прямоугольник, обозначающий область основной карты}
+  \FunctionTok{geom\_rect}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{xmin =} \DecValTok{35}\NormalTok{, }\AttributeTok{xmax =} \DecValTok{51}\NormalTok{, }\AttributeTok{ymin =} \FloatTok{67.5}\NormalTok{, }\AttributeTok{ymax =} \DecValTok{71}\NormalTok{), }
+            \AttributeTok{fill =} \StringTok{"black"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Упрощение оформления}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_blank}\NormalTok{(), }
+        \AttributeTok{axis.text.y =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \CommentTok{\# Рамка для вставки}
+        \AttributeTok{panel.border =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{colour =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# ФИНАЛЬНАЯ КОМПОНОВКА С РАМКОЙ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\NormalTok{MAP }\OtherTok{\textless{}{-}} \FunctionTok{ggdraw}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Основная карта}
+  \FunctionTok{draw\_plot}\NormalTok{(map) }\SpecialCharTok{+}
+  \CommentTok{\# Вставка с позиционированием}
+  \FunctionTok{draw\_plot}\NormalTok{(insetmap,}
+            \AttributeTok{height =} \FloatTok{0.3}\NormalTok{,}
+            \AttributeTok{x =} \SpecialCharTok{{-}}\FloatTok{0.26}\NormalTok{,}
+            \AttributeTok{y =} \FloatTok{0.55}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# ДОБАВЛЕНИЕ РАМКИ ВОКРУГ ВСЕЙ КОМПОЗИЦИИ}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{colour =} \StringTok{"black"}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Вывод финальной карты}
+\FunctionTok{print}\NormalTok{(MAP)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# СОХРАНЕНИЕ РЕЗУЛЬТАТА}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"DATA\_MAP\_FRAMED.jpg"}\NormalTok{, }
+       \AttributeTok{plot =}\NormalTok{ MAP,}
+       \AttributeTok{device =} \StringTok{"jpeg"}\NormalTok{, }
+       \AttributeTok{dpi =} \DecValTok{600}\NormalTok{,}
+       \AttributeTok{width =} \DecValTok{9}\NormalTok{,}
+       \AttributeTok{height =} \DecValTok{7}\NormalTok{,}
+       \AttributeTok{units =} \StringTok{"in"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\chapter{SDM - Модели пространственного распределения
+видов}\label{sdm---ux43cux43eux434ux435ux43bux438-ux43fux440ux43eux441ux442ux440ux430ux43dux441ux442ux432ux435ux43dux43dux43eux433ux43e-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux432ux438ux434ux43eux432}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-3}
 
 \section{Загрузка данных и первичный
 осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-1}
@@ -2573,10 +4287,10 @@ w = a_0 + a_1 \cdot l_t + a_2 \cdot l_c
 
 \bookmarksetup{startatroot}
 
-\chapter{SDM - Модели пространственного распределения
-видов}\label{sdm---ux43cux43eux434ux435ux43bux438-ux43fux440ux43eux441ux442ux440ux430ux43dux441ux442ux432ux435ux43dux43dux43eux433ux43e-ux440ux430ux441ux43fux440ux435ux434ux435ux43bux435ux43dux438ux44f-ux432ux438ux434ux43eux432}
+\chapter{Основы
+геостатистики}\label{ux43eux441ux43dux43eux432ux44b-ux433ux435ux43eux441ux442ux430ux442ux438ux441ux442ux438ux43aux438}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-3}
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-4}
 
 \section{Загрузка данных и первичный
 осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-2}
@@ -2585,23 +4299,6 @@ w = a_0 + a_1 \cdot l_t + a_2 \cdot l_c
 
 \section{Описательная статистика и
 визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-2}
-
-Текст. Текст. Текст.
-
-\bookmarksetup{startatroot}
-
-\chapter{Основы
-геостатистики}\label{ux43eux441ux43dux43eux432ux44b-ux433ux435ux43eux441ux442ux430ux442ux438ux441ux442ux438ux43aux438}
-
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-4}
-
-\section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-3}
-
-Текст. Текст. Текст.
-
-\section{Описательная статистика и
-визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-3}
 
 Текст. Текст. Текст.
 
@@ -2617,7 +4314,7 @@ P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\thet
 \]
 
 \section{Описательная статистика и
-визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-4}
+визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-3}
 
 Текст. Текст. Текст.
 
@@ -2627,6 +4324,23 @@ P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\thet
 модели}\label{ux43fux440ux43eux434ux443ux43aux446ux438ux43eux43dux43dux44bux435-ux43cux43eux434ux435ux43bux438}
 
 \section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-5}
+
+\section{Загрузка данных и первичный
+осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-3}
+
+Текст. Текст. Текст.
+
+\section{Описательная статистика и
+визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-4}
+
+Текст. Текст. Текст.
+
+\bookmarksetup{startatroot}
+
+\chapter{Введение в
+прогнозирование}\label{ux432ux432ux435ux434ux435ux43dux438ux435-ux432-ux43fux440ux43eux433ux43dux43eux437ux438ux440ux43eux432ux430ux43dux438ux435}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-6}
 
 \section{Загрузка данных и первичный
 осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-4}
@@ -2640,10 +4354,10 @@ P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\thet
 
 \bookmarksetup{startatroot}
 
-\chapter{Введение в
-прогнозирование}\label{ux432ux432ux435ux434ux435ux43dux438ux435-ux432-ux43fux440ux43eux433ux43dux43eux437ux438ux440ux43eux432ux430ux43dux438ux435}
+\chapter{ПРП и стратегии
+управления}\label{ux43fux440ux43f-ux438-ux441ux442ux440ux430ux442ux435ux433ux438ux438-ux443ux43fux440ux430ux432ux43bux435ux43dux438ux44f}
 
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-6}
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-7}
 
 \section{Загрузка данных и первичный
 осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-5}
@@ -2652,23 +4366,6 @@ P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\thet
 
 \section{Описательная статистика и
 визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-6}
-
-Текст. Текст. Текст.
-
-\bookmarksetup{startatroot}
-
-\chapter{ПРП и стратегии
-управления}\label{ux43fux440ux43f-ux438-ux441ux442ux440ux430ux442ux435ux433ux438ux438-ux443ux43fux440ux430ux432ux43bux435ux43dux438ux44f}
-
-\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-7}
-
-\section{Загрузка данных и первичный
-осмотр}\label{ux437ux430ux433ux440ux443ux437ux43aux430-ux434ux430ux43dux43dux44bux445-ux438-ux43fux435ux440ux432ux438ux447ux43dux44bux439-ux43eux441ux43cux43eux442ux440-6}
-
-Текст. Текст. Текст.
-
-\section{Описательная статистика и
-визуализация}\label{ux43eux43fux438ux441ux430ux442ux435ux43bux44cux43dux430ux44f-ux441ux442ux430ux442ux438ux441ux442ux438ux43aux430-ux438-ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-7}
 
 Текст. Текст. Текст.
 
