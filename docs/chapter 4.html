@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; SDM - Модели пространственного распределения видов – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>5&nbsp; sdmTMB - оценка и визуализация индекса обилия по съемке – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -82,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 4.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">SDM - Модели пространственного распределения видов</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 4.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -140,7 +175,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter 4.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">SDM - Модели пространственного распределения видов</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,8 +225,12 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">5.1</span> Введение</a></li>
-  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">5.2</span> Загрузка данных и первичный осмотр</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">5.3</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#базовая-оценка" id="toc-базовая-оценка" class="nav-link" data-scroll-target="#базовая-оценка"><span class="header-section-number">5.2</span> Базовая оценка</a></li>
+  <li><a href="#базовая-оценка-предикторы" id="toc-базовая-оценка-предикторы" class="nav-link" data-scroll-target="#базовая-оценка-предикторы"><span class="header-section-number">5.3</span> Базовая оценка + предикторы</a></li>
+  <li><a href="#визуализация-эффектов" id="toc-визуализация-эффектов" class="nav-link" data-scroll-target="#визуализация-эффектов"><span class="header-section-number">5.4</span> Визуализация эффектов</a></li>
+  <li><a href="#карта-с-акцентом-на-нулевые-уловы" id="toc-карта-с-акцентом-на-нулевые-уловы" class="nav-link" data-scroll-target="#карта-с-акцентом-на-нулевые-уловы"><span class="header-section-number">5.5</span> Карта с акцентом на нулевые уловы</a></li>
+  <li><a href="#определение-площади-съемки" id="toc-определение-площади-съемки" class="nav-link" data-scroll-target="#определение-площади-съемки"><span class="header-section-number">5.6</span> Определение площади съемки</a></li>
+  <li><a href="#присоединение-факторов-к-данным-съемок" id="toc-присоединение-факторов-к-данным-съемок" class="nav-link" data-scroll-target="#присоединение-факторов-к-данным-съемок"><span class="header-section-number">5.7</span> Присоединение факторов к данным съемок</a></li>
   </ul>
 </nav>
     </div>
@@ -200,7 +239,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">SDM - Модели пространственного распределения видов</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></h1>
 </div>
 
 
@@ -219,14 +258,583 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="введение" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">5.1</span> Введение</h2>
+<p>Оценка индекса промыслового запаса камчатского краба в Баренцевом море с использованием пространственно-временного моделирования (библиотека R: sdmTMB)</p>
+<p><strong>Цель:</strong><br>
+Продемонстрировать применение современных методов SDM (Species Distribution Modeling) и GAMM (Generalized Additive Mixed Models) для стандартизации оценки запасов промысловых видов на примере камчатского краба.</p>
+<p><strong>Ключевые аспекты:</strong></p>
+<ol type="1">
+<li><p><strong>Подготовка данных</strong>:</p>
+<ul>
+<li><p>Преобразование координат в проекцию UTM (км)</p></li>
+<li><p>Фильтрация данных через выпуклую оболочку (convex hull)</p></li>
+<li><p>Создание прогнозной сетки с шагом 10 км (2 км)</p></li>
+</ul></li>
+<li><p><strong>Моделирование</strong>:</p>
+<ul>
+<li><p>Построение треугольной сетки (mesh) для учета пространственной автокорреляции</p></li>
+<li><p>Подбор модели sdmTMB с пространственно-временными случайными эффектами</p></li>
+<li><p>Учет ключевых факторов: температура, глубина, тип съемки</p></li>
+</ul></li>
+<li><p><strong>Визуализация</strong>:</p>
+<ul>
+<li><p>Карты распределения плотности с наложением данных съемок</p></li>
+<li><p>Динамика индекса обилия с 50% и 95% доверительными интервалами</p></li>
+</ul></li>
+</ol>
+<p><strong>Для работы скрипта:</strong></p>
+<ol type="1">
+<li><p>Скачайте файл данных (<a href="https://mombus.github.io/cRab/data/KARTOGRAPHIC.xlsx">KARTOGRAPHIC.xlsx</a>)</p></li>
+<li><p>Установите рабочую директорию в setwd()</p></li>
+<li><p>Установите необходимые пакеты (см. начало скрипта).</p></li>
+</ol>
 </section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">5.2</span> Загрузка данных и первичный осмотр</h2>
+<section id="базовая-оценка" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="базовая-оценка"><span class="header-section-number">5.2</span> Базовая оценка</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. ПОДГОТОВКА СРЕДЫ И ДАННЫХ</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Очистка рабочей среды</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории (замените на свою)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/COMBINE/"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка необходимых пакетов</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)       <span class="co"># Для чтения Excel-файлов</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)      <span class="co"># Визуализация данных</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)        <span class="co"># Обработка данных</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sdmTMB)       <span class="co"># Пространственно-временное моделирование</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)         <span class="co"># Продвинутые пространственные модели</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)           <span class="co"># Классы для пространственных данных</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)           <span class="co"># Пространственные данные (современный формат)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth) <span class="co"># Загрузка картографических данных</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка данных из Excel-файла</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(<span class="st">"KARTOGRAPHIC.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"SURVEY"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Просмотр структуры данных</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Должно выглядеть так:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">str</span>(data)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tibble [<span class="dv">1</span>,<span class="dv">126</span> x <span class="dv">20</span>] (S3<span class="sc">:</span> tbl_df<span class="sc">/</span>tbl<span class="sc">/</span>data.frame)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> NUM    <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">8</span> <span class="dv">9</span> <span class="dv">10</span> ...</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> CALL   <span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="st">"UFJN"</span> <span class="st">"UFJN"</span> <span class="st">"UFJN"</span> <span class="st">"UFJN"</span> ...</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> CRUSE  <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> <span class="dv">112</span> ...</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> SURV   <span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="st">"SUM"</span> <span class="st">"SUM"</span> <span class="st">"SUM"</span> <span class="st">"SUM"</span> ...</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> TRAL   <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">2</span> <span class="dv">3</span> <span class="dv">5</span> <span class="dv">7</span> <span class="dv">9</span> <span class="dv">11</span> <span class="dv">13</span> <span class="dv">15</span> <span class="dv">17</span> <span class="dv">19</span> ...</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> DATE   <span class="sc">:</span> POSIXct[<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>], format<span class="sc">:</span> <span class="st">"2019-08-16"</span> <span class="st">"2019-08-16"</span> ...</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> MONTH  <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> <span class="dv">8</span> ...</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> YEAR   <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">2019</span> <span class="dv">2019</span> <span class="dv">2019</span> <span class="dv">2019</span> <span class="dv">2019</span> ...</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> TIME   <span class="sc">:</span> chr [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="st">"9:43"</span> <span class="st">"14:19"</span> <span class="st">"19:33"</span> <span class="st">"2:47"</span> ...</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> DECMIN <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">1.04</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> <span class="fl">0.15</span> ...</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> DUR    <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">1.73</span> <span class="fl">0.25</span> <span class="fl">0.25</span> <span class="fl">0.25</span> <span class="fl">0.25</span> ...</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> DEPTH  <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">200</span> <span class="dv">198</span> <span class="dv">196</span> <span class="dv">132</span> <span class="dv">128</span> <span class="dv">131</span> <span class="dv">64</span> <span class="dv">73</span> <span class="dv">91</span> <span class="dv">62</span> ...</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> SPEED  <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> ...</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> CATCH  <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">12.9</span> <span class="fl">365.3</span> <span class="dv">253</span> <span class="fl">163.9</span> <span class="fl">55.7</span> ...</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> Y      <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">69.5</span> <span class="fl">69.5</span> <span class="fl">69.4</span> <span class="fl">68.8</span> <span class="fl">69.4</span> ...</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> X      <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">35.8</span> <span class="fl">35.9</span> <span class="fl">37.4</span> <span class="fl">38.6</span> <span class="dv">39</span> ...</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> PROM   <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">2</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">3</span> <span class="dv">0</span> <span class="dv">6</span> <span class="dv">6</span> <span class="dv">34</span> <span class="dv">22</span> <span class="dv">9</span> ...</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> Density<span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="dv">30</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">45</span> <span class="dv">0</span> ...</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> DIST   <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">28.7</span> <span class="fl">28.7</span> <span class="fl">49.9</span> <span class="fl">37.3</span> <span class="fl">90.8</span> ...</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> TEMP   <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">1126</span>] <span class="fl">5.57</span> <span class="fl">5.49</span> <span class="fl">4.99</span> <span class="fl">4.8</span> <span class="fl">4.4</span> ...</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Далее:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. ПРЕОБРАЗОВАНИЕ КООРДИНАТ В ПРОЕКЦИЮ UTM (в км)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание пространственного объекта из данных</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>data_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  data, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>), <span class="co"># Указание столбцов с координатами</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">crs =</span> <span class="dv">4326</span>            <span class="co"># Система координат WGS84 (широта/долгота)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование в UTM зону 37N (метры)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>data_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(data_sf, <span class="at">crs =</span> <span class="dv">32637</span>) </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Извлечение координат и перевод в километры</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>utm_coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(data_utm)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>xkm <span class="ot">&lt;-</span> utm_coords[, <span class="dv">1</span>] <span class="sc">/</span> <span class="dv">1000</span>  <span class="co"># X в км</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>ykm <span class="ot">&lt;-</span> utm_coords[, <span class="dv">2</span>] <span class="sc">/</span> <span class="dv">1000</span>  <span class="co"># Y в км</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Очистка временных объектов</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(data_sf, data_utm, utm_coords)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. ОПРЕДЕЛЕНИЕ ГРАНИЦ ИССЛЕДОВАНИЯ</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Вычисление границ исследовательского полигона</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>xl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(data<span class="sc">$</span>xkm), <span class="fu">max</span>(data<span class="sc">$</span>xkm))  <span class="co"># Границы по X</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>yl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(data<span class="sc">$</span>ykm), <span class="fu">max</span>(data<span class="sc">$</span>ykm))  <span class="co"># Границы по Y</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------------------------------</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. СОЗДАНИЕ РАСТРОВОЙ СЕТКИ ДЛЯ МОДЕЛИ</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------------------------------</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание равномерной сетки с шагом 10 км </span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>GRID <span class="ot">&lt;-</span> <span class="fu">makeGrid</span>(</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq</span>(xl[<span class="dv">1</span>], xl[<span class="dv">2</span>], <span class="dv">10</span>), </span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">seq</span>(yl[<span class="dv">1</span>], yl[<span class="dv">2</span>], <span class="dv">10</span>),</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">"UTM"</span>, </span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">zone =</span> <span class="dv">37</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет центроидов ячеек сетки</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>GRID <span class="ot">&lt;-</span> <span class="fu">calcCentroid</span>(GRID, <span class="at">rollup =</span> <span class="dv">3</span>)</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------------</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. ПОСТРОЕНИЕ ВЫПУКЛОЙ ОБОЛОЧКИ (CONVEX HULL) ДЛЯ ДАННЫХ</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------------</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание выпуклой оболочки вокруг точек данных</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Hull <span class="ot">&lt;-</span> <span class="fu">inla.nonconvex.hull</span>(<span class="fu">cbind</span>(data<span class="sc">$</span>xkm, data<span class="sc">$</span>ykm), <span class="at">convex =</span> <span class="sc">-</span><span class="fl">0.03</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация оболочки </span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a> <span class="fu">plot</span>(Hull)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB1.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.: Визуализация оболочки съемок</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация оболочки и точек съемок 2019-2024</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(data<span class="sc">$</span>xkm, data<span class="sc">$</span>ykm, <span class="at">pch=</span><span class="dv">1</span>, <span class="at">cex=</span><span class="fl">0.55</span>,<span class="at">col=</span><span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB2.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 2.: Визуализация оболочки и точек съемок</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Фильтрация сетки: оставляем только точки внутри оболочки</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>line <span class="ot">&lt;-</span> Hull<span class="sc">$</span>loc[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(line) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>GRID<span class="sc">$</span>AREA <span class="ot">&lt;-</span> <span class="fu">point.in.polygon</span>(GRID<span class="sc">$</span>X, GRID<span class="sc">$</span>Y, line<span class="sc">$</span>X, line<span class="sc">$</span>Y)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>GRID <span class="ot">&lt;-</span> GRID[GRID<span class="sc">$</span>AREA <span class="sc">&gt;</span> <span class="fl">0.1</span>, <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>)]  <span class="co"># Только внутренние точки</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. ПОДГОТОВКА СЕТКИ ДЛЯ ПРОГНОЗИРОВАНИЯ</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание временной сетки (для каждого года)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">replicate_df</span>(GRID, <span class="st">"YEAR"</span>, <span class="fu">unique</span>(data<span class="sc">$</span>YEAR))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(grid) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"xkm"</span>, <span class="st">"ykm"</span>, <span class="st">"YEAR"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>grid<span class="sc">$</span>SURV <span class="ot">&lt;-</span> <span class="st">"CRAB"</span>  <span class="co"># Добавляем информацию о типе съемки</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация оболочки и сетки для прогнозирования (grid)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">plot</span>(Hull)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a> <span class="fu">points</span>(grid<span class="sc">$</span>xkm, grid<span class="sc">$</span>ykm, <span class="at">pch=</span><span class="dv">1</span>, <span class="at">cex=</span><span class="fl">0.55</span>,<span class="at">col=</span><span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB3.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 3.: Визуализация оболочки и сетки для прогнозирования (grid)</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННОЙ СЕТКИ (MESH)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание треугольной сетки для пространственного моделирования</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mesh_sdm <span class="ot">&lt;-</span> <span class="fu">make_mesh</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  data, </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"xkm"</span>, <span class="st">"ykm"</span>),  <span class="co"># Координаты</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> <span class="dv">10</span>        <span class="co"># Минимальное расстояние между узлами (км)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация сетки </span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a> <span class="fu">plot</span>(mesh_sdm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB4.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 4.: Визуализация сетки (mesh)</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННО-ВРЕМЕННОЙ МОДЕЛИ</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">sdmTMB</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> Density <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fu">as.factor</span>(YEAR),  <span class="co"># Формула: плотность зависит от года</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">time =</span> <span class="st">"YEAR"</span>,         <span class="co"># Временная переменная</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">mesh =</span> mesh_sdm,       <span class="co"># Пространственная сетка</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">tweedie</span>(<span class="at">link =</span> <span class="st">"log"</span>),  <span class="co"># Статистическое распределение</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">spatial =</span> <span class="st">"on"</span>,        <span class="co"># Включение пространственных эффектов</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">spatiotemporal =</span> <span class="st">"iid"</span> <span class="co"># Пространственно-временные эффекты</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод результатов модели</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m)  <span class="co"># Критерий Акаике</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">sanity</span>(m)  <span class="co"># Проверка корректности модели</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Получили результаты:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="co"># Вывод результатов модели</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="er">&gt;</span> <span class="fu">summary</span>(m)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Spatiotemporal model fit by ML [<span class="st">'sdmTMB'</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>Formula<span class="sc">:</span> Density <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fu">as.factor</span>(YEAR)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>Mesh<span class="sc">:</span> <span class="fu">mesh_sdm</span> (isotropic covariance)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Time column<span class="sc">:</span> YEAR</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>Data<span class="sc">:</span> data</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>Family<span class="sc">:</span> <span class="fu">tweedie</span>(<span class="at">link =</span> <span class="st">'log'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>Conditional model<span class="sc">:</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                    coef.est coef.se</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2019</span>     <span class="fl">2.15</span>    <span class="fl">0.72</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2020</span>     <span class="fl">1.49</span>    <span class="fl">0.76</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2021</span>     <span class="fl">1.74</span>    <span class="fl">0.76</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2022</span>     <span class="fl">1.62</span>    <span class="fl">0.73</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2023</span>     <span class="fl">1.50</span>    <span class="fl">0.74</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">as.factor</span>(YEAR)<span class="dv">2024</span>     <span class="fl">1.56</span>    <span class="fl">0.72</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>Dispersion parameter<span class="sc">:</span> <span class="fl">19.71</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>Tweedie p<span class="sc">:</span> <span class="fl">1.50</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>Matern range<span class="sc">:</span> <span class="fl">142.65</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>Spatial SD<span class="sc">:</span> <span class="fl">2.01</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>Spatiotemporal IID SD<span class="sc">:</span> <span class="fl">0.95</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>ML criterion at convergence<span class="sc">:</span> <span class="fl">5984.224</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>See ?tidy.sdmTMB to extract these values as a data frame.</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">AIC</span>(m)  <span class="co"># Критерий Акаике</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="fl">11990.45</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">sanity</span>(m)  <span class="co"># Проверка корректности модели</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>v Non<span class="sc">-</span>linear minimizer suggests successful convergence</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>v Hessian matrix is positive definite</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>v No extreme or very small eigenvalues detected</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>v No gradients with respect to fixed effects are <span class="sc">&gt;=</span> <span class="fl">0.001</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>v No fixed<span class="sc">-</span>effect standard errors are <span class="cn">NA</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>v No standard errors look unreasonably large</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>v No sigma parameters are <span class="sc">&lt;</span> <span class="fl">0.01</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>v No sigma parameters are <span class="sc">&gt;</span> <span class="dv">100</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>v Range parameter doesn<span class="st">'t look unreasonably large</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="годовые-эффекты" class="level4" data-number="5.2.0.1">
+<h4 data-number="5.2.0.1" class="anchored"><span class="header-section-number">5.2.0.1</span> <strong>Годовые эффекты:</strong></h4>
+<pre><code>2019: 2.15 ± 0.72 → exp(2.15) ≈ 8.58 экз./км²
+2020: 1.49 ± 0.76 → exp(1.49) ≈ 4.44 экз./км²
+2024: 1.56 ± 0.72 → exp(1.56) ≈ 4.76 экз./км²</code></pre>
+<ul>
+<li><p><strong>2019 год</strong> - пик запаса (8.58 экз./км²)</p></li>
+<li><p><strong>2020 год</strong> - резкое снижение (-52% к 2019)</p></li>
+<li><p><strong>2021-2024</strong> - стабилизация на уровне ~4.5-5.0 экз./км²</p></li>
+<li><p><strong>Стандартные ошибки</strong> ~0.75:</p>
+<ul>
+<li><p>Приемлемая точность для данных такого объема</p></li>
+<li><p>Все годовые оценки статистически значимы</p></li>
+</ul>
+<p>Модель пространственно-временного распределения плотности камчатского краба успешно прошла все диагностические проверки, демонстрируя отличную сходимость и статистическую надежность. Параметр распределения Твиди (p=1.50) оптимально соответствует данным траловых съемок, учитывая характерную для уловов передисперсию и избыток нулевых значений.</p>
+<p>Годовые оценки показывают выраженную динамику запаса: в 2019 году зафиксирован пик плотности (8.58 экз./км²), после чего в 2020 году произошло резкое снижение до 4.44 экз./км². В последующие годы (2021-2024) плотность стабилизировалась на уровне 4.5-5.0 экз./км², что составляет примерно 55% от максимальных значений 2019 года. Стандартные ошибки годовых коэффициентов (0.72-0.76) свидетельствуют о хорошей точности оценок при текущем объеме данных.</p>
+<p>Пространственная структура распределения характеризуется крупномасштабными скоплениями с диапазоном корреляции 143 км (Matern range: 142.65), что согласуется с известными особенностями миграций камчатского краба. Высокое значение пространственной изменчивости (SD=2.01) отражает типичную для вида мозаичность распределения, где участки высокой плотности соседствуют с зонами отсутствия особей. Умеренная пространственно-временная изменчивость (IID SD=0.95) указывает на относительную стабильность пространственной структуры запаса между годами.</p>
+<p>Параметр дисперсии (19.71) подтверждает ожидаемо высокую вариабельность данных, характерную для траловых съемок морских гидробионтов. Полученные результаты надежно фиксируют значительное сокращение запаса после 2019 года с последующей стабилизацией на пониженном уровне.</p>
+<h3 id="пояснение-результатов-sanitym-для-начинающих-гидробиологов-от-deepseek" data-number="5.2.1" class="anchored" data-anchor-id="годовые-эффекты"><span class="header-section-number">5.2.1</span> <strong>Пояснение результатов <code>sanity(m)</code> для начинающих гидробиологов (от DeepSeek):</strong></h3>
+<p><strong>1. <code>v Non-linear minimizer suggests successful convergence</code></strong><br>
+(Нелинейный оптимизатор успешно сошелся)<br>
+<em>Пояснение:</em> Алгоритм поиска параметров модели корректно завершил работу. Это значит, что модель “научилась” описывать ваши данные и не застряла в промежуточных вычислениях. Как если бы вы успешно завершили лабораторный анализ без технических сбоев.</p>
+<p><strong>2. <code>v Hessian matrix is positive definite</code></strong><br>
+(Матрица Гессе положительно определена)<br>
+<em>Пояснение:</em> Математическое подтверждение, что найденные параметры модели действительно оптимальны. Аналогично тому, как в микроскопии вы видите четкий фокус - здесь модель “четко видит” закономерности в данных.</p>
+<p><strong>3. <code>v No extreme or very small eigenvalues detected</code></strong><br>
+(Не обнаружено экстремальных или очень маленьких собственных значений)<br>
+<em>Пояснение:</em> Модель статистически стабильна. Представьте, что вы измеряете длину рыб - если бы ваш штангенциркуль иногда показывал 0 или 1000 мм, это было бы проблемой. Здесь аналогично - вычисления надежны.</p>
+<p><strong>4. <code>v No gradients with respect to fixed effects are &gt;= 0.001</code></strong><br>
+(Градиенты для фиксированных эффектов &lt; 0.001)<br>
+<em>Пояснение:</em> Все ключевые параметры модели (например, влияние года на плотность) рассчитаны точно. Это как убедиться, что все измерения в вашем эксперименте выполнены с требуемой точностью (±0.1 мг, ±1 см и т.д.).</p>
+<p><strong>5. <code>v No fixed-effect standard errors are NA</code></strong><br>
+(Стандартные ошибки для фиксированных эффектов не отсутствуют)<br>
+<em>Пояснение:</em> Для каждого рассчитанного параметра (например, годовых оценок) указана погрешность. Важно как в химическом анализе - если для концентрации вещества нет погрешности, результат ненадежен.</p>
+<p><strong>6. <code>v No standard errors look unreasonably large</code></strong><br>
+(Стандартные ошибки выглядят разумными)<br>
+<em>Пояснение:</em> Погрешности оценок адекватны. Например, если плотность краба 5±1 экз./км² - это нормально, но 5±100 экз./км² было бы бессмысленным.</p>
+<p><strong>7. <code>v No sigma parameters are &lt; 0.01</code></strong><br>
+(Параметры сигма не меньше 0.01)<br>
+<em>Пояснение:</em> Модель не игнорирует важные источники изменчивости. Аналогично тому, что в пробе воды вы не упустили бы важный показатель, сказав “он слишком мал”.</p>
+<p><strong>8. <code>v No sigma parameters are &gt; 100</code></strong><br>
+(Параметры сигма не превышают 100)<br>
+<em>Пояснение:</em> Модель не преувеличивает случайные вариации. Как если бы вы не приписали естественные колебания температуры воды катастрофическому изменению климата.</p>
+<p><strong>9. <code>v Range parameter doesn't look unreasonably large</code></strong><br>
+(Параметр диапазона не выглядит чрезмерно большим)<br>
+<em>Пояснение:</em> Пространственная автокорреляция имеет биологически осмысленный масштаб. Например, если модель показала бы, что скопления краба одинаковы на расстоянии 1000 км - это было бы нереалистично.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. ДИАГНОСТИКА МОДЕЛИ</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет остатков модели</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>resids <span class="ot">&lt;-</span> <span class="fu">residuals</span>(m) </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Гистограмма остатков</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>resids)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># График квантиль-квантиль</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(data<span class="sc">$</span>resids)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB5.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 5.: Гистограмма остатков</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB6.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 6.: График квантиль-квантиль</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 10. ПРОГНОЗИРОВАНИЕ НА СЕТКЕ</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Прогноз значений плотности на сетке</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="at">newdata =</span> grid, <span class="at">return_tmb_object =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>RASP <span class="ot">&lt;-</span> predictions<span class="sc">$</span>data</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование координат обратно в широту/долготу</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>xkm_m <span class="ot">&lt;-</span> RASP<span class="sc">$</span>xkm <span class="sc">*</span> <span class="dv">1000</span>  <span class="co"># Обратно в метры</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>ykm_m <span class="ot">&lt;-</span> RASP<span class="sc">$</span>ykm <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание пространственного объекта в UTM</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>utm_proj <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(RASP<span class="sc">$</span>xkm_m, RASP<span class="sc">$</span>ykm_m)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>sp_points <span class="ot">&lt;-</span> <span class="fu">SpatialPoints</span>(coords, <span class="at">proj4string =</span> utm_proj)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование в WGS84 (широта/долгота)</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>wgs84_proj <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=longlat +datum=WGS84"</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>sp_points_latlon <span class="ot">&lt;-</span> <span class="fu">spTransform</span>(sp_points, wgs84_proj)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавление координат в основной датафрейм</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>X <span class="ot">&lt;-</span> <span class="fu">coordinates</span>(sp_points_latlon)[, <span class="dv">1</span>]  <span class="co"># Долгота</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">coordinates</span>(sp_points_latlon)[, <span class="dv">2</span>]  <span class="co"># Широта</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Удаление временных столбцов</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>xkm_m <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>RASP<span class="sc">$</span>ykm_m <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка структуры результата</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(RASP)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 11. ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ (КАРТА)</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка картографических данных</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="st">"medium"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Определение региона интереса (Арктика России)</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>arctic_bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(<span class="fu">c</span>(<span class="at">xmin =</span> <span class="dv">25</span>, <span class="at">xmax =</span> <span class="dv">70</span>, <span class="at">ymin =</span> <span class="dv">65</span>, <span class="at">ymax =</span> <span class="dv">80</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>arctic <span class="ot">&lt;-</span> <span class="fu">st_crop</span>(world, arctic_bbox)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Кастомные разрывы для цветовой шкалы</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>my_breaks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">200</span>, <span class="dv">10000</span>)</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание основной визуализации</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Теплокарта плотности</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> RASP, </span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> X, <span class="at">y =</span> Y, <span class="at">color =</span> <span class="fu">exp</span>(est)), </span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.8</span>, </span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.7</span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Наблюдаемые точки данных</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data, </span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> X, <span class="at">y =</span> Y, <span class="at">size =</span> Density), <span class="co"># Размер по плотности</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="cn">NA</span>, </span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span> <span class="co"># Кружки с обводкой</span></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Картографическая подложка</span></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> arctic, <span class="at">fill =</span> <span class="st">"lightgrey"</span>, <span class="at">color =</span> <span class="st">"darkgrey"</span>) <span class="sc">+</span></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Цветовая шкала (логарифмическая)</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_c</span>(</span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span>,</span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">option =</span> <span class="st">"H"</span>, </span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">trans =</span> <span class="st">"log"</span>, </span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> my_breaks, </span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> my_breaks</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Разделение по годам</span></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> YEAR, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Настройка области просмотра</span></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(</span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fu">min</span>(RASP<span class="sc">$</span>X)<span class="sc">-</span><span class="dv">1</span>, <span class="fu">max</span>(RASP<span class="sc">$</span>X)<span class="sc">+</span><span class="dv">1</span>),</span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(RASP<span class="sc">$</span>Y)<span class="sc">-</span><span class="fl">0.5</span>, <span class="fu">max</span>(RASP<span class="sc">$</span>Y)<span class="sc">+</span><span class="fl">0.5</span>),</span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">crs =</span> <span class="dv">4326</span></span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Тема оформления</span></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Долгота"</span>, <span class="at">y =</span> <span class="st">"Широта"</span>, <span class="at">title =</span> <span class="st">"Пространственное распределение плотности"</span>) <span class="sc">+</span></span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"grey90"</span>),</span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="fl">1.2</span>, <span class="st">"cm"</span>),</span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>)</span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение графика (раскомментируйте)</span></span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggsave</span>(<span class="st">"sdmTMBmap10.jpg"</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">8</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMBmap10.jpg" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 7.: Визуализация результатов (КАРТА)</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 12. РАСЧЕТ ИНДЕКСОВ ОБИЛИЯ</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет индексов с разными доверительными интервалами</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">get_index</span>(predictions, <span class="at">area =</span> <span class="dv">4</span>, <span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">bias_correct =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>index2 <span class="ot">&lt;-</span> <span class="fu">get_index</span>(predictions, <span class="at">area =</span> <span class="dv">4</span>, <span class="at">level =</span> <span class="fl">0.5</span>, <span class="at">bias_correct =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Формирование сводной таблицы результатов</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>total <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">YEAR =</span> index<span class="sc">$</span>YEAR,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwr_95 =</span> index<span class="sc">$</span>lwr,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">lwr_50 =</span> index2<span class="sc">$</span>lwr,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> index<span class="sc">$</span>est,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">upr_50 =</span> index2<span class="sc">$</span>upr,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">upr_95 =</span> index<span class="sc">$</span>upr,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">se =</span> index<span class="sc">$</span>se,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cv =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(index<span class="sc">$</span>se<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># Коэффициент вариации</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация индексов обилия</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(total, <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> estimate<span class="sc">/</span><span class="dv">1000000</span>)) <span class="sc">+</span> </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Основная линия оценки</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 95% доверительный интервал (более широкий и прозрачный)</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> lwr_95<span class="sc">/</span><span class="dv">1000000</span>, <span class="at">ymax =</span> upr_95<span class="sc">/</span><span class="dv">1000000</span>),</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.2</span>,  <span class="co"># Полупрозрачность</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span>     <span class="co"># Без контура</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 50% доверительный интервал (менее прозрачный)</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> lwr_50<span class="sc">/</span><span class="dv">1000000</span>, <span class="at">ymax =</span> upr_50<span class="sc">/</span><span class="dv">1000000</span>),</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>,  <span class="co"># Меньшая прозрачность</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NA</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Настройки осей и заголовков</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Промысловый запас, млн. экз'</span>) <span class="sc">+</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Год'</span>) <span class="sc">+</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Вертикальные линии для годов</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">xintercept =</span> total<span class="sc">$</span>YEAR, </span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dotted"</span>, </span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"grey60"</span>, </span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Точки с значениями оценок</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"navyblue"</span>,</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"white"</span>,</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Настройка темы</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"grey90"</span>),</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"grey30"</span>),</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sdmTMB7.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 8.: Визуализация индексов обилия</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Форматированный вывод результатов</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>total <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cv_percent =</span> <span class="dv">100</span> <span class="sc">*</span> cv) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    YEAR, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    estimate, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    lwr_50,  <span class="co"># Нижняя граница 50% ДИ</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    upr_50,  <span class="co"># Верхняя граница 50% ДИ</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    lwr_95,  <span class="co"># Нижняя граница 95% ДИ</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    upr_95,  <span class="co"># Верхняя граница 95% ДИ</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    cv_percent</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"pandoc"</span>, </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Год"</span>, </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Оценка"</span>, </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Нижняя 50%"</span>, </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Верхняя 50%"</span>, </span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Нижняя 95%"</span>, </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Верхняя 95%"</span>, </span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"CV%"</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  Год    Оценка   Нижняя <span class="dv">50</span><span class="sc">%   Верхняя 50%</span>   Нижняя <span class="dv">95</span><span class="sc">%   Верхняя 95%</span>    CV%</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-----</span>  <span class="sc">--------</span>  <span class="sc">-----------</span>  <span class="sc">------------</span>  <span class="sc">-----------</span>  <span class="sc">------------</span>  <span class="sc">-----</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a> <span class="dv">2019</span>   <span class="dv">2381774</span>      <span class="dv">2177448</span>       <span class="dv">2605274</span>      <span class="dv">1835312</span>       <span class="dv">3090946</span>   <span class="fl">13.4</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a> <span class="dv">2020</span>   <span class="dv">1634549</span>      <span class="dv">1539111</span>       <span class="dv">1735906</span>      <span class="dv">1372377</span>       <span class="dv">1946805</span>    <span class="fl">8.9</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a> <span class="dv">2021</span>   <span class="dv">1920507</span>      <span class="dv">1794122</span>       <span class="dv">2055795</span>      <span class="dv">1575823</span>       <span class="dv">2340584</span>   <span class="fl">10.1</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a> <span class="dv">2022</span>   <span class="dv">1036673</span>       <span class="dv">959251</span>       <span class="dv">1120344</span>       <span class="dv">827345</span>       <span class="dv">1298963</span>   <span class="fl">11.5</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a> <span class="dv">2023</span>   <span class="dv">1147685</span>      <span class="dv">1068401</span>       <span class="dv">1232853</span>       <span class="dv">932147</span>       <span class="dv">1413062</span>   <span class="fl">10.6</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a> <span class="dv">2024</span>   <span class="dv">1055733</span>       <span class="dv">985624</span>       <span class="dv">1130829</span>       <span class="dv">864640</span>       <span class="dv">1289060</span>   <span class="fl">10.2</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="базовая-оценка-предикторы" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="базовая-оценка-предикторы"><span class="header-section-number">5.3</span> Базовая оценка + предикторы</h2>
 <p>Текст. Текст. Текст.</p>
 </section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">5.3</span> Описательная статистика и визуализация</h2>
+<section id="визуализация-эффектов" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="визуализация-эффектов"><span class="header-section-number">5.4</span> Визуализация эффектов</h2>
 <p>Текст. Текст. Текст.</p>
+</section>
+<section id="карта-с-акцентом-на-нулевые-уловы" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="карта-с-акцентом-на-нулевые-уловы"><span class="header-section-number">5.5</span> Карта с акцентом на нулевые уловы</h2>
+</section>
+<section id="определение-площади-съемки" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="определение-площади-съемки"><span class="header-section-number">5.6</span> Определение площади съемки</h2>
+</section>
+<section id="присоединение-факторов-к-данным-съемок" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="присоединение-факторов-к-данным-съемок"><span class="header-section-number">5.7</span> Присоединение факторов к данным съемок</h2>
 
 
 </section>
