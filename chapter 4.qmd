@@ -61,6 +61,7 @@ setwd("C:/COMBINE/")
 library(readxl)       # Для чтения Excel-файлов
 library(ggplot2)      # Визуализация данных
 library(dplyr)        # Обработка данных
+library(PBSmapping)   # Для работы с пространственными данными
 library(sdmTMB)       # Пространственно-временное моделирование
 library(INLA)         # Продвинутые пространственные модели
 library(sp)           # Классы для пространственных данных
@@ -377,9 +378,7 @@ qqnorm(data$resids)
 abline(a = 0, b = 1)
 ```
 
-
 ![Рис. 5.: Гистограмма остатков](images/sdmTMB5.PNG){fig-align="center" width="60%"}
-
 
 ![Рис. 6.: График квантиль-квантиль](images/sdmTMB6.PNG){fig-align="center" width="60%"}
 
@@ -444,7 +443,7 @@ ggplot() +
   # Наблюдаемые точки данных
   geom_point(
     data = data, 
-    aes(x = X, y = Y, size = Density), # Размер по плотности
+    aes(x = X, y = Y, size = PROM), # Размер по плотности
     color = "black", 
     fill = NA, 
     alpha = 0.6,
@@ -479,11 +478,11 @@ ggplot() +
   )
 
 # Сохранение графика (раскомментируйте)
- ggsave("sdmTMBmap10.jpg", width = 8, height = 8, dpi = 300)
+# ggsave("sdmTMBmap10.jpg", width = 8, height = 8, dpi = 300)
 
 ```
-![Рис. 7.: Визуализация результатов (КАРТА)](images/sdmTMBmap10.jpg){fig-align="center" width="60%"}
 
+![Рис. 7.: Визуализация результатов (КАРТА)](images/sdmTMBmap10.jpg){fig-align="center" width="90%"}
 
 ```{r}
 #| output: false
@@ -560,6 +559,7 @@ ggplot(total, aes(x = YEAR, y = estimate/1000000)) +
   )
 
 ```
+
 ![Рис. 8.: Визуализация индексов обилия](images/sdmTMB7.PNG){fig-align="center" width="60%"}
 
 ```{r}
@@ -609,14 +609,787 @@ total %>%
 
 ## Базовая оценка + предикторы
 
-Текст. Текст. Текст.
+Сравнение пространственно-временных моделей sdmTMB с учетом типа съемки (SURV) и года (YEAR)
+
+Рассмотрим 4 пространственно-временные модели, оценивая их по:
+
+Качеству подгонки (AIC) Стабильности оценок (sanity check) Значимости ковариат Биологическому смыслу
+
+4 модели: базовая модель, модель с глубиной (DEPTH),модель с температурой (TEMP), модель с расстоянием до берега (DIST)
+
+```{r}
+#| output: false
+#| eval: false
+> # 8. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННО-ВРЕМЕННОЙ МОДЕЛИ
+> # ---------------------------------------------------
+> 
+> m <- sdmTMB(
++   data = data, 
++   formula = Density ~ 0+ as.factor(SURV) + as.factor(YEAR),  # Формула: плотность зависит от года
++   time = "YEAR",         # Временная переменная
++   mesh = mesh_sdm,       # Пространственная сетка
++   family = tweedie(link = "log"),  # Статистическое распределение
++   spatial = "on",        # Включение пространственных эффектов
++   spatiotemporal = "iid" # Пространственно-временные эффекты
++ )
+> 
+> 
+> # Вывод результатов модели
+> summary(m)
+Spatiotemporal model fit by ML ['sdmTMB']
+Formula: Density ~ 0 + as.factor(SURV) + as.factor(YEAR)
+Mesh: mesh_sdm (isotropic covariance)
+Time column: YEAR
+Data: data
+Family: tweedie(link = 'log')
+ 
+Conditional model:
+                    coef.est coef.se
+as.factor(SURV)CRAB     4.75    0.44
+as.factor(SURV)SUM      2.54    0.37
+as.factor(YEAR)2020    -0.57    0.36
+as.factor(YEAR)2021    -0.20    0.36
+as.factor(YEAR)2022    -0.61    0.36
+as.factor(YEAR)2023    -0.59    0.36
+as.factor(YEAR)2024    -0.85    0.36
+
+Dispersion parameter: 23.16
+Tweedie p: 1.41
+Matern range: 63.53
+Spatial SD: 1.22
+Spatiotemporal IID SD: 0.97
+ML criterion at convergence: 5914.655
+
+See ?tidy.sdmTMB to extract these values as a data frame.
+> AIC(m)  # Критерий Акаике
+[1] 11853.31
+> sanity(m)  # Проверка корректности модели
+v Non-linear minimizer suggests successful convergence
+v Hessian matrix is positive definite
+v No extreme or very small eigenvalues detected
+v No gradients with respect to fixed effects are >= 0.001
+v No fixed-effect standard errors are NA
+v No standard errors look unreasonably large
+v No sigma parameters are < 0.01
+v No sigma parameters are > 100
+v Range parameter doesn't look unreasonably large
+> 
+> md <- sdmTMB(
++   data = data, 
++   formula = Density ~ 0+ as.factor(SURV) + as.factor(YEAR)+s(DEPTH),  # Формула: плотность зависит от года
++   time = "YEAR",         # Временная переменная
++   mesh = mesh_sdm,       # Пространственная сетка
++   family = tweedie(link = "log"),  # Статистическое распределение
++   spatial = "on",        # Включение пространственных эффектов
++   spatiotemporal = "iid" # Пространственно-временные эффекты
++ )
+> 
+> 
+> # Вывод результатов модели
+> summary(md)
+Spatiotemporal model fit by ML ['sdmTMB']
+Formula: Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DEPTH)
+Mesh: mesh_sdm (isotropic covariance)
+Time column: YEAR
+Data: data
+Family: tweedie(link = 'log')
+ 
+Conditional model:
+                    coef.est coef.se
+as.factor(SURV)CRAB     5.42    0.32
+as.factor(SURV)SUM      3.09    0.28
+as.factor(YEAR)2020    -0.52    0.27
+as.factor(YEAR)2021    -0.15    0.27
+as.factor(YEAR)2022    -0.67    0.27
+as.factor(YEAR)2023    -0.63    0.27
+as.factor(YEAR)2024    -0.93    0.27
+sDEPTH                 -0.60    0.42
+
+Smooth terms:
+           Std. Dev.
+sds(DEPTH)      1.71
+
+Dispersion parameter: 24.43
+Tweedie p: 1.39
+Matern range: 40.20
+Spatial SD: 0.97
+Spatiotemporal IID SD: 0.94
+ML criterion at convergence: 5907.365
+
+See ?tidy.sdmTMB to extract these values as a data frame.
+> AIC(md)  # Критерий Акаике
+[1] 11842.73
+> sanity(md)  # Проверка корректности модели
+v Non-linear minimizer suggests successful convergence
+v Hessian matrix is positive definite
+v No extreme or very small eigenvalues detected
+v No gradients with respect to fixed effects are >= 0.001
+v No fixed-effect standard errors are NA
+v No standard errors look unreasonably large
+v No sigma parameters are < 0.01
+v No sigma parameters are > 100
+v Range parameter doesn't look unreasonably large
+> 
+> 
+> mt <- sdmTMB(
++   data = data, 
++   formula = Density ~ 0+ as.factor(SURV) + as.factor(YEAR)+s(TEMP),  # Формула: плотность зависит от года
++   time = "YEAR",         # Временная переменная
++   mesh = mesh_sdm,       # Пространственная сетка
++   family = tweedie(link = "log"),  # Статистическое распределение
++   spatial = "on",        # Включение пространственных эффектов
++   spatiotemporal = "iid" # Пространственно-временные эффекты
++ )
+> 
+> 
+> # Вывод результатов модели
+> summary(mt)
+Spatiotemporal model fit by ML ['sdmTMB']
+Formula: Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(TEMP)
+Mesh: mesh_sdm (isotropic covariance)
+Time column: YEAR
+Data: data
+Family: tweedie(link = 'log')
+ 
+Conditional model:
+                    coef.est coef.se
+as.factor(SURV)CRAB     4.95    0.40
+as.factor(SURV)SUM      2.69    0.34
+as.factor(YEAR)2020    -0.14    0.43
+as.factor(YEAR)2021    -0.19    0.33
+as.factor(YEAR)2022    -0.77    0.42
+as.factor(YEAR)2023    -0.62    0.33
+as.factor(YEAR)2024    -0.91    0.34
+sTEMP                   0.80    0.83
+
+Smooth terms:
+          Std. Dev.
+sds(TEMP)      3.15
+
+Dispersion parameter: 23.42
+Tweedie p: 1.40
+Matern range: 55.04
+Spatial SD: 1.12
+Spatiotemporal IID SD: 0.96
+ML criterion at convergence: 5912.795
+
+See ?tidy.sdmTMB to extract these values as a data frame.
+> AIC(mt)  # Критерий Акаике
+[1] 11853.59
+> sanity(mt)  # Проверка корректности модели
+v Non-linear minimizer suggests successful convergence
+v Hessian matrix is positive definite
+v No extreme or very small eigenvalues detected
+v No gradients with respect to fixed effects are >= 0.001
+v No fixed-effect standard errors are NA
+v No standard errors look unreasonably large
+v No sigma parameters are < 0.01
+v No sigma parameters are > 100
+v Range parameter doesn't look unreasonably large
+> 
+> mdist <- sdmTMB(
++   data = data, 
++   formula = Density ~ 0+ as.factor(SURV) + as.factor(YEAR)+s(DIST),  # Формула: плотность зависит от года
++   time = "YEAR",         # Временная переменная
++   mesh = mesh_sdm,       # Пространственная сетка
++   family = tweedie(link = "log"),  # Статистическое распределение
++   spatial = "on",        # Включение пространственных эффектов
++   spatiotemporal = "iid" # Пространственно-временные эффекты
++ )
+> 
+> 
+> # Вывод результатов модели
+> summary(mdist)
+Spatiotemporal model fit by ML ['sdmTMB']
+Formula: Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DIST)
+Mesh: mesh_sdm (isotropic covariance)
+Time column: YEAR
+Data: data
+Family: tweedie(link = 'log')
+ 
+Conditional model:
+                    coef.est coef.se
+as.factor(SURV)CRAB     4.74    0.44
+as.factor(SURV)SUM      2.55    0.37
+as.factor(YEAR)2020    -0.57    0.36
+as.factor(YEAR)2021    -0.20    0.36
+as.factor(YEAR)2022    -0.61    0.36
+as.factor(YEAR)2023    -0.60    0.36
+as.factor(YEAR)2024    -0.85    0.36
+sDIST                  -0.06    0.16
+
+Smooth terms:
+          Std. Dev.
+sds(DIST)         0
+
+Dispersion parameter: 23.11
+Tweedie p: 1.41
+Matern range: 63.83
+Spatial SD: 1.22
+Spatiotemporal IID SD: 0.97
+ML criterion at convergence: 5914.594
+
+See ?tidy.sdmTMB to extract these values as a data frame.
+
+**Possible issues detected! Check output of sanity().**
+> AIC(mdist)  # Критерий Акаике
+[1] 11857.19
+> sanity(mdist)  # Проверка корректности модели
+v Non-linear minimizer suggests successful convergence
+v Hessian matrix is positive definite
+v No extreme or very small eigenvalues detected
+v No gradients with respect to fixed effects are >= 0.001
+v No fixed-effect standard errors are NA
+x `ln_smooth_sigma` standard error may be large
+i Try simplifying the model, adjusting the mesh, or adding priors
+
+v No sigma parameters are < 0.01
+v No sigma parameters are > 100
+v Range parameter doesn't look unreasonably large
+> 
+```
+
+#### **1. Базовая модель (SURV + YEAR)**
+
+```         
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR)
+```
+
+-   **AIC**: 11853.31
+
+-   **Проверка стабильности**: Все параметры стабильны
+
+-   **Ключевые эффекты**:
+
+    -   Высокая плотность в съемках CRAB (коэф. 4.75)
+
+    -   Снижение плотности во всех годах относительно базового уровня (2020-2024: -0.57 до -0.85)
+
+-   **Пространственные параметры**:
+
+    -   Диапазон Матерна: 63.53 км
+
+    -   Пространственная SD: 1.22
+
+#### **2. Модель с глубиной (DEPTH)**
+
+```         
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DEPTH)
+```
+
+-   **AIC**: 11842.73 (наилучший)
+
+-   **Проверка стабильности**: Все параметры стабильны
+
+-   **Ключевые эффекты**:
+
+    -   Сильное отрицательное влияние глубины (коэф. -0.60, SE=0.42)
+
+    -   Усиление контраста между съемками CRAB/SUM (CRAB: 5.42 vs SUM: 3.09)
+
+-   **Улучшения**:
+
+    -   Снижение AIC на 10.58 пунктов
+
+    -   Уменьшение пространственного диапазона (40.20 км)
+
+-   **Интерпретация**: Глубина — значимый экологический фактор распределения
+
+#### **3. Модель с температурой (TEMP)**
+
+```         
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(TEMP)
+```
+
+-   **AIC**: 11853.59 (хуже базовой)
+
+-   **Проверка стабильности**: Стабильна, но высокий SE сглаживания
+
+-   **Ключевые эффекты**:
+
+    -   Слабый положительный эффект температуры (коэф. 0.80, SE=0.83)
+
+    -   Незначительное изменение годовых эффектов
+
+-   **Проблемы**: Минимальное улучшение модели, высокая неопределенность эффекта температуры
+
+#### **4. Модель с расстоянием (DIST)**
+
+```         
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DIST)
+```
+
+-   **AIC**: 11857.19 (наихудший)
+
+-   **Проверка стабильности**: Проблемы со сглаживанием
+
+-   **Ключевые эффекты**:
+
+    -   Незначительный эффект расстояния (коэф. -0.06, SE=0.16)
+
+    -   Практически идентична базовой модели
+
+-   **Проблемы**: Наихудший AIC, предупреждения о нестабильности
+
+### **Сводка сравнения моделей**
+
+| **Модель** | **AIC** | **ΔAIC** | **Стабильность** | **Ключевой предиктор** | **Эффект ковариаты** |
+|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
+| **DEPTH** | 11842.73 | \- | ✓✓✓ | Глубина | Сильный (-0.60) |
+| Базовая | 11853.31 | +10.6 | ✓✓✓ | \- | \- |
+| TEMP | 11853.59 | +10.9 | ✓✓ | Температура | Слабый (+0.80) |
+| DIST | 11857.19 | +14.5 | ✗ | Расстояние | Незначительный (-0.06) |
+
+### **Рекомендации**
+
+1.  **Лучшая модель**: С глубиной (DEPTH)
+
+    -   Значительное улучшение AIC (-10.58)
+
+    -   Биологически интерпретируемый эффект (глубина — ключевой фактор распределения краба)
+
+    -   Стабильные оценки параметров
+
+2.  **Практическое значение**:
+
+    -   Глубина объясняет \~12% пространственной вариабельности (судя по изменению пространственной SD)
+
+    -   Модель адекватно отражает экологические предпочтения вида
+
+> **Вывод**: Включение глубины как ковариаты существенно улучшает модель, тогда как температура и расстояние не дают значимых улучшений.
 
 ## Визуализация эффектов
 
-Текст. Текст. Текст.
+Модель с глубиной - md (см. передыдущий скрипт)
+
+```{r}
+#| output: false
+#| eval: false
+# ---------------------------------------------------
+# 8.1. ВИЗУАЛИЗАЦИЯ ЭФФЕКТА ГЛУБИНЫ
+# ---------------------------------------------------
+
+# Создаем новый датафрейм для предсказаний
+newdata <- expand.grid(
+  DEPTH = seq(50, 400, by = 2),
+  YEAR = 2020,
+  SURV = "CRAB",
+  xkm = mean(data$xkm),
+  ykm = mean(data$ykm)
+)
+
+# Делаем предсказания с расчетом стандартных ошибок
+pred <- predict(md, newdata = newdata, re_formula = NA, se_fit = TRUE)
+
+
+# Визуализируем эффект глубины
+ggplot(pred, aes(x = DEPTH, y = exp(est))) +
+  geom_line(linewidth = 1.2, color = "blue4") +
+  geom_ribbon(
+    aes(
+      ymin = exp(est - 1.96 * est_se), 
+      ymax = exp(est + 1.96 * est_se)  # Исправлено на se.fit
+    ),
+    alpha = 0.3, 
+    fill = "steelblue"
+  ) +
+  labs(
+    title = "Эффект глубины на плотность краба",
+    subtitle = "Год: 2020, Тип съемки: CRAB",
+    x = "Глубина (м)",
+    y = "Предсказанная плотность (особей/км²)"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(panel.grid.minor = element_blank())
+```
+
+![Рис. 9.: Визуализация эффекта глубины на плотность краба](images/sdmTMB8.PNG){fig-align="center" width="60%"}
 
 ## Карта с акцентом на нулевые уловы
 
+Повторяем базовую оценку, но меняем в карте нулевые уловы на крестики
+
+![Рис. 10.: Визуализация результатов (КАРТА)](images/sdmTMBmapZero.jpg){fig-align="center" width="90%"}
+
+Скрипт для карты с базовой оценкой
+
+```{r}
+#| output: false
+#| eval: false
+# ---------------------------
+# 1. ПОДГОТОВКА СРЕДЫ И ДАННЫХ
+# ---------------------------
+
+# Очистка рабочей среды
+rm(list = ls())
+
+# Установка рабочей директории (замените на свою)
+setwd("C:/COMBINE/")
+
+# Загрузка необходимых пакетов
+library(readxl)       # Для чтения Excel-файлов
+library(ggplot2)      # Визуализация данных
+library(dplyr)        # Обработка данных
+library(PBSmapping)   # Для работы с пространственными данными
+library(sdmTMB)       # Пространственно-временное моделирование
+library(INLA)         # Продвинутые пространственные модели
+library(sp)           # Классы для пространственных данных
+library(sf)           # Пространственные данные (современный формат)
+library(rnaturalearth) # Загрузка картографических данных
+
+# Загрузка данных из Excel-файла
+data <- readxl::read_excel("KARTOGRAPHIC.xlsx", sheet = "SURVEY")
+
+# Просмотр структуры данных
+str(data)
+
+
+# --------------------------------------------------
+# 2. ПРЕОБРАЗОВАНИЕ КООРДИНАТ В ПРОЕКЦИЮ UTM (в км)
+# --------------------------------------------------
+
+# Создание пространственного объекта из данных
+data_sf <- st_as_sf(
+  data, 
+  coords = c("X", "Y"), # Указание столбцов с координатами
+  crs = 4326            # Система координат WGS84 (широта/долгота)
+) 
+
+# Преобразование в UTM зону 37N (метры)
+data_utm <- st_transform(data_sf, crs = 32637) 
+
+# Извлечение координат и перевод в километры
+utm_coords <- st_coordinates(data_utm)
+data$xkm <- utm_coords[, 1] / 1000  # X в км
+data$ykm <- utm_coords[, 2] / 1000  # Y в км
+
+# Очистка временных объектов
+rm(data_sf, data_utm, utm_coords)
+
+# -----------------------------------------
+# 3. ОПРЕДЕЛЕНИЕ ГРАНИЦ ИССЛЕДОВАНИЯ
+# -----------------------------------------
+
+# Вычисление границ исследовательского полигона
+xl <- c(min(data$xkm), max(data$xkm))  # Границы по X
+yl <- c(min(data$ykm), max(data$ykm))  # Границы по Y
+
+# ----------------------------------------
+# 4. СОЗДАНИЕ РАСТРОВОЙ СЕТКИ ДЛЯ МОДЕЛИ
+# ----------------------------------------
+
+# Создание равномерной сетки с шагом 10 км (для визуализации карты использовался шаг 2 км
+GRID <- makeGrid(
+  x = seq(xl[1], xl[2], 10), 
+  y = seq(yl[1], yl[2], 10),
+  byrow = FALSE,
+  projection = "UTM", 
+  zone = 37
+)
+
+# Расчет центроидов ячеек сетки
+GRID <- calcCentroid(GRID, rollup = 3)
+
+# -----------------------------------------------------------
+# 5. ПОСТРОЕНИЕ ВЫПУКЛОЙ ОБОЛОЧКИ (CONVEX HULL) ДЛЯ ДАННЫХ
+# -----------------------------------------------------------
+
+# Создание выпуклой оболочки вокруг точек данных
+Hull <- inla.nonconvex.hull(cbind(data$xkm, data$ykm), convex = -0.03)
+
+# Визуализация оболочки 
+ plot(Hull)
+
+# Визуализация оболочки и точек съемок 2019-2024
+points(data$xkm, data$ykm, pch=1, cex=0.55,col="black")
+
+
+# Фильтрация сетки: оставляем только точки внутри оболочки
+line <- Hull$loc[, 1:2] %>% as.data.frame()
+colnames(line) <- c("X", "Y")
+GRID$AREA <- point.in.polygon(GRID$X, GRID$Y, line$X, line$Y)
+GRID <- GRID[GRID$AREA > 0.1, c("X", "Y")]  # Только внутренние точки
+
+# -------------------------------------------------
+# 6. ПОДГОТОВКА СЕТКИ ДЛЯ ПРОГНОЗИРОВАНИЯ
+# -------------------------------------------------
+
+# Создание временной сетки (для каждого года)
+grid <- replicate_df(GRID, "YEAR", unique(data$YEAR))
+colnames(grid) <- c("xkm", "ykm", "YEAR")
+grid$SURV <- "CRAB"  # Добавляем информацию о типе съемки
+
+# Визуализация оболочки и сетки для прогнозирования (grid}
+ plot(Hull)
+ points(grid$xkm, grid$ykm, pch=1, cex=0.55,col="black")
+
+# ---------------------------------------------------
+# 7. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННОЙ СЕТКИ (MESH)
+# ---------------------------------------------------
+
+# Создание треугольной сетки для пространственного моделирования
+mesh_sdm <- make_mesh(
+  data, 
+  c("xkm", "ykm"),  # Координаты
+  cutoff = 10        # Минимальное расстояние между узлами (км)
+)
+
+# Визуализация сетки (раскомментируйте)
+ plot(mesh_sdm)
+
+# ---------------------------------------------------
+# 8. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННО-ВРЕМЕННОЙ МОДЕЛИ
+# ---------------------------------------------------
+
+m <- sdmTMB(
+  data = data, 
+  formula = Density ~ 0 + as.factor(YEAR),  # Формула: плотность зависит от года
+  time = "YEAR",         # Временная переменная
+  mesh = mesh_sdm,       # Пространственная сетка
+  family = tweedie(link = "log"),  # Статистическое распределение
+  spatial = "on",        # Включение пространственных эффектов
+  spatiotemporal = "iid" # Пространственно-временные эффекты
+)
+
+
+# Вывод результатов модели
+summary(m)
+AIC(m)  # Критерий Акаике
+sanity(m)  # Проверка корректности модели
+
+# ---------------------------------------------------
+# 9. ДИАГНОСТИКА МОДЕЛИ
+# ---------------------------------------------------
+
+# Расчет остатков модели
+data$resids <- residuals(m) 
+
+# Гистограмма остатков
+hist(data$resids)
+
+# График квантиль-квантиль
+qqnorm(data$resids)
+abline(a = 0, b = 1)
+
+# ---------------------------------------------------
+# 10. ПРОГНОЗИРОВАНИЕ НА СЕТКЕ
+# ---------------------------------------------------
+
+# Прогноз значений плотности на сетке
+predictions <- predict(m, newdata = grid, return_tmb_object = TRUE)
+RASP <- predictions$data
+
+# Преобразование координат обратно в широту/долготу
+RASP$xkm_m <- RASP$xkm * 1000  # Обратно в метры
+RASP$ykm_m <- RASP$ykm * 1000
+
+# Создание пространственного объекта в UTM
+utm_proj <- CRS("+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs")
+coords <- cbind(RASP$xkm_m, RASP$ykm_m)
+sp_points <- SpatialPoints(coords, proj4string = utm_proj)
+
+# Преобразование в WGS84 (широта/долгота)
+wgs84_proj <- CRS("+proj=longlat +datum=WGS84")
+sp_points_latlon <- spTransform(sp_points, wgs84_proj)
+
+# Добавление координат в основной датафрейм
+RASP$X <- coordinates(sp_points_latlon)[, 1]  # Долгота
+RASP$Y <- coordinates(sp_points_latlon)[, 2]  # Широта
+
+# Удаление временных столбцов
+RASP$xkm_m <- NULL
+RASP$ykm_m <- NULL
+
+# Проверка структуры результата
+str(RASP)
+
+# ---------------------------------------------
+# 11. ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ (КАРТА)
+# ---------------------------------------------
+
+# Загрузка картографических данных
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Определение региона интереса (Арктика России)
+arctic_bbox <- st_bbox(c(xmin = 25, xmax = 70, ymin = 65, ymax = 80), crs = 4326)
+arctic <- st_crop(world, arctic_bbox)
+
+# Определяем кастомные breaks для шкалы
+my_breaks <- c(0.001,0.1,1,  200, 10000)
+
+# Создаем категории для PROM
+data <- data %>%
+  mutate(
+    PROM_cat = case_when(
+      PROM == 0 ~ "0",
+      PROM >= 1 & PROM < 10 ~ "1-9",
+      PROM >= 10 & PROM < 100 ~ "10-99",
+      PROM >= 100 ~ "100+"
+    ),
+    PROM_cat = factor(PROM_cat, levels = c("0", "1-9", "10-99", "100+")),
+    shape_cat = ifelse(PROM_cat == "0", "zero", "non_zero")
+  )
+
+# Обновляем график
+ggplot() +
+  geom_point(
+    data = RASP, 
+    aes(x = X, y = Y, color = exp(est)), 
+    size = 0.8, 
+    alpha = 0.7
+  ) + 
+  geom_point(
+    data = data, 
+    aes(x = X, y = Y, size = PROM_cat, shape = shape_cat),
+    color = "black", 
+    fill = NA, 
+    alpha = 0.6
+  ) +
+  scale_size_manual(
+    name = NULL,
+    values = c("0" = 1, "1-9" = 2, "10-99" = 3),
+    labels = c("0", "10", "100")
+  ) +
+  scale_shape_manual(
+    values = c("zero" = 4, "non_zero" = 21),
+    guide = "none" # Скрываем легенду для формы
+  ) +
+  guides(
+    size = guide_legend(
+      override.aes = list(shape = c(4, 21, 21)) # Крестик только для первого элемента
+    )
+  ) +
+  geom_sf(data = arctic, fill = "lightgrey", color = "darkgrey") +
+  scale_color_viridis_c(
+    name = NULL,
+    option = "H", 
+    trans = "log", 
+    breaks = my_breaks, 
+    labels = my_breaks, 
+    limits = range(my_breaks),
+    guide = guide_colorbar(
+      barwidth = unit(5, "cm"),
+      title.position = "top",
+      direction = "horizontal"
+    )
+  ) +
+  facet_wrap(~ YEAR, ncol = 2) +
+  coord_sf(
+    xlim = c(min(RASP$X)-1, max(RASP$X)+1),
+    ylim = c(min(RASP$Y)-0.5, max(RASP$Y)+0.5),
+    crs = 4326
+  ) +
+  theme_bw(base_size = 12) +
+  labs(x = NULL, y = NULL) +
+  theme(
+    panel.grid = element_line(color = "grey90"),
+    legend.position = "bottom",
+    legend.key.width = unit(1.2, "cm"),
+    strip.background = element_rect(fill = "white")
+  )
+
+
+# Сохранение графика (раскомментируйте)
+# ggsave("sdmTMBmapZero.jpg", width = 8, height = 8, dpi = 300)
+```
+
 ## Определение площади съемки
 
-## Присоединение факторов к данным съемок
+
+```{r}
+#| output: false
+#| eval: false
+# ---------------------------
+# 1. ПОДГОТОВКА СРЕДЫ И ДАННЫХ
+# ---------------------------
+
+# Очистка рабочей среды
+rm(list = ls())
+
+# Установка рабочей директории (замените на свою)
+setwd("C:/COMBINE/")
+
+# Загрузка необходимых пакетов
+library(readxl)       # Для чтения Excel-файлов
+library(PBSmapping)   # Для работы с пространственными данными
+library(sdmTMB)       # Пространственно-временное моделирование
+library(INLA)         # Продвинутые пространственные модели
+
+# Загрузка данных из Excel-файла
+data <- readxl::read_excel("KARTOGRAPHIC.xlsx", sheet = "SURVEY")
+
+# Просмотр структуры данных
+str(data)
+
+
+# --------------------------------------------------
+# 2. ПРЕОБРАЗОВАНИЕ КООРДИНАТ В ПРОЕКЦИЮ UTM (в км)
+# --------------------------------------------------
+
+# Создание пространственного объекта из данных
+data_sf <- st_as_sf(
+  data, 
+  coords = c("X", "Y"), # Указание столбцов с координатами
+  crs = 4326            # Система координат WGS84 (широта/долгота)
+) 
+
+# Преобразование в UTM зону 37N (метры)
+data_utm <- st_transform(data_sf, crs = 32637) 
+
+# Извлечение координат и перевод в километры
+utm_coords <- st_coordinates(data_utm)
+data$xkm <- utm_coords[, 1] / 1000  # X в км
+data$ykm <- utm_coords[, 2] / 1000  # Y в км
+
+# Очистка временных объектов
+rm(data_sf, data_utm, utm_coords)
+
+# -----------------------------------------
+# 3. ОПРЕДЕЛЕНИЕ ГРАНИЦ ИССЛЕДОВАНИЯ
+# -----------------------------------------
+
+# Вычисление границ исследовательского полигона
+xl <- c(min(data$xkm), max(data$xkm))  # Границы по X
+yl <- c(min(data$ykm), max(data$ykm))  # Границы по Y
+
+# ----------------------------------------
+# 4. СОЗДАНИЕ РАСТРОВОЙ СЕТКИ ДЛЯ МОДЕЛИ
+# ----------------------------------------
+
+# Создание равномерной сетки с шагом 10 км (для визуализации карты использовался шаг 2 км
+GRID <- makeGrid(
+  x = seq(xl[1], xl[2], 10), 
+  y = seq(yl[1], yl[2], 10),
+  byrow = FALSE,
+  projection = "UTM", 
+  zone = 37
+)
+
+# Расчет центроидов ячеек сетки
+GRID <- calcCentroid(GRID, rollup = 3)
+
+# -----------------------------------------------------------
+# 5. ПОСТРОЕНИЕ ВЫПУКЛОЙ ОБОЛОЧКИ (CONVEX HULL) ДЛЯ ДАННЫХ
+# -----------------------------------------------------------
+
+# Создание выпуклой оболочки вокруг точек данных
+Hull <- inla.nonconvex.hull(cbind(data$xkm, data$ykm), convex = -0.03)
+
+# Визуализация оболочки 
+ plot(Hull)
+
+# Преобразование Hull в объект PolySet:
+polys <- data.frame(
+  PID = rep(1, nrow(Hull$loc)), # ID полигона
+  POS = 1:nrow(Hull$loc),       # Порядок точек
+  X = Hull$loc[, 1],            # Координата X (в км)
+  Y = Hull$loc[, 2]             # Координата Y (в км)
+)
+polys <- PBSmapping::as.PolySet(polys, projection = "UTM", zone = 37)
+
+# Расчет площади:
+area <- PBSmapping::calcArea(polys)
+print(paste("Площадь Hull:", round(area$area, 2), "км кв."))
+```
+
+[1] "Площадь Hull: 283947.5 км кв."

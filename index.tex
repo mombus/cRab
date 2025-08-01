@@ -4372,6 +4372,7 @@ Distribution Modeling) и GAMM (Generalized Additive Mixed Models) для
 \FunctionTok{library}\NormalTok{(readxl)       }\CommentTok{\# Для чтения Excel{-}файлов}
 \FunctionTok{library}\NormalTok{(ggplot2)      }\CommentTok{\# Визуализация данных}
 \FunctionTok{library}\NormalTok{(dplyr)        }\CommentTok{\# Обработка данных}
+\FunctionTok{library}\NormalTok{(PBSmapping)   }\CommentTok{\# Для работы с пространственными данными}
 \FunctionTok{library}\NormalTok{(sdmTMB)       }\CommentTok{\# Пространственно{-}временное моделирование}
 \FunctionTok{library}\NormalTok{(INLA)         }\CommentTok{\# Продвинутые пространственные модели}
 \FunctionTok{library}\NormalTok{(sp)           }\CommentTok{\# Классы для пространственных данных}
@@ -4862,7 +4863,7 @@ Distribution Modeling) и GAMM (Generalized Additive Mixed Models) для
   \CommentTok{\# Наблюдаемые точки данных}
   \FunctionTok{geom\_point}\NormalTok{(}
     \AttributeTok{data =}\NormalTok{ data, }
-    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ Density), }\CommentTok{\# Размер по плотности}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM), }\CommentTok{\# Размер по плотности}
     \AttributeTok{color =} \StringTok{"black"}\NormalTok{, }
     \AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }
     \AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{,}
@@ -4897,13 +4898,13 @@ Distribution Modeling) и GAMM (Generalized Additive Mixed Models) для
 \NormalTok{  )}
 
 \CommentTok{\# Сохранение графика (раскомментируйте)}
- \FunctionTok{ggsave}\NormalTok{(}\StringTok{"sdmTMBmap10.jpg"}\NormalTok{, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =} \DecValTok{8}\NormalTok{, }\AttributeTok{dpi =} \DecValTok{300}\NormalTok{)}
+\CommentTok{\# ggsave("sdmTMBmap10.jpg", width = 8, height = 8, dpi = 300)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/sdmTMBmap10.jpg}
+{\centering \includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{images/sdmTMBmap10.jpg}
 
 }
 
@@ -5043,21 +5044,888 @@ Distribution Modeling) и GAMM (Generalized Additive Mixed Models) для
 \section{Базовая оценка +
 предикторы}\label{ux431ux430ux437ux43eux432ux430ux44f-ux43eux446ux435ux43dux43aux430-ux43fux440ux435ux434ux438ux43aux442ux43eux440ux44b}
 
-Текст. Текст. Текст.
+Сравнение пространственно-временных моделей sdmTMB с учетом типа съемки
+(SURV) и года (YEAR)
+
+Рассмотрим 4 пространственно-временные модели, оценивая их по:
+
+Качеству подгонки (AIC) Стабильности оценок (sanity check) Значимости
+ковариат Биологическому смыслу
+
+4 модели: базовая модель, модель с глубиной (DEPTH),модель с
+температурой (TEMP), модель с расстоянием до берега (DIST)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\SpecialCharTok{\textgreater{}} \CommentTok{\# 8. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННО{-}ВРЕМЕННОЙ МОДЕЛИ}
+\ErrorTok{\textgreater{}} \CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\ErrorTok{\textgreater{}} 
+\ErrorTok{\textgreater{}}\NormalTok{ m }\OtherTok{\textless{}{-}} \FunctionTok{sdmTMB}\NormalTok{(}
+\SpecialCharTok{+}   \AttributeTok{data =}\NormalTok{ data, }
+\SpecialCharTok{+}   \AttributeTok{formula =}\NormalTok{ Density }\SpecialCharTok{\textasciitilde{}} \DecValTok{0}\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(SURV) }\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(YEAR),  }\CommentTok{\# Формула: плотность зависит от года}
+\SpecialCharTok{+}   \AttributeTok{time =} \StringTok{"YEAR"}\NormalTok{,         }\CommentTok{\# Временная переменная}
+\SpecialCharTok{+}   \AttributeTok{mesh =}\NormalTok{ mesh\_sdm,       }\CommentTok{\# Пространственная сетка}
+\SpecialCharTok{+}   \AttributeTok{family =} \FunctionTok{tweedie}\NormalTok{(}\AttributeTok{link =} \StringTok{"log"}\NormalTok{),  }\CommentTok{\# Статистическое распределение}
+\SpecialCharTok{+}   \AttributeTok{spatial =} \StringTok{"on"}\NormalTok{,        }\CommentTok{\# Включение пространственных эффектов}
+\SpecialCharTok{+}   \AttributeTok{spatiotemporal =} \StringTok{"iid"} \CommentTok{\# Пространственно{-}временные эффекты}
+\SpecialCharTok{+}\NormalTok{ )}
+\SpecialCharTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} \CommentTok{\# Вывод результатов модели}
+\ErrorTok{\textgreater{}} \FunctionTok{summary}\NormalTok{(m)}
+\NormalTok{Spatiotemporal model fit by ML [}\StringTok{\textquotesingle{}sdmTMB\textquotesingle{}}\NormalTok{]}
+\NormalTok{Formula}\SpecialCharTok{:}\NormalTok{ Density }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(SURV) }\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(YEAR)}
+\NormalTok{Mesh}\SpecialCharTok{:} \FunctionTok{mesh\_sdm}\NormalTok{ (isotropic covariance)}
+\NormalTok{Time column}\SpecialCharTok{:}\NormalTok{ YEAR}
+\NormalTok{Data}\SpecialCharTok{:}\NormalTok{ data}
+\NormalTok{Family}\SpecialCharTok{:} \FunctionTok{tweedie}\NormalTok{(}\AttributeTok{link =} \StringTok{\textquotesingle{}log\textquotesingle{}}\NormalTok{)}
+ 
+\NormalTok{Conditional model}\SpecialCharTok{:}
+\NormalTok{                    coef.est coef.se}
+\FunctionTok{as.factor}\NormalTok{(SURV)CRAB     }\FloatTok{4.75}    \FloatTok{0.44}
+\FunctionTok{as.factor}\NormalTok{(SURV)SUM      }\FloatTok{2.54}    \FloatTok{0.37}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2020}    \SpecialCharTok{{-}}\FloatTok{0.57}    \FloatTok{0.36}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2021}    \SpecialCharTok{{-}}\FloatTok{0.20}    \FloatTok{0.36}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2022}    \SpecialCharTok{{-}}\FloatTok{0.61}    \FloatTok{0.36}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2023}    \SpecialCharTok{{-}}\FloatTok{0.59}    \FloatTok{0.36}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2024}    \SpecialCharTok{{-}}\FloatTok{0.85}    \FloatTok{0.36}
+
+\NormalTok{Dispersion parameter}\SpecialCharTok{:} \FloatTok{23.16}
+\NormalTok{Tweedie p}\SpecialCharTok{:} \FloatTok{1.41}
+\NormalTok{Matern range}\SpecialCharTok{:} \FloatTok{63.53}
+\NormalTok{Spatial SD}\SpecialCharTok{:} \FloatTok{1.22}
+\NormalTok{Spatiotemporal IID SD}\SpecialCharTok{:} \FloatTok{0.97}
+\NormalTok{ML criterion at convergence}\SpecialCharTok{:} \FloatTok{5914.655}
+
+\NormalTok{See ?tidy.sdmTMB to extract these values as a data frame.}
+\SpecialCharTok{\textgreater{}} \FunctionTok{AIC}\NormalTok{(m)  }\CommentTok{\# Критерий Акаике}
+\NormalTok{[}\DecValTok{1}\NormalTok{] }\FloatTok{11853.31}
+\SpecialCharTok{\textgreater{}} \FunctionTok{sanity}\NormalTok{(m)  }\CommentTok{\# Проверка корректности модели}
+\NormalTok{v Non}\SpecialCharTok{{-}}\NormalTok{linear minimizer suggests successful convergence}
+\NormalTok{v Hessian matrix is positive definite}
+\NormalTok{v No extreme or very small eigenvalues detected}
+\NormalTok{v No gradients with respect to fixed effects are }\SpecialCharTok{\textgreater{}=} \FloatTok{0.001}
+\NormalTok{v No fixed}\SpecialCharTok{{-}}\NormalTok{effect standard errors are }\ConstantTok{NA}
+\NormalTok{v No standard errors look unreasonably large}
+\NormalTok{v No sigma parameters are }\SpecialCharTok{\textless{}} \FloatTok{0.01}
+\NormalTok{v No sigma parameters are }\SpecialCharTok{\textgreater{}} \DecValTok{100}
+\NormalTok{v Range parameter doesn}\StringTok{\textquotesingle{}t look unreasonably large}
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} md \textless{}{-} sdmTMB(}
+\StringTok{+   data = data, }
+\StringTok{+   formula = Density \textasciitilde{} 0+ as.factor(SURV) + as.factor(YEAR)+s(DEPTH),  \# Формула: плотность зависит от года}
+\StringTok{+   time = "YEAR",         \# Временная переменная}
+\StringTok{+   mesh = mesh\_sdm,       \# Пространственная сетка}
+\StringTok{+   family = tweedie(link = "log"),  \# Статистическое распределение}
+\StringTok{+   spatial = "on",        \# Включение пространственных эффектов}
+\StringTok{+   spatiotemporal = "iid" \# Пространственно{-}временные эффекты}
+\StringTok{+ )}
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} \# Вывод результатов модели}
+\StringTok{\textgreater{} summary(md)}
+\StringTok{Spatiotemporal model fit by ML [\textquotesingle{}}\NormalTok{sdmTMB}\StringTok{\textquotesingle{}]}
+\StringTok{Formula: Density \textasciitilde{} 0 + as.factor(SURV) + as.factor(YEAR) + s(DEPTH)}
+\StringTok{Mesh: mesh\_sdm (isotropic covariance)}
+\StringTok{Time column: YEAR}
+\StringTok{Data: data}
+\StringTok{Family: tweedie(link = \textquotesingle{}}\NormalTok{log}\StringTok{\textquotesingle{})}
+\StringTok{ }
+\StringTok{Conditional model:}
+\StringTok{                    coef.est coef.se}
+\StringTok{as.factor(SURV)CRAB     5.42    0.32}
+\StringTok{as.factor(SURV)SUM      3.09    0.28}
+\StringTok{as.factor(YEAR)2020    {-}0.52    0.27}
+\StringTok{as.factor(YEAR)2021    {-}0.15    0.27}
+\StringTok{as.factor(YEAR)2022    {-}0.67    0.27}
+\StringTok{as.factor(YEAR)2023    {-}0.63    0.27}
+\StringTok{as.factor(YEAR)2024    {-}0.93    0.27}
+\StringTok{sDEPTH                 {-}0.60    0.42}
+
+\StringTok{Smooth terms:}
+\StringTok{           Std. Dev.}
+\StringTok{sds(DEPTH)      1.71}
+
+\StringTok{Dispersion parameter: 24.43}
+\StringTok{Tweedie p: 1.39}
+\StringTok{Matern range: 40.20}
+\StringTok{Spatial SD: 0.97}
+\StringTok{Spatiotemporal IID SD: 0.94}
+\StringTok{ML criterion at convergence: 5907.365}
+
+\StringTok{See ?tidy.sdmTMB to extract these values as a data frame.}
+\StringTok{\textgreater{} AIC(md)  \# Критерий Акаике}
+\StringTok{[1] 11842.73}
+\StringTok{\textgreater{} sanity(md)  \# Проверка корректности модели}
+\StringTok{v Non{-}linear minimizer suggests successful convergence}
+\StringTok{v Hessian matrix is positive definite}
+\StringTok{v No extreme or very small eigenvalues detected}
+\StringTok{v No gradients with respect to fixed effects are \textgreater{}= 0.001}
+\StringTok{v No fixed{-}effect standard errors are NA}
+\StringTok{v No standard errors look unreasonably large}
+\StringTok{v No sigma parameters are \textless{} 0.01}
+\StringTok{v No sigma parameters are \textgreater{} 100}
+\StringTok{v Range parameter doesn\textquotesingle{}}\NormalTok{t look unreasonably large}
+\SpecialCharTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} 
+\ErrorTok{\textgreater{}}\NormalTok{ mt }\OtherTok{\textless{}{-}} \FunctionTok{sdmTMB}\NormalTok{(}
+\SpecialCharTok{+}   \AttributeTok{data =}\NormalTok{ data, }
+\SpecialCharTok{+}   \AttributeTok{formula =}\NormalTok{ Density }\SpecialCharTok{\textasciitilde{}} \DecValTok{0}\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(SURV) }\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(YEAR)}\SpecialCharTok{+}\FunctionTok{s}\NormalTok{(TEMP),  }\CommentTok{\# Формула: плотность зависит от года}
+\SpecialCharTok{+}   \AttributeTok{time =} \StringTok{"YEAR"}\NormalTok{,         }\CommentTok{\# Временная переменная}
+\SpecialCharTok{+}   \AttributeTok{mesh =}\NormalTok{ mesh\_sdm,       }\CommentTok{\# Пространственная сетка}
+\SpecialCharTok{+}   \AttributeTok{family =} \FunctionTok{tweedie}\NormalTok{(}\AttributeTok{link =} \StringTok{"log"}\NormalTok{),  }\CommentTok{\# Статистическое распределение}
+\SpecialCharTok{+}   \AttributeTok{spatial =} \StringTok{"on"}\NormalTok{,        }\CommentTok{\# Включение пространственных эффектов}
+\SpecialCharTok{+}   \AttributeTok{spatiotemporal =} \StringTok{"iid"} \CommentTok{\# Пространственно{-}временные эффекты}
+\SpecialCharTok{+}\NormalTok{ )}
+\SpecialCharTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} \CommentTok{\# Вывод результатов модели}
+\ErrorTok{\textgreater{}} \FunctionTok{summary}\NormalTok{(mt)}
+\NormalTok{Spatiotemporal model fit by ML [}\StringTok{\textquotesingle{}sdmTMB\textquotesingle{}}\NormalTok{]}
+\NormalTok{Formula}\SpecialCharTok{:}\NormalTok{ Density }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(SURV) }\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(YEAR) }\SpecialCharTok{+} \FunctionTok{s}\NormalTok{(TEMP)}
+\NormalTok{Mesh}\SpecialCharTok{:} \FunctionTok{mesh\_sdm}\NormalTok{ (isotropic covariance)}
+\NormalTok{Time column}\SpecialCharTok{:}\NormalTok{ YEAR}
+\NormalTok{Data}\SpecialCharTok{:}\NormalTok{ data}
+\NormalTok{Family}\SpecialCharTok{:} \FunctionTok{tweedie}\NormalTok{(}\AttributeTok{link =} \StringTok{\textquotesingle{}log\textquotesingle{}}\NormalTok{)}
+ 
+\NormalTok{Conditional model}\SpecialCharTok{:}
+\NormalTok{                    coef.est coef.se}
+\FunctionTok{as.factor}\NormalTok{(SURV)CRAB     }\FloatTok{4.95}    \FloatTok{0.40}
+\FunctionTok{as.factor}\NormalTok{(SURV)SUM      }\FloatTok{2.69}    \FloatTok{0.34}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2020}    \SpecialCharTok{{-}}\FloatTok{0.14}    \FloatTok{0.43}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2021}    \SpecialCharTok{{-}}\FloatTok{0.19}    \FloatTok{0.33}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2022}    \SpecialCharTok{{-}}\FloatTok{0.77}    \FloatTok{0.42}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2023}    \SpecialCharTok{{-}}\FloatTok{0.62}    \FloatTok{0.33}
+\FunctionTok{as.factor}\NormalTok{(YEAR)}\DecValTok{2024}    \SpecialCharTok{{-}}\FloatTok{0.91}    \FloatTok{0.34}
+\NormalTok{sTEMP                   }\FloatTok{0.80}    \FloatTok{0.83}
+
+\NormalTok{Smooth terms}\SpecialCharTok{:}
+\NormalTok{          Std. Dev.}
+\FunctionTok{sds}\NormalTok{(TEMP)      }\FloatTok{3.15}
+
+\NormalTok{Dispersion parameter}\SpecialCharTok{:} \FloatTok{23.42}
+\NormalTok{Tweedie p}\SpecialCharTok{:} \FloatTok{1.40}
+\NormalTok{Matern range}\SpecialCharTok{:} \FloatTok{55.04}
+\NormalTok{Spatial SD}\SpecialCharTok{:} \FloatTok{1.12}
+\NormalTok{Spatiotemporal IID SD}\SpecialCharTok{:} \FloatTok{0.96}
+\NormalTok{ML criterion at convergence}\SpecialCharTok{:} \FloatTok{5912.795}
+
+\NormalTok{See ?tidy.sdmTMB to extract these values as a data frame.}
+\SpecialCharTok{\textgreater{}} \FunctionTok{AIC}\NormalTok{(mt)  }\CommentTok{\# Критерий Акаике}
+\NormalTok{[}\DecValTok{1}\NormalTok{] }\FloatTok{11853.59}
+\SpecialCharTok{\textgreater{}} \FunctionTok{sanity}\NormalTok{(mt)  }\CommentTok{\# Проверка корректности модели}
+\NormalTok{v Non}\SpecialCharTok{{-}}\NormalTok{linear minimizer suggests successful convergence}
+\NormalTok{v Hessian matrix is positive definite}
+\NormalTok{v No extreme or very small eigenvalues detected}
+\NormalTok{v No gradients with respect to fixed effects are }\SpecialCharTok{\textgreater{}=} \FloatTok{0.001}
+\NormalTok{v No fixed}\SpecialCharTok{{-}}\NormalTok{effect standard errors are }\ConstantTok{NA}
+\NormalTok{v No standard errors look unreasonably large}
+\NormalTok{v No sigma parameters are }\SpecialCharTok{\textless{}} \FloatTok{0.01}
+\NormalTok{v No sigma parameters are }\SpecialCharTok{\textgreater{}} \DecValTok{100}
+\NormalTok{v Range parameter doesn}\StringTok{\textquotesingle{}t look unreasonably large}
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} mdist \textless{}{-} sdmTMB(}
+\StringTok{+   data = data, }
+\StringTok{+   formula = Density \textasciitilde{} 0+ as.factor(SURV) + as.factor(YEAR)+s(DIST),  \# Формула: плотность зависит от года}
+\StringTok{+   time = "YEAR",         \# Временная переменная}
+\StringTok{+   mesh = mesh\_sdm,       \# Пространственная сетка}
+\StringTok{+   family = tweedie(link = "log"),  \# Статистическое распределение}
+\StringTok{+   spatial = "on",        \# Включение пространственных эффектов}
+\StringTok{+   spatiotemporal = "iid" \# Пространственно{-}временные эффекты}
+\StringTok{+ )}
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} }
+\StringTok{\textgreater{} \# Вывод результатов модели}
+\StringTok{\textgreater{} summary(mdist)}
+\StringTok{Spatiotemporal model fit by ML [\textquotesingle{}}\NormalTok{sdmTMB}\StringTok{\textquotesingle{}]}
+\StringTok{Formula: Density \textasciitilde{} 0 + as.factor(SURV) + as.factor(YEAR) + s(DIST)}
+\StringTok{Mesh: mesh\_sdm (isotropic covariance)}
+\StringTok{Time column: YEAR}
+\StringTok{Data: data}
+\StringTok{Family: tweedie(link = \textquotesingle{}}\NormalTok{log}\StringTok{\textquotesingle{})}
+\StringTok{ }
+\StringTok{Conditional model:}
+\StringTok{                    coef.est coef.se}
+\StringTok{as.factor(SURV)CRAB     4.74    0.44}
+\StringTok{as.factor(SURV)SUM      2.55    0.37}
+\StringTok{as.factor(YEAR)2020    {-}0.57    0.36}
+\StringTok{as.factor(YEAR)2021    {-}0.20    0.36}
+\StringTok{as.factor(YEAR)2022    {-}0.61    0.36}
+\StringTok{as.factor(YEAR)2023    {-}0.60    0.36}
+\StringTok{as.factor(YEAR)2024    {-}0.85    0.36}
+\StringTok{sDIST                  {-}0.06    0.16}
+
+\StringTok{Smooth terms:}
+\StringTok{          Std. Dev.}
+\StringTok{sds(DIST)         0}
+
+\StringTok{Dispersion parameter: 23.11}
+\StringTok{Tweedie p: 1.41}
+\StringTok{Matern range: 63.83}
+\StringTok{Spatial SD: 1.22}
+\StringTok{Spatiotemporal IID SD: 0.97}
+\StringTok{ML criterion at convergence: 5914.594}
+
+\StringTok{See ?tidy.sdmTMB to extract these values as a data frame.}
+
+\StringTok{**Possible issues detected! Check output of sanity().**}
+\StringTok{\textgreater{} AIC(mdist)  \# Критерий Акаике}
+\StringTok{[1] 11857.19}
+\StringTok{\textgreater{} sanity(mdist)  \# Проверка корректности модели}
+\StringTok{v Non{-}linear minimizer suggests successful convergence}
+\StringTok{v Hessian matrix is positive definite}
+\StringTok{v No extreme or very small eigenvalues detected}
+\StringTok{v No gradients with respect to fixed effects are \textgreater{}= 0.001}
+\StringTok{v No fixed{-}effect standard errors are NA}
+\StringTok{x \textasciigrave{}ln\_smooth\_sigma\textasciigrave{} standard error may be large}
+\StringTok{i Try simplifying the model, adjusting the mesh, or adding priors}
+
+\StringTok{v No sigma parameters are \textless{} 0.01}
+\StringTok{v No sigma parameters are \textgreater{} 100}
+\StringTok{v Range parameter doesn\textquotesingle{}}\NormalTok{t look unreasonably large}
+\SpecialCharTok{\textgreater{}} 
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{\texorpdfstring{\textbf{1. Базовая модель (SURV +
+YEAR)}}{1. Базовая модель (SURV + YEAR)}}\label{ux431ux430ux437ux43eux432ux430ux44f-ux43cux43eux434ux435ux43bux44c-surv-year}
+
+\begin{verbatim}
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR)
+\end{verbatim}
+
+\begin{itemize}
+\item
+  \textbf{AIC}: 11853.31
+\item
+  \textbf{Проверка стабильности}: Все параметры стабильны
+\item
+  \textbf{Ключевые эффекты}:
+
+  \begin{itemize}
+  \item
+    Высокая плотность в съемках CRAB (коэф. 4.75)
+  \item
+    Снижение плотности во всех годах относительно базового уровня
+    (2020-2024: -0.57 до -0.85)
+  \end{itemize}
+\item
+  \textbf{Пространственные параметры}:
+
+  \begin{itemize}
+  \item
+    Диапазон Матерна: 63.53 км
+  \item
+    Пространственная SD: 1.22
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{2. Модель с глубиной
+(DEPTH)}}{2. Модель с глубиной (DEPTH)}}\label{ux43cux43eux434ux435ux43bux44c-ux441-ux433ux43bux443ux431ux438ux43dux43eux439-depth}
+
+\begin{verbatim}
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DEPTH)
+\end{verbatim}
+
+\begin{itemize}
+\item
+  \textbf{AIC}: 11842.73 (наилучший)
+\item
+  \textbf{Проверка стабильности}: Все параметры стабильны
+\item
+  \textbf{Ключевые эффекты}:
+
+  \begin{itemize}
+  \item
+    Сильное отрицательное влияние глубины (коэф. -0.60, SE=0.42)
+  \item
+    Усиление контраста между съемками CRAB/SUM (CRAB: 5.42 vs SUM: 3.09)
+  \end{itemize}
+\item
+  \textbf{Улучшения}:
+
+  \begin{itemize}
+  \item
+    Снижение AIC на 10.58 пунктов
+  \item
+    Уменьшение пространственного диапазона (40.20 км)
+  \end{itemize}
+\item
+  \textbf{Интерпретация}: Глубина --- значимый экологический фактор
+  распределения
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{3. Модель с температурой
+(TEMP)}}{3. Модель с температурой (TEMP)}}\label{ux43cux43eux434ux435ux43bux44c-ux441-ux442ux435ux43cux43fux435ux440ux430ux442ux443ux440ux43eux439-temp}
+
+\begin{verbatim}
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(TEMP)
+\end{verbatim}
+
+\begin{itemize}
+\item
+  \textbf{AIC}: 11853.59 (хуже базовой)
+\item
+  \textbf{Проверка стабильности}: Стабильна, но высокий SE сглаживания
+\item
+  \textbf{Ключевые эффекты}:
+
+  \begin{itemize}
+  \item
+    Слабый положительный эффект температуры (коэф. 0.80, SE=0.83)
+  \item
+    Незначительное изменение годовых эффектов
+  \end{itemize}
+\item
+  \textbf{Проблемы}: Минимальное улучшение модели, высокая
+  неопределенность эффекта температуры
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{4. Модель с расстоянием
+(DIST)}}{4. Модель с расстоянием (DIST)}}\label{ux43cux43eux434ux435ux43bux44c-ux441-ux440ux430ux441ux441ux442ux43eux44fux43dux438ux435ux43c-dist}
+
+\begin{verbatim}
+Density ~ 0 + as.factor(SURV) + as.factor(YEAR) + s(DIST)
+\end{verbatim}
+
+\begin{itemize}
+\item
+  \textbf{AIC}: 11857.19 (наихудший)
+\item
+  \textbf{Проверка стабильности}: Проблемы со сглаживанием
+\item
+  \textbf{Ключевые эффекты}:
+
+  \begin{itemize}
+  \item
+    Незначительный эффект расстояния (коэф. -0.06, SE=0.16)
+  \item
+    Практически идентична базовой модели
+  \end{itemize}
+\item
+  \textbf{Проблемы}: Наихудший AIC, предупреждения о нестабильности
+\end{itemize}
+
+\subsection{\texorpdfstring{\textbf{Сводка сравнения
+моделей}}{Сводка сравнения моделей}}\label{ux441ux432ux43eux434ux43aux430-ux441ux440ux430ux432ux43dux435ux43dux438ux44f-ux43cux43eux434ux435ux43bux435ux439}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Модель}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{AIC}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ΔAIC}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Стабильность}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Ключевой предиктор}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Эффект ковариаты}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{DEPTH} & 11842.73 & - & ✓✓✓ & Глубина & Сильный (-0.60) \\
+Базовая & 11853.31 & +10.6 & ✓✓✓ & - & - \\
+TEMP & 11853.59 & +10.9 & ✓✓ & Температура & Слабый (+0.80) \\
+DIST & 11857.19 & +14.5 & ✗ & Расстояние & Незначительный (-0.06) \\
+\end{longtable}
+
+\subsection{\texorpdfstring{\textbf{Рекомендации}}{Рекомендации}}\label{ux440ux435ux43aux43eux43cux435ux43dux434ux430ux446ux438ux438-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Лучшая модель}: С глубиной (DEPTH)
+
+  \begin{itemize}
+  \item
+    Значительное улучшение AIC (-10.58)
+  \item
+    Биологически интерпретируемый эффект (глубина --- ключевой фактор
+    распределения краба)
+  \item
+    Стабильные оценки параметров
+  \end{itemize}
+\item
+  \textbf{Практическое значение}:
+
+  \begin{itemize}
+  \item
+    Глубина объясняет \textasciitilde12\% пространственной
+    вариабельности (судя по изменению пространственной SD)
+  \item
+    Модель адекватно отражает экологические предпочтения вида
+  \end{itemize}
+\end{enumerate}
+
+\begin{quote}
+\textbf{Вывод}: Включение глубины как ковариаты существенно улучшает
+модель, тогда как температура и расстояние не дают значимых улучшений.
+\end{quote}
 
 \section{Визуализация
 эффектов}\label{ux432ux438ux437ux443ux430ux43bux438ux437ux430ux446ux438ux44f-ux44dux444ux444ux435ux43aux442ux43eux432}
 
-Текст. Текст. Текст.
+Модель с глубиной - md (см. передыдущий скрипт)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 8.1. ВИЗУАЛИЗАЦИЯ ЭФФЕКТА ГЛУБИНЫ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создаем новый датафрейм для предсказаний}
+\NormalTok{newdata }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}
+  \AttributeTok{DEPTH =} \FunctionTok{seq}\NormalTok{(}\DecValTok{50}\NormalTok{, }\DecValTok{400}\NormalTok{, }\AttributeTok{by =} \DecValTok{2}\NormalTok{),}
+  \AttributeTok{YEAR =} \DecValTok{2020}\NormalTok{,}
+  \AttributeTok{SURV =} \StringTok{"CRAB"}\NormalTok{,}
+  \AttributeTok{xkm =} \FunctionTok{mean}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm),}
+  \AttributeTok{ykm =} \FunctionTok{mean}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ykm)}
+\NormalTok{)}
+
+\CommentTok{\# Делаем предсказания с расчетом стандартных ошибок}
+\NormalTok{pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(md, }\AttributeTok{newdata =}\NormalTok{ newdata, }\AttributeTok{re\_formula =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{se\_fit =} \ConstantTok{TRUE}\NormalTok{)}
+
+
+\CommentTok{\# Визуализируем эффект глубины}
+\FunctionTok{ggplot}\NormalTok{(pred, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ DEPTH, }\AttributeTok{y =} \FunctionTok{exp}\NormalTok{(est))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{color =} \StringTok{"blue4"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_ribbon}\NormalTok{(}
+    \FunctionTok{aes}\NormalTok{(}
+      \AttributeTok{ymin =} \FunctionTok{exp}\NormalTok{(est }\SpecialCharTok{{-}} \FloatTok{1.96} \SpecialCharTok{*}\NormalTok{ est\_se), }
+      \AttributeTok{ymax =} \FunctionTok{exp}\NormalTok{(est }\SpecialCharTok{+} \FloatTok{1.96} \SpecialCharTok{*}\NormalTok{ est\_se)  }\CommentTok{\# Исправлено на se.fit}
+\NormalTok{    ),}
+    \AttributeTok{alpha =} \FloatTok{0.3}\NormalTok{, }
+    \AttributeTok{fill =} \StringTok{"steelblue"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Эффект глубины на плотность краба"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Год: 2020, Тип съемки: CRAB"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Глубина (м)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Предсказанная плотность (особей/км²)"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{14}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{images/sdmTMB8.PNG}
+
+}
+
+\caption{Рис. 9.: Визуализация эффекта глубины на плотность краба}
+
+\end{figure}%
 
 \section{Карта с акцентом на нулевые
 уловы}\label{ux43aux430ux440ux442ux430-ux441-ux430ux43aux446ux435ux43dux442ux43eux43c-ux43dux430-ux43dux443ux43bux435ux432ux44bux435-ux443ux43bux43eux432ux44b}
 
+Повторяем базовую оценку, но меняем в карте нулевые уловы на крестики
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{images/sdmTMBmapZero.jpg}
+
+}
+
+\caption{Рис. 10.: Визуализация результатов (КАРТА)}
+
+\end{figure}%
+
+Скрипт для карты с базовой оценкой
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 1. ПОДГОТОВКА СРЕДЫ И ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Очистка рабочей среды}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+
+\CommentTok{\# Установка рабочей директории (замените на свою)}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COMBINE/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых пакетов}
+\FunctionTok{library}\NormalTok{(readxl)       }\CommentTok{\# Для чтения Excel{-}файлов}
+\FunctionTok{library}\NormalTok{(ggplot2)      }\CommentTok{\# Визуализация данных}
+\FunctionTok{library}\NormalTok{(dplyr)        }\CommentTok{\# Обработка данных}
+\FunctionTok{library}\NormalTok{(PBSmapping)   }\CommentTok{\# Для работы с пространственными данными}
+\FunctionTok{library}\NormalTok{(sdmTMB)       }\CommentTok{\# Пространственно{-}временное моделирование}
+\FunctionTok{library}\NormalTok{(INLA)         }\CommentTok{\# Продвинутые пространственные модели}
+\FunctionTok{library}\NormalTok{(sp)           }\CommentTok{\# Классы для пространственных данных}
+\FunctionTok{library}\NormalTok{(sf)           }\CommentTok{\# Пространственные данные (современный формат)}
+\FunctionTok{library}\NormalTok{(rnaturalearth) }\CommentTok{\# Загрузка картографических данных}
+
+\CommentTok{\# Загрузка данных из Excel{-}файла}
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{)}
+
+\CommentTok{\# Просмотр структуры данных}
+\FunctionTok{str}\NormalTok{(data)}
+
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 2. ПРЕОБРАЗОВАНИЕ КООРДИНАТ В ПРОЕКЦИЮ UTM (в км)}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание пространственного объекта из данных}
+\NormalTok{data\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(}
+\NormalTok{  data, }
+  \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\CommentTok{\# Указание столбцов с координатами}
+  \AttributeTok{crs =} \DecValTok{4326}            \CommentTok{\# Система координат WGS84 (широта/долгота)}
+\NormalTok{) }
+
+\CommentTok{\# Преобразование в UTM зону 37N (метры)}
+\NormalTok{data\_utm }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(data\_sf, }\AttributeTok{crs =} \DecValTok{32637}\NormalTok{) }
+
+\CommentTok{\# Извлечение координат и перевод в километры}
+\NormalTok{utm\_coords }\OtherTok{\textless{}{-}} \FunctionTok{st\_coordinates}\NormalTok{(data\_utm)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{xkm }\OtherTok{\textless{}{-}}\NormalTok{ utm\_coords[, }\DecValTok{1}\NormalTok{] }\SpecialCharTok{/} \DecValTok{1000}  \CommentTok{\# X в км}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{ykm }\OtherTok{\textless{}{-}}\NormalTok{ utm\_coords[, }\DecValTok{2}\NormalTok{] }\SpecialCharTok{/} \DecValTok{1000}  \CommentTok{\# Y в км}
+
+\CommentTok{\# Очистка временных объектов}
+\FunctionTok{rm}\NormalTok{(data\_sf, data\_utm, utm\_coords)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 3. ОПРЕДЕЛЕНИЕ ГРАНИЦ ИССЛЕДОВАНИЯ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Вычисление границ исследовательского полигона}
+\NormalTok{xl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm), }\FunctionTok{max}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm))  }\CommentTok{\# Границы по X}
+\NormalTok{yl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ykm), }\FunctionTok{max}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ykm))  }\CommentTok{\# Границы по Y}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 4. СОЗДАНИЕ РАСТРОВОЙ СЕТКИ ДЛЯ МОДЕЛИ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание равномерной сетки с шагом 10 км (для визуализации карты использовался шаг 2 км}
+\NormalTok{GRID }\OtherTok{\textless{}{-}} \FunctionTok{makeGrid}\NormalTok{(}
+  \AttributeTok{x =} \FunctionTok{seq}\NormalTok{(xl[}\DecValTok{1}\NormalTok{], xl[}\DecValTok{2}\NormalTok{], }\DecValTok{10}\NormalTok{), }
+  \AttributeTok{y =} \FunctionTok{seq}\NormalTok{(yl[}\DecValTok{1}\NormalTok{], yl[}\DecValTok{2}\NormalTok{], }\DecValTok{10}\NormalTok{),}
+  \AttributeTok{byrow =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{projection =} \StringTok{"UTM"}\NormalTok{, }
+  \AttributeTok{zone =} \DecValTok{37}
+\NormalTok{)}
+
+\CommentTok{\# Расчет центроидов ячеек сетки}
+\NormalTok{GRID }\OtherTok{\textless{}{-}} \FunctionTok{calcCentroid}\NormalTok{(GRID, }\AttributeTok{rollup =} \DecValTok{3}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 5. ПОСТРОЕНИЕ ВЫПУКЛОЙ ОБОЛОЧКИ (CONVEX HULL) ДЛЯ ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание выпуклой оболочки вокруг точек данных}
+\NormalTok{Hull }\OtherTok{\textless{}{-}} \FunctionTok{inla.nonconvex.hull}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm, data}\SpecialCharTok{$}\NormalTok{ykm), }\AttributeTok{convex =} \SpecialCharTok{{-}}\FloatTok{0.03}\NormalTok{)}
+
+\CommentTok{\# Визуализация оболочки }
+ \FunctionTok{plot}\NormalTok{(Hull)}
+
+\CommentTok{\# Визуализация оболочки и точек съемок 2019{-}2024}
+\FunctionTok{points}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm, data}\SpecialCharTok{$}\NormalTok{ykm, }\AttributeTok{pch=}\DecValTok{1}\NormalTok{, }\AttributeTok{cex=}\FloatTok{0.55}\NormalTok{,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{)}
+
+
+\CommentTok{\# Фильтрация сетки: оставляем только точки внутри оболочки}
+\NormalTok{line }\OtherTok{\textless{}{-}}\NormalTok{ Hull}\SpecialCharTok{$}\NormalTok{loc[, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{as.data.frame}\NormalTok{()}
+\FunctionTok{colnames}\NormalTok{(line) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{)}
+\NormalTok{GRID}\SpecialCharTok{$}\NormalTok{AREA }\OtherTok{\textless{}{-}} \FunctionTok{point.in.polygon}\NormalTok{(GRID}\SpecialCharTok{$}\NormalTok{X, GRID}\SpecialCharTok{$}\NormalTok{Y, line}\SpecialCharTok{$}\NormalTok{X, line}\SpecialCharTok{$}\NormalTok{Y)}
+\NormalTok{GRID }\OtherTok{\textless{}{-}}\NormalTok{ GRID[GRID}\SpecialCharTok{$}\NormalTok{AREA }\SpecialCharTok{\textgreater{}} \FloatTok{0.1}\NormalTok{, }\FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{)]  }\CommentTok{\# Только внутренние точки}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 6. ПОДГОТОВКА СЕТКИ ДЛЯ ПРОГНОЗИРОВАНИЯ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание временной сетки (для каждого года)}
+\NormalTok{grid }\OtherTok{\textless{}{-}} \FunctionTok{replicate\_df}\NormalTok{(GRID, }\StringTok{"YEAR"}\NormalTok{, }\FunctionTok{unique}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{YEAR))}
+\FunctionTok{colnames}\NormalTok{(grid) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"xkm"}\NormalTok{, }\StringTok{"ykm"}\NormalTok{, }\StringTok{"YEAR"}\NormalTok{)}
+\NormalTok{grid}\SpecialCharTok{$}\NormalTok{SURV }\OtherTok{\textless{}{-}} \StringTok{"CRAB"}  \CommentTok{\# Добавляем информацию о типе съемки}
+
+\CommentTok{\# Визуализация оболочки и сетки для прогнозирования (grid\}}
+ \FunctionTok{plot}\NormalTok{(Hull)}
+ \FunctionTok{points}\NormalTok{(grid}\SpecialCharTok{$}\NormalTok{xkm, grid}\SpecialCharTok{$}\NormalTok{ykm, }\AttributeTok{pch=}\DecValTok{1}\NormalTok{, }\AttributeTok{cex=}\FloatTok{0.55}\NormalTok{,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 7. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННОЙ СЕТКИ (MESH)}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание треугольной сетки для пространственного моделирования}
+\NormalTok{mesh\_sdm }\OtherTok{\textless{}{-}} \FunctionTok{make\_mesh}\NormalTok{(}
+\NormalTok{  data, }
+  \FunctionTok{c}\NormalTok{(}\StringTok{"xkm"}\NormalTok{, }\StringTok{"ykm"}\NormalTok{),  }\CommentTok{\# Координаты}
+  \AttributeTok{cutoff =} \DecValTok{10}        \CommentTok{\# Минимальное расстояние между узлами (км)}
+\NormalTok{)}
+
+\CommentTok{\# Визуализация сетки (раскомментируйте)}
+ \FunctionTok{plot}\NormalTok{(mesh\_sdm)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 8. ПОСТРОЕНИЕ ПРОСТРАНСТВЕННО{-}ВРЕМЕННОЙ МОДЕЛИ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\NormalTok{m }\OtherTok{\textless{}{-}} \FunctionTok{sdmTMB}\NormalTok{(}
+  \AttributeTok{data =}\NormalTok{ data, }
+  \AttributeTok{formula =}\NormalTok{ Density }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(YEAR),  }\CommentTok{\# Формула: плотность зависит от года}
+  \AttributeTok{time =} \StringTok{"YEAR"}\NormalTok{,         }\CommentTok{\# Временная переменная}
+  \AttributeTok{mesh =}\NormalTok{ mesh\_sdm,       }\CommentTok{\# Пространственная сетка}
+  \AttributeTok{family =} \FunctionTok{tweedie}\NormalTok{(}\AttributeTok{link =} \StringTok{"log"}\NormalTok{),  }\CommentTok{\# Статистическое распределение}
+  \AttributeTok{spatial =} \StringTok{"on"}\NormalTok{,        }\CommentTok{\# Включение пространственных эффектов}
+  \AttributeTok{spatiotemporal =} \StringTok{"iid"} \CommentTok{\# Пространственно{-}временные эффекты}
+\NormalTok{)}
+
+
+\CommentTok{\# Вывод результатов модели}
+\FunctionTok{summary}\NormalTok{(m)}
+\FunctionTok{AIC}\NormalTok{(m)  }\CommentTok{\# Критерий Акаике}
+\FunctionTok{sanity}\NormalTok{(m)  }\CommentTok{\# Проверка корректности модели}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 9. ДИАГНОСТИКА МОДЕЛИ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Расчет остатков модели}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{resids }\OtherTok{\textless{}{-}} \FunctionTok{residuals}\NormalTok{(m) }
+
+\CommentTok{\# Гистограмма остатков}
+\FunctionTok{hist}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{resids)}
+
+\CommentTok{\# График квантиль{-}квантиль}
+\FunctionTok{qqnorm}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{resids)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{a =} \DecValTok{0}\NormalTok{, }\AttributeTok{b =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 10. ПРОГНОЗИРОВАНИЕ НА СЕТКЕ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Прогноз значений плотности на сетке}
+\NormalTok{predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(m, }\AttributeTok{newdata =}\NormalTok{ grid, }\AttributeTok{return\_tmb\_object =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{RASP }\OtherTok{\textless{}{-}}\NormalTok{ predictions}\SpecialCharTok{$}\NormalTok{data}
+
+\CommentTok{\# Преобразование координат обратно в широту/долготу}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{xkm\_m }\OtherTok{\textless{}{-}}\NormalTok{ RASP}\SpecialCharTok{$}\NormalTok{xkm }\SpecialCharTok{*} \DecValTok{1000}  \CommentTok{\# Обратно в метры}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{ykm\_m }\OtherTok{\textless{}{-}}\NormalTok{ RASP}\SpecialCharTok{$}\NormalTok{ykm }\SpecialCharTok{*} \DecValTok{1000}
+
+\CommentTok{\# Создание пространственного объекта в UTM}
+\NormalTok{utm\_proj }\OtherTok{\textless{}{-}} \FunctionTok{CRS}\NormalTok{(}\StringTok{"+proj=utm +zone=37 +datum=WGS84 +units=m +no\_defs"}\NormalTok{)}
+\NormalTok{coords }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(RASP}\SpecialCharTok{$}\NormalTok{xkm\_m, RASP}\SpecialCharTok{$}\NormalTok{ykm\_m)}
+\NormalTok{sp\_points }\OtherTok{\textless{}{-}} \FunctionTok{SpatialPoints}\NormalTok{(coords, }\AttributeTok{proj4string =}\NormalTok{ utm\_proj)}
+
+\CommentTok{\# Преобразование в WGS84 (широта/долгота)}
+\NormalTok{wgs84\_proj }\OtherTok{\textless{}{-}} \FunctionTok{CRS}\NormalTok{(}\StringTok{"+proj=longlat +datum=WGS84"}\NormalTok{)}
+\NormalTok{sp\_points\_latlon }\OtherTok{\textless{}{-}} \FunctionTok{spTransform}\NormalTok{(sp\_points, wgs84\_proj)}
+
+\CommentTok{\# Добавление координат в основной датафрейм}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{coordinates}\NormalTok{(sp\_points\_latlon)[, }\DecValTok{1}\NormalTok{]  }\CommentTok{\# Долгота}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{Y }\OtherTok{\textless{}{-}} \FunctionTok{coordinates}\NormalTok{(sp\_points\_latlon)[, }\DecValTok{2}\NormalTok{]  }\CommentTok{\# Широта}
+
+\CommentTok{\# Удаление временных столбцов}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{xkm\_m }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+\NormalTok{RASP}\SpecialCharTok{$}\NormalTok{ykm\_m }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+
+\CommentTok{\# Проверка структуры результата}
+\FunctionTok{str}\NormalTok{(RASP)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 11. ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ (КАРТА)}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Загрузка картографических данных}
+\NormalTok{world }\OtherTok{\textless{}{-}} \FunctionTok{ne\_countries}\NormalTok{(}\AttributeTok{scale =} \StringTok{"medium"}\NormalTok{, }\AttributeTok{returnclass =} \StringTok{"sf"}\NormalTok{)}
+
+\CommentTok{\# Определение региона интереса (Арктика России)}
+\NormalTok{arctic\_bbox }\OtherTok{\textless{}{-}} \FunctionTok{st\_bbox}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{xmin =} \DecValTok{25}\NormalTok{, }\AttributeTok{xmax =} \DecValTok{70}\NormalTok{, }\AttributeTok{ymin =} \DecValTok{65}\NormalTok{, }\AttributeTok{ymax =} \DecValTok{80}\NormalTok{), }\AttributeTok{crs =} \DecValTok{4326}\NormalTok{)}
+\NormalTok{arctic }\OtherTok{\textless{}{-}} \FunctionTok{st\_crop}\NormalTok{(world, arctic\_bbox)}
+
+\CommentTok{\# Определяем кастомные breaks для шкалы}
+\NormalTok{my\_breaks }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.001}\NormalTok{,}\FloatTok{0.1}\NormalTok{,}\DecValTok{1}\NormalTok{,  }\DecValTok{200}\NormalTok{, }\DecValTok{10000}\NormalTok{)}
+
+\CommentTok{\# Создаем категории для PROM}
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{PROM\_cat =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      PROM }\SpecialCharTok{==} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"0"}\NormalTok{,}
+\NormalTok{      PROM }\SpecialCharTok{\textgreater{}=} \DecValTok{1} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}} \DecValTok{10} \SpecialCharTok{\textasciitilde{}} \StringTok{"1{-}9"}\NormalTok{,}
+\NormalTok{      PROM }\SpecialCharTok{\textgreater{}=} \DecValTok{10} \SpecialCharTok{\&}\NormalTok{ PROM }\SpecialCharTok{\textless{}} \DecValTok{100} \SpecialCharTok{\textasciitilde{}} \StringTok{"10{-}99"}\NormalTok{,}
+\NormalTok{      PROM }\SpecialCharTok{\textgreater{}=} \DecValTok{100} \SpecialCharTok{\textasciitilde{}} \StringTok{"100+"}
+\NormalTok{    ),}
+    \AttributeTok{PROM\_cat =} \FunctionTok{factor}\NormalTok{(PROM\_cat, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"0"}\NormalTok{, }\StringTok{"1{-}9"}\NormalTok{, }\StringTok{"10{-}99"}\NormalTok{, }\StringTok{"100+"}\NormalTok{)),}
+    \AttributeTok{shape\_cat =} \FunctionTok{ifelse}\NormalTok{(PROM\_cat }\SpecialCharTok{==} \StringTok{"0"}\NormalTok{, }\StringTok{"zero"}\NormalTok{, }\StringTok{"non\_zero"}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\# Обновляем график}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ RASP, }
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{color =} \FunctionTok{exp}\NormalTok{(est)), }
+    \AttributeTok{size =} \FloatTok{0.8}\NormalTok{, }
+    \AttributeTok{alpha =} \FloatTok{0.7}
+\NormalTok{  ) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{(}
+    \AttributeTok{data =}\NormalTok{ data, }
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ X, }\AttributeTok{y =}\NormalTok{ Y, }\AttributeTok{size =}\NormalTok{ PROM\_cat, }\AttributeTok{shape =}\NormalTok{ shape\_cat),}
+    \AttributeTok{color =} \StringTok{"black"}\NormalTok{, }
+    \AttributeTok{fill =} \ConstantTok{NA}\NormalTok{, }
+    \AttributeTok{alpha =} \FloatTok{0.6}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}
+    \AttributeTok{name =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"0"} \OtherTok{=} \DecValTok{1}\NormalTok{, }\StringTok{"1{-}9"} \OtherTok{=} \DecValTok{2}\NormalTok{, }\StringTok{"10{-}99"} \OtherTok{=} \DecValTok{3}\NormalTok{),}
+    \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"0"}\NormalTok{, }\StringTok{"10"}\NormalTok{, }\StringTok{"100"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_shape\_manual}\NormalTok{(}
+    \AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"zero"} \OtherTok{=} \DecValTok{4}\NormalTok{, }\StringTok{"non\_zero"} \OtherTok{=} \DecValTok{21}\NormalTok{),}
+    \AttributeTok{guide =} \StringTok{"none"} \CommentTok{\# Скрываем легенду для формы}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}
+    \AttributeTok{size =} \FunctionTok{guide\_legend}\NormalTok{(}
+      \AttributeTok{override.aes =} \FunctionTok{list}\NormalTok{(}\AttributeTok{shape =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{21}\NormalTok{, }\DecValTok{21}\NormalTok{)) }\CommentTok{\# Крестик только для первого элемента}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{(}\AttributeTok{data =}\NormalTok{ arctic, }\AttributeTok{fill =} \StringTok{"lightgrey"}\NormalTok{, }\AttributeTok{color =} \StringTok{"darkgrey"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}
+    \AttributeTok{name =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{option =} \StringTok{"H"}\NormalTok{, }
+    \AttributeTok{trans =} \StringTok{"log"}\NormalTok{, }
+    \AttributeTok{breaks =}\NormalTok{ my\_breaks, }
+    \AttributeTok{labels =}\NormalTok{ my\_breaks, }
+    \AttributeTok{limits =} \FunctionTok{range}\NormalTok{(my\_breaks),}
+    \AttributeTok{guide =} \FunctionTok{guide\_colorbar}\NormalTok{(}
+      \AttributeTok{barwidth =} \FunctionTok{unit}\NormalTok{(}\DecValTok{5}\NormalTok{, }\StringTok{"cm"}\NormalTok{),}
+      \AttributeTok{title.position =} \StringTok{"top"}\NormalTok{,}
+      \AttributeTok{direction =} \StringTok{"horizontal"}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ YEAR, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{coord\_sf}\NormalTok{(}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(RASP}\SpecialCharTok{$}\NormalTok{X)}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\FunctionTok{max}\NormalTok{(RASP}\SpecialCharTok{$}\NormalTok{X)}\SpecialCharTok{+}\DecValTok{1}\NormalTok{),}
+    \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(RASP}\SpecialCharTok{$}\NormalTok{Y)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{, }\FunctionTok{max}\NormalTok{(RASP}\SpecialCharTok{$}\NormalTok{Y)}\SpecialCharTok{+}\FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{crs =} \DecValTok{4326}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid =} \FunctionTok{element\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey90"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+    \AttributeTok{legend.key.width =} \FunctionTok{unit}\NormalTok{(}\FloatTok{1.2}\NormalTok{, }\StringTok{"cm"}\NormalTok{),}
+    \AttributeTok{strip.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{)}
+\NormalTok{  )}
+
+
+\CommentTok{\# Сохранение графика (раскомментируйте)}
+\CommentTok{\# ggsave("sdmTMBmapZero.jpg", width = 8, height = 8, dpi = 300)}
+\end{Highlighting}
+\end{Shaded}
+
 \section{Определение площади
 съемки}\label{ux43eux43fux440ux435ux434ux435ux43bux435ux43dux438ux435-ux43fux43bux43eux449ux430ux434ux438-ux441ux44aux435ux43cux43aux438}
 
-\section{Присоединение факторов к данным
-съемок}\label{ux43fux440ux438ux441ux43eux435ux434ux438ux43dux435ux43dux438ux435-ux444ux430ux43aux442ux43eux440ux43eux432-ux43a-ux434ux430ux43dux43dux44bux43c-ux441ux44aux435ux43cux43eux43a}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 1. ПОДГОТОВКА СРЕДЫ И ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Очистка рабочей среды}
+\FunctionTok{rm}\NormalTok{(}\AttributeTok{list =} \FunctionTok{ls}\NormalTok{())}
+
+\CommentTok{\# Установка рабочей директории (замените на свою)}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/COMBINE/"}\NormalTok{)}
+
+\CommentTok{\# Загрузка необходимых пакетов}
+\FunctionTok{library}\NormalTok{(readxl)       }\CommentTok{\# Для чтения Excel{-}файлов}
+\FunctionTok{library}\NormalTok{(PBSmapping)   }\CommentTok{\# Для работы с пространственными данными}
+\FunctionTok{library}\NormalTok{(sdmTMB)       }\CommentTok{\# Пространственно{-}временное моделирование}
+\FunctionTok{library}\NormalTok{(INLA)         }\CommentTok{\# Продвинутые пространственные модели}
+
+\CommentTok{\# Загрузка данных из Excel{-}файла}
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"KARTOGRAPHIC.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"SURVEY"}\NormalTok{)}
+
+\CommentTok{\# Просмотр структуры данных}
+\FunctionTok{str}\NormalTok{(data)}
+
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 2. ПРЕОБРАЗОВАНИЕ КООРДИНАТ В ПРОЕКЦИЮ UTM (в км)}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание пространственного объекта из данных}
+\NormalTok{data\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(}
+\NormalTok{  data, }
+  \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{), }\CommentTok{\# Указание столбцов с координатами}
+  \AttributeTok{crs =} \DecValTok{4326}            \CommentTok{\# Система координат WGS84 (широта/долгота)}
+\NormalTok{) }
+
+\CommentTok{\# Преобразование в UTM зону 37N (метры)}
+\NormalTok{data\_utm }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(data\_sf, }\AttributeTok{crs =} \DecValTok{32637}\NormalTok{) }
+
+\CommentTok{\# Извлечение координат и перевод в километры}
+\NormalTok{utm\_coords }\OtherTok{\textless{}{-}} \FunctionTok{st\_coordinates}\NormalTok{(data\_utm)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{xkm }\OtherTok{\textless{}{-}}\NormalTok{ utm\_coords[, }\DecValTok{1}\NormalTok{] }\SpecialCharTok{/} \DecValTok{1000}  \CommentTok{\# X в км}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{ykm }\OtherTok{\textless{}{-}}\NormalTok{ utm\_coords[, }\DecValTok{2}\NormalTok{] }\SpecialCharTok{/} \DecValTok{1000}  \CommentTok{\# Y в км}
+
+\CommentTok{\# Очистка временных объектов}
+\FunctionTok{rm}\NormalTok{(data\_sf, data\_utm, utm\_coords)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 3. ОПРЕДЕЛЕНИЕ ГРАНИЦ ИССЛЕДОВАНИЯ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Вычисление границ исследовательского полигона}
+\NormalTok{xl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm), }\FunctionTok{max}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm))  }\CommentTok{\# Границы по X}
+\NormalTok{yl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ykm), }\FunctionTok{max}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ykm))  }\CommentTok{\# Границы по Y}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 4. СОЗДАНИЕ РАСТРОВОЙ СЕТКИ ДЛЯ МОДЕЛИ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание равномерной сетки с шагом 10 км (для визуализации карты использовался шаг 2 км}
+\NormalTok{GRID }\OtherTok{\textless{}{-}} \FunctionTok{makeGrid}\NormalTok{(}
+  \AttributeTok{x =} \FunctionTok{seq}\NormalTok{(xl[}\DecValTok{1}\NormalTok{], xl[}\DecValTok{2}\NormalTok{], }\DecValTok{10}\NormalTok{), }
+  \AttributeTok{y =} \FunctionTok{seq}\NormalTok{(yl[}\DecValTok{1}\NormalTok{], yl[}\DecValTok{2}\NormalTok{], }\DecValTok{10}\NormalTok{),}
+  \AttributeTok{byrow =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{projection =} \StringTok{"UTM"}\NormalTok{, }
+  \AttributeTok{zone =} \DecValTok{37}
+\NormalTok{)}
+
+\CommentTok{\# Расчет центроидов ячеек сетки}
+\NormalTok{GRID }\OtherTok{\textless{}{-}} \FunctionTok{calcCentroid}\NormalTok{(GRID, }\AttributeTok{rollup =} \DecValTok{3}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+\CommentTok{\# 5. ПОСТРОЕНИЕ ВЫПУКЛОЙ ОБОЛОЧКИ (CONVEX HULL) ДЛЯ ДАННЫХ}
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Создание выпуклой оболочки вокруг точек данных}
+\NormalTok{Hull }\OtherTok{\textless{}{-}} \FunctionTok{inla.nonconvex.hull}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{xkm, data}\SpecialCharTok{$}\NormalTok{ykm), }\AttributeTok{convex =} \SpecialCharTok{{-}}\FloatTok{0.03}\NormalTok{)}
+
+\CommentTok{\# Визуализация оболочки }
+ \FunctionTok{plot}\NormalTok{(Hull)}
+
+\CommentTok{\# Преобразование Hull в объект PolySet:}
+\NormalTok{polys }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{PID =} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(Hull}\SpecialCharTok{$}\NormalTok{loc)), }\CommentTok{\# ID полигона}
+  \AttributeTok{POS =} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(Hull}\SpecialCharTok{$}\NormalTok{loc),       }\CommentTok{\# Порядок точек}
+  \AttributeTok{X =}\NormalTok{ Hull}\SpecialCharTok{$}\NormalTok{loc[, }\DecValTok{1}\NormalTok{],            }\CommentTok{\# Координата X (в км)}
+  \AttributeTok{Y =}\NormalTok{ Hull}\SpecialCharTok{$}\NormalTok{loc[, }\DecValTok{2}\NormalTok{]             }\CommentTok{\# Координата Y (в км)}
+\NormalTok{)}
+\NormalTok{polys }\OtherTok{\textless{}{-}}\NormalTok{ PBSmapping}\SpecialCharTok{::}\FunctionTok{as.PolySet}\NormalTok{(polys, }\AttributeTok{projection =} \StringTok{"UTM"}\NormalTok{, }\AttributeTok{zone =} \DecValTok{37}\NormalTok{)}
+
+\CommentTok{\# Расчет площади:}
+\NormalTok{area }\OtherTok{\textless{}{-}}\NormalTok{ PBSmapping}\SpecialCharTok{::}\FunctionTok{calcArea}\NormalTok{(polys)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Площадь Hull:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(area}\SpecialCharTok{$}\NormalTok{area, }\DecValTok{2}\NormalTok{), }\StringTok{"км кв."}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+{[}1{]} ``Площадь Hull: 283947.5 км кв.''
 
 \bookmarksetup{startatroot}
 
