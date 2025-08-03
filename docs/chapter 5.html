@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Основы геостатистики – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>6&nbsp; Продукционная модель SPiCT – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -82,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 5.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Основы геостатистики</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 5.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -146,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter 5.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Основы геостатистики</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,8 +225,22 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">6.1</span> Введение</a></li>
-  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">6.2</span> Загрузка данных и первичный осмотр</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">6.3</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#установка-пакетов-и-загрузка-данных" id="toc-установка-пакетов-и-загрузка-данных" class="nav-link" data-scroll-target="#установка-пакетов-и-загрузка-данных"><span class="header-section-number">6.2</span> Установка пакетов и Загрузка данных</a></li>
+  <li><a href="#кросс-корреляции-с-временным-лагом-между-индексами-и-уловами" id="toc-кросс-корреляции-с-временным-лагом-между-индексами-и-уловами" class="nav-link" data-scroll-target="#кросс-корреляции-с-временным-лагом-между-индексами-и-уловами"><span class="header-section-number">6.3</span> Кросс-корреляции с временным лагом между индексами и уловами</a></li>
+  <li><a href="#подготовка-данных-для-spict" id="toc-подготовка-данных-для-spict" class="nav-link" data-scroll-target="#подготовка-данных-для-spict"><span class="header-section-number">6.4</span> Подготовка данных для SPiCT</a></li>
+  <li><a href="#настройка-модели" id="toc-настройка-модели" class="nav-link" data-scroll-target="#настройка-модели"><span class="header-section-number">6.5</span> Настройка модели</a></li>
+  <li><a href="#визуализация-входных-данных" id="toc-визуализация-входных-данных" class="nav-link" data-scroll-target="#визуализация-входных-данных"><span class="header-section-number">6.6</span> Визуализация входных данных</a></li>
+  <li><a href="#запуск-модели" id="toc-запуск-модели" class="nav-link" data-scroll-target="#запуск-модели"><span class="header-section-number">6.7</span> Запуск модели</a></li>
+  <li><a href="#диагностика-сходимости" id="toc-диагностика-сходимости" class="nav-link" data-scroll-target="#диагностика-сходимости"><span class="header-section-number">6.8</span> Диагностика сходимости</a></li>
+  <li><a href="#диагностика-модели" id="toc-диагностика-модели" class="nav-link" data-scroll-target="#диагностика-модели"><span class="header-section-number">6.9</span> Диагностика модели</a>
+  <ul class="collapse">
+  <li><a href="#bkfrac-начальная-биомасса" id="toc-bkfrac-начальная-биомасса" class="nav-link" data-scroll-target="#bkfrac-начальная-биомасса"><span class="header-section-number">6.9.1</span> <strong><code>bkfrac</code> (Начальная биомасса)</strong></a></li>
+  </ul></li>
+  <li><a href="#проверка-корреляции-параметров" id="toc-проверка-корреляции-параметров" class="nav-link" data-scroll-target="#проверка-корреляции-параметров"><span class="header-section-number">6.10</span> Проверка корреляции параметров</a></li>
+  <li><a href="#визуализация-резульататов" id="toc-визуализация-резульататов" class="nav-link" data-scroll-target="#визуализация-резульататов"><span class="header-section-number">6.11</span> Визуализация резульататов</a></li>
+  <li><a href="#анализ-результатов" id="toc-анализ-результатов" class="nav-link" data-scroll-target="#анализ-результатов"><span class="header-section-number">6.12</span> Анализ результатов</a></li>
+  <li><a href="#ретроспективный-анализ" id="toc-ретроспективный-анализ" class="nav-link" data-scroll-target="#ретроспективный-анализ"><span class="header-section-number">6.13</span> Ретроспективный анализ</a></li>
+  <li><a href="#прогнозирование-и-сценарии-управления" id="toc-прогнозирование-и-сценарии-управления" class="nav-link" data-scroll-target="#прогнозирование-и-сценарии-управления"><span class="header-section-number">6.14</span> Прогнозирование и сценарии управления</a></li>
   </ul>
 </nav>
     </div>
@@ -200,7 +249,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Основы геостатистики</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></h1>
 </div>
 
 
@@ -219,14 +268,1123 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="введение" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">6.1</span> Введение</h2>
+<p>Библиотека SPiCT <a href="https://github.com/DTUAqua/spict" class="uri">https://github.com/DTUAqua/spict</a> - оценка запаса с помощью стохастической версии продукционной модели и байесовского подхода. Доступен краткий обзор пакета <a href="https://github.com/DTUAqua/spict/raw/master/spict/inst/doc/spict_handbook.pdf"><code>здесь</code></a>, который служит для ознакомления с пакетом и его функционалом. В обзоре также содержится описание более продвинутых функций пакета.</p>
+<p>Документ с техническими рекомендациями по использованию SPiCT доступен <a href="https://github.com/DTUAqua/spict/raw/master/spict/inst/doc/spict_guidelines.pdf">здесь</a> . Это постоянно обновляемый документ.</p>
+<p>Пакет также содержит достаточно подробную документацию в виде справочных текстов, связанных с каждой функцией (некоторые из них могут быть не полностью актуальны). Доступ к ним можно получить обычным для R способом, набрав, например <code>?check.inp</code>, . Для начала (помимо изучения краткого обзора) рекомендуется прочитать <code>?check.inp</code>и <code>?fit.spict</code>.</p>
 </section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">6.2</span> Загрузка данных и первичный осмотр</h2>
-<p>Текст. Текст. Текст.</p>
+<section id="установка-пакетов-и-загрузка-данных" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="установка-пакетов-и-загрузка-данных"><span class="header-section-number">6.2</span> Установка пакетов и Загрузка данных</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------- 1. ПОДГОТОВКА СРЕДЫ ---------------------------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.1 Установка пакетов (выполнить один раз)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#remotes::install_github("DTUAqua/spict/spict") # Установка SPiCT</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("TMB", type="source")</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.2 Загрузка библиотек</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spict)   <span class="co"># Основной пакет для моделирования</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Для обработки данных и визуализации</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.3 Установка рабочей директории</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/SPICT"</span>) <span class="co"># Укажите вашу рабочую папку</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------- 2. ЗАГРУЗКА ДАННЫХ ---------------------------</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.1 Вектор лет наблюдений</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Year <span class="ot">&lt;-</span> <span class="dv">2005</span><span class="sc">:</span><span class="dv">2024</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.2 Данные по вылову (тыс. тонн)</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>Catch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>,  <span class="dv">7</span>,  <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">25</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">32</span>, <span class="dv">35</span>, <span class="dv">25</span>, <span class="dv">20</span>, <span class="dv">15</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">13</span>, <span class="dv">11</span>, <span class="dv">12</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.3 Индекс CPUE (промысловый индекс)</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>CPUEIndex <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">27.427120</span>, <span class="fl">26.775958</span>, <span class="fl">16.811997</span>, <span class="fl">22.979653</span>, <span class="fl">29.048568</span>, <span class="fl">29.996072</span>, <span class="fl">16.476301</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fl">17.174455</span>, <span class="fl">10.537272</span>, <span class="fl">14.590435</span>,  <span class="fl">8.286352</span>, <span class="fl">11.394168</span>, <span class="fl">15.537878</span>, <span class="fl">13.791166</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fl">11.527548</span>, <span class="fl">15.336093</span>, <span class="fl">12.154069</span>, <span class="fl">15.568450</span>, <span class="fl">16.221933</span>, <span class="fl">13.421132</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.4 Индекс BESS (научная съемка)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>BESSIndex <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="cn">NA</span>, <span class="fl">16.270375</span>, <span class="fl">20.691355</span>, <span class="fl">15.141784</span>, <span class="fl">18.594620</span>, <span class="fl">15.975548</span>, <span class="fl">13.792012</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fl">13.328805</span>, <span class="fl">11.659744</span>, <span class="fl">11.753855</span>,  <span class="fl">9.309859</span>,  <span class="fl">7.104886</span>,  <span class="fl">7.963839</span>,  <span class="fl">9.161322</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fl">10.271221</span>,  <span class="fl">9.822960</span>, <span class="fl">10.347376</span>, <span class="fl">11.703610</span>, <span class="fl">13.679876</span>, <span class="fl">13.413696</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">6.3</span> Описательная статистика и визуализация</h2>
-<p>Текст. Текст. Текст.</p>
+<section id="кросс-корреляции-с-временным-лагом-между-индексами-и-уловами" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="кросс-корреляции-с-временным-лагом-между-индексами-и-уловами"><span class="header-section-number">6.3</span> Кросс-корреляции с временным лагом между индексами и уловами</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График кросс-корреляции: Catch и BESSindex (только данные без пропусков)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(<span class="fu">na.omit</span>(Catch), <span class="fu">na.omit</span>(BESSIndex),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">"Кросс-корреляция: Уловы и BESSindex"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">"Лаг (годы)"</span>, <span class="at">ylab =</span> <span class="st">"Корреляция"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># График кросс-корреляции: Catch и CPUEIndex (только данные без пропусков)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(<span class="fu">na.omit</span>(Catch), <span class="fu">na.omit</span>(CPUEIndex),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">"Кросс-корреляция: Уловы и CPUEIndex"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">"Лаг (годы)"</span>, <span class="at">ylab =</span> <span class="st">"Корреляция"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT1.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 1.: График кросс-корреляции: Catch и BESSindex</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT2.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 2.: График кросс-корреляции: Catch и CPUEIndex</figcaption>
+</figure>
+</div>
+</section>
+<section id="подготовка-данных-для-spict" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="подготовка-данных-для-spict"><span class="header-section-number">6.4</span> Подготовка данных для SPiCT</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.1 Форматирование данных в список SPiCT</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>input_new <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">timeC =</span> Year,     <span class="co"># Годы вылова</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">obsC =</span> Catch,     <span class="co"># Значения вылова</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">timeI =</span> <span class="fu">list</span>(     <span class="co"># Временные точки для индексов:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    Year <span class="sc">+</span> <span class="fl">0.5</span>,     <span class="co">#  CPUE - середина года (июль)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    Year <span class="sc">+</span> <span class="fl">0.75</span>     <span class="co">#  BESS - 3/4 года (октябрь)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">obsI =</span> <span class="fu">list</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    CPUEIndex,      <span class="co"># Значения индекса CPUE</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    BESSIndex       <span class="co"># Значения индекса BESS</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.2 Проверка и подготовка входных данных</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>inp <span class="ot">&lt;-</span> <span class="fu">check.inp</span>(input_new, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Функция check.inp() выполняет подготовку и валидацию входных данных перед моделированием. Основные задачи функции:</p>
+<p>Проверяет наличие обязательных элементов: timeC (временные точки вылова), obsC (значения вылова). Проверяет соответствие индексов (timeI и obsI): одинаковое количество элементов в списках, соответствие длин временных рядов. Обработка пропущенных значений. Автоматически обрабатывает NA в начале вектора CPUEIndex (2005-2010). Удаляет или маркирует пропущенные значения в соответствии с настройками пакета и пр.</p>
+</section>
+<section id="настройка-модели" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="настройка-модели"><span class="header-section-number">6.5</span> Настройка модели</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 4. НАСТРОЙКА МОДЕЛИ --------------------</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.1 Установка априорных распределений</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="dv">2</span>), <span class="fl">0.1</span>, <span class="dv">1</span>)   <span class="co"># Прайер для n (модель Шефера)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>ini<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">2</span>)                  <span class="co"># Начальное значение</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>phases<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span>                   <span class="co"># Фиксируем параметр (не оцениваем)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logK <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="fl">0.7</span>, <span class="dv">1</span>)       <span class="co"># Прайер для емкости среды (K)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logbkfrac <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fl">0.75</span>),<span class="fl">0.25</span>,<span class="dv">1</span>) <span class="co"># Начальный уровень эксплуатации</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.2 Настройка неопределенности данных</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Повышаем неопределенность для последнего года вылова</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>stdevfacC[<span class="fu">length</span>(inp<span class="sc">$</span>stdevfacC)] <span class="ot">&lt;-</span> <span class="dv">2</span> </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Повышаем неопределенность для последнего значения BESS</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>stdevfacI[[<span class="dv">2</span>]][<span class="fu">length</span>(inp<span class="sc">$</span>stdevfacI[[<span class="dv">2</span>]])] <span class="ot">&lt;-</span> <span class="dv">2</span> </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.3 Настройка временного шага</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>dteuler <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">16</span>  <span class="co"># Более точная дискретизация (по умолчанию 1)</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.4 Включение оценки ковариации</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>getJointPrecision <span class="ot">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># Для оценки случайных эффектов</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Установка априорных распределений</strong></p>
+<pre><code>inp$priors$logn &lt;- c(log(2), 0.1, 1) inp$ini$logn &lt;- log(2) inp$phases$logn &lt;- -1</code></pre>
+<ol type="1">
+<li><p><strong>Прайер для параметра n</strong>: Устанавливаем лог-нормальное распределение для экспоненты в продукционном уравнении, фиксируя модель Шефера (n=2).</p></li>
+<li><p><strong>Начальное значение</strong>: Задаем стартовую точку для оптимизации как log(2), что соответствует n=2.</p></li>
+<li><p><strong>Фиксация параметра</strong>: Флаг <strong><code>-1</code></strong> исключает n из оценки, делая его константой (упрощает модель).</p></li>
+<li><p><strong>Биологический смысл</strong>: Обеспечивает реалистичную форму кривой производства (параболическую).</p></li>
+</ol>
+<pre><code>inp$priors$logK &lt;- c(5, 0.7, 1)</code></pre>
+<ol type="1">
+<li><p><strong>Прайер для ёмкости среды</strong>: Задаем лог-нормальное распределение для K.</p></li>
+<li><p><strong>Параметры</strong>: Медиана exp(5)≈148 тыс.т, SD=0.7 в лог-шкале.</p></li>
+<li><p><strong>Значение 1</strong>: Активирует использование прайера в расчетах.</p></li>
+<li><p><strong>Назначение</strong>: Отражает экспертные знания о возможном диапазоне K.</p></li>
+</ol>
+<pre><code>inp$priors$logbkfrac &lt;- c(log(0.75),0.25,1)</code></pre>
+<ol type="1">
+<li><p><strong>Приор для начальной биомассы</strong>: Определяет распределение для B₀/K.</p></li>
+<li><p><strong>Параметры</strong>: Медиана 0.75 (начальная биомасса 75% от K), SD=0.25.</p></li>
+<li><p><strong>Биологический смысл</strong>: Отражает гипотезу, что запас изначально был близок к неиспользуемому.</p></li>
+<li><p><strong>Важность</strong>: Помогает оценить начальные условия при ограниченных данных.</p></li>
+</ol>
+<p><strong>Настройка неопределенности данных</strong></p>
+<pre><code>inp$stdevfacC[length(inp$stdevfacC)] &lt;- 2</code></pre>
+<ol type="1">
+<li><p><strong>Цель</strong>: Увеличить неопределенность последнего года вылова.</p></li>
+<li><p><strong>Значение 2</strong>: Стандартная ошибка увеличивается вдвое.</p></li>
+<li><p><strong>Причина</strong>: Последние данные часто предварительные или неполные.</p></li>
+<li><p><strong>Эффект</strong>: Снижает влияние потенциально ненадежной точки на оценку запаса.</p></li>
+</ol>
+<pre><code>inp$stdevfacI[[2]][length(inp$stdevfacI[[2]])] &lt;- 2</code></pre>
+<ol type="1">
+<li><p><strong>Цель</strong>: Повысить неопределенность последнего значения научного индекса (BESS).</p></li>
+<li><p><strong>Синтаксис</strong>: <strong><code>[[2]]</code></strong> указывает на второй индекс в списке.</p></li>
+<li><p><strong>Обоснование</strong>: Данные съемок могут требовать последующих корректировок.</p></li>
+<li><p><strong>Результат</strong>: Модель становится менее чувствительной к потенциальным аномалиям.</p></li>
+</ol>
+<p><strong>Настройка временного шага</strong></p>
+<pre><code>inp$dteuler &lt;- 1/16</code></pre>
+<ol type="1">
+<li><p><strong>Цель</strong>: Улучшить точность численного интегрирования.</p></li>
+<li><p><strong>Значение</strong>: Шаг расчета ≈23 дня (вместо годового).</p></li>
+<li><p><strong>Необходимость</strong>: Для короткоживущих видов (н-р, креветка) с быстрой динамикой.</p></li>
+<li><p><strong>Эффект</strong>: Точнее учитывает внутригодовые изменения и сезонность.</p></li>
+<li><p><strong>Цена</strong>: Увеличивает время расчета в 3-5 раз.</p></li>
+</ol>
+<p><strong>Включение оценки ковариации</strong></p>
+<pre><code>inp$getJointPrecision &lt;- TRUE</code></pre>
+<ol type="1">
+<li><p><strong>Цель</strong>: Рассчитать полную ковариационную матрицу параметров.</p></li>
+<li><p><strong>Необходимость</strong>: Для корректной оценки неопределенности производных показателей (B/BMSY).</p></li>
+<li><p><strong>Что делает</strong>: Учитывает взаимосвязи между параметрами и скрытыми состояниями.</p></li>
+<li><p><strong>Преимущество</strong>: Более реалистичные доверительные интервалы.</p></li>
+<li><p><strong>Ограничение</strong>: Увеличивает время расчета на 20-30%.</p></li>
+</ol>
+</section>
+<section id="визуализация-входных-данных" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="визуализация-входных-данных"><span class="header-section-number">6.6</span> Визуализация входных данных</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------- 5. ВИЗУАЛИЗАЦИЯ ВХОДНЫХ ДАННЫХ -----------------</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.1 Общий график данных</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.data</span>(inp)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.ci</span>(inp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT3.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 3.: Визуализация входных данных</figcaption>
+</figure>
+</div>
+</section>
+<section id="запуск-модели" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="запуск-модели"><span class="header-section-number">6.7</span> Запуск модели</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 6. ЗАПУСК МОДЕЛИ --------------------</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.1 Настройка оптимизатора</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>optimiser.control <span class="ot">=</span> <span class="fu">list</span>(<span class="at">iter.max =</span> <span class="fl">1e5</span>, <span class="at">eval.max =</span> <span class="fl">1e5</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.2 Подгонка модели</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">fit.spict</span>(inp)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.3 Добавление OSA-остатков</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">calc.osa.resid</span>(fit) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Настройка оптимизатора</strong></p>
+<pre><code>inp$optimiser.control = list(iter.max = 1e5, eval.max = 1e5)</code></pre>
+<p><strong>Что это делает:</strong></p>
+<ol type="1">
+<li><p>Увеличивает максимальное количество итераций (iter.max) и вычислений (eval.max) для алгоритма оптимизации до 100,000</p></li>
+<li><p>Обеспечивает, что процесс оптимизации не остановится преждевременно из-за ограничений по умолчанию</p></li>
+<li><p>Особенно важно для сложных моделей с несколькими индексами или при плохой сходимости</p></li>
+<li><p>Помогает алгоритму найти глобальный минимум функции правдоподобия</p></li>
+<li><p>Предотвращает ошибки типа “maximum iterations reached”</p></li>
+</ol>
+<p><strong>Подгонка модели</strong></p>
+<pre><code>fit &lt;- fit.spict(inp)</code></pre>
+<p><strong>Что происходит:</strong></p>
+<ol type="1">
+<li><p><strong>Оценка параметров</strong>: Ищет значения параметров (K, r, q и др.), максимизирующие правдоподобие</p></li>
+<li><p><strong>Интегрирование уравнений</strong>: Решает дифференциальные уравнения модели с шагом dteuler</p></li>
+<li><p><strong>Расчет неопределенности</strong>: Оценивает стандартные ошибки через обратную матрицу Гессе</p></li>
+<li><p><strong>Диагностика сходимости</strong>: Проверяет успешность оптимизации (fit$opt$convergence)</p></li>
+<li><p><strong>Сохраняет результаты</strong>: Формирует объект fit со всеми выходами модели</p></li>
+</ol>
+<p><strong>Ключевые процессы:</strong></p>
+<ul>
+<li><p>Численная оптимизация (обычно алгоритм nlminb)</p></li>
+<li><p>Интегрирование методом Эйлера</p></li>
+<li><p>Расчет логарифмического правдоподобия</p></li>
+<li><p>Оценка матрицы Гессе</p></li>
+</ul>
+<p><strong>OSA-остатки</strong></p>
+<pre><code>fit &lt;- calc.osa.resid(fit)</code></pre>
+<p><strong>Что такое OSA-остатки:</strong></p>
+<ol type="1">
+<li><p><strong>One-Step-Ahead residuals</strong> - остатки “на один шаг вперед”</p></li>
+<li><p><strong>Диагностический инструмент</strong>: Показывают, насколько хорошо модель предсказывает следующее наблюдение</p></li>
+<li><p><strong>Расчет</strong>: Для каждого года t модель подгоняется по данным до t-1, затем сравнивается предсказание с фактическим значением в t</p></li>
+</ol>
+<p><strong>Что делают:</strong></p>
+<ol type="1">
+<li><p><strong>Обнаружение систематических ошибок</strong>: Выявляют смещения в предсказаниях</p></li>
+<li><p><strong>Проверка независимости</strong>: Автокорреляция в остатках указывает на неучтенные зависимости</p></li>
+<li><p><strong>Оценка распределения ошибок</strong>: Проверяют соответствие нормальному распределению</p></li>
+<li><p><strong>Идентификация выбросов</strong>: Помогают найти аномальные точки данных</p></li>
+</ol>
+</section>
+<section id="диагностика-сходимости" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="диагностика-сходимости"><span class="header-section-number">6.8</span> Диагностика сходимости</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------- 7. ДИАГНОСТИКА СХОДИМОСТИ -----------------</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.1 Проверка сходимости</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>opt<span class="sc">$</span>convergence  <span class="co"># 0 = успешная сходимость</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.2 Проверка конечных значений</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">is.finite</span>(fit<span class="sc">$</span>sd)) <span class="co"># TRUE = все параметры конечны</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Диагностика сходимости модели SPiCT</strong></p>
+<p><strong>Проверка сходимости (7.1)</strong><br>
+<strong><code>fit$opt$convergence</code></strong> — индикатор успешности оптимизации. Возвращаемое значение <strong>0</strong> означает, что алгоритм оптимизации успешно сошелся к точке максимума правдоподобия. Это важно, так как гарантирует:</p>
+<ol type="1">
+<li><p>Параметры модели достигли стабильных значений</p></li>
+<li><p>Градиент функции правдоподобия близок к нулю</p></li>
+<li><p>Результаты статистически надежны</p></li>
+<li><p>Модель готова для дальнейшего анализа и прогнозирования</p></li>
+</ol>
+<p><strong>Интерпретация кодов:</strong></p>
+<ul>
+<li><p><strong>0</strong>: Успешная сходимость (идеальный результат)</p></li>
+<li><p><strong>1</strong>: Достигнут лимит итераций (требует увеличения iter.max)</p></li>
+<li><p><strong>10</strong>: Дегенерация симплекса (проблемы с данными)</p></li>
+<li><p>Другие коды указывают на специфические ошибки оптимизации</p></li>
+</ul>
+<p><strong>Проверка конечных значений (7.2)</strong><br>
+<strong><code>all(is.finite(fit$sd))</code></strong> — комплексная проверка корректности оценок неопределенности. Результат <strong>TRUE</strong> означает:</p>
+<ol type="1">
+<li><p>Все стандартные ошибки параметров являются вещественными числами</p></li>
+<li><p>Отсутствуют патологические значения (NaN, Inf, NA) в матрице Гессе</p></li>
+<li><p>Ковариационная матрица положительно определена</p></li>
+<li><p>Оценки неопределенности надежны для построения доверительных интервалов</p></li>
+</ol>
+<p><strong>Что проверяет:</strong></p>
+<ul>
+<li><p>Корректность расчета стандартных ошибок</p></li>
+<li><p>Отсутствие вырожденных параметров</p></li>
+<li><p>Численную стабильность решения</p></li>
+<li><p>Возможность интерпретировать результаты</p></li>
+</ul>
+<p><strong>Последствия FALSE:</strong></p>
+<ol type="1">
+<li><p>Невозможно построить достоверные доверительные интервалы</p></li>
+<li><p>Риск ошибочных управленческих рекомендаций</p></li>
+<li><p>Требуется пересмотр модели (упрощение, изменение прайеров)</p></li>
+</ol>
+</section>
+<section id="диагностика-модели" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="диагностика-модели"><span class="header-section-number">6.9</span> Диагностика модели</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------- 8. ДИАГНОСТИКА МОДЕЛИ -----------------</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.1 График остатков</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.osar</span>(fit) </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.2 Общая диагностика</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.diagnostic</span>(fit)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.3 Сравнение приоров и апостериорных распределений</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.priors</span>(fit)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.4 Проверка корреляции параметров</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(fit<span class="sc">$</span>cov.fixed)        <span class="co"># Матрица корреляций</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cov2cor</span>(fit<span class="sc">$</span>cov.fixed) <span class="sc">&gt;</span> <span class="fl">0.8</span>  <span class="co"># Выявление сильных корреляций (&gt;0.8)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT4.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 4.: График остатков</figcaption>
+</figure>
+</div>
+<p><strong>Остатки по времени</strong> (Residuals vs.&nbsp;time):</p>
+<pre><code>-   Показывает разницу между наблюдаемыми значениями и предсказаниями модели
+
+-   Идеал: случайное распределение вокруг нуля
+
+    ### **Что означает "Index 1 Bias p-val 0.7813"?**
+
+    Это результат **статистического теста на систематическую ошибку** (bias) для первого индекса (в вашем случае - CPUE):
+
+    1.  **Index 1**: Это ваш индекс CPUE (первый в списке индексов)
+
+    2.  **Bias p-val**: p-value теста на наличие систематического смещения
+
+    3.  **0.7813**: Конкретное значение p-value
+
+    ### **Интерпретация значения 0.7813:**
+
+    -   **p-value \&gt; 0.05**: Нет статистически значимых доказательств систематической ошибки (смещения)
+
+    -   **Высокое значение (0.7813)**: Сильно выше 0.05 → модель **не имеет значимого смещения** для этого индекса
+
+    -   **Практический смысл**: Модель адекватно описывает динамику CPUE без постоянного завышения или занижения</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT5.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 5.: Общая диагностика</figcaption>
+</figure>
+</div>
+<p><strong>Структура диагностического графика</strong></p>
+<ol type="1">
+<li><p><strong>Первый столбец:</strong> Информация, связанная с данными по <strong>вылову (catch)</strong>.</p></li>
+<li><p><strong>Второй и третий столбцы:</strong> Информация, связанная с данными по <strong>индексам биомассы</strong>.</p></li>
+</ol>
+<p><strong>Строки графика содержат (сверху вниз):</strong></p>
+<ol type="1">
+<li><p><strong>Логарифмы исходных рядов данных:</strong></p>
+<ul>
+<li><p>Верхний левый график в строке: <strong><code>log catch data</code></strong> (Логарифм данных по вылову).</p></li>
+<li><p>Срелний и правый графики в строке: <strong><code>log index data</code></strong> (Логарифм данных по индексу).</p></li>
+<li><p><em>Цель:</em> Визуально оценить исходные данные.</p></li>
+</ul></li>
+<li><p><strong>OSA-остатки:</strong></p>
+<ul>
+<li><p>График показывает разницу между наблюдаемыми и предсказанными на один шаг вперед значениями (в логарифмической шкале).</p></li>
+<li><p><strong>Заголовок графика</strong> содержит <strong>p-значение теста на смещение (bias test)</strong>. Этот тест проверяет, отличается ли среднее остатков от нуля (систематическая ошибка).</p>
+<ul>
+<li><p><strong><code>Bias p-val: X.XXXX</code></strong> (p-значение теста на смещение).</p></li>
+<li><p><strong>Зеленый заголовок:</strong> Тест НЕ значим (нет свидетельств систематической ошибки, p &gt; 0.05).</p></li>
+<li><p><strong>Красный заголовок:</strong> Тест значим (есть свидетельства систематической ошибки, p &lt;= 0.05).</p></li>
+</ul></li>
+<li><p>Три теста незначимы (p=0.4386 для вылова, p=0.7813 и p=0.9472 для индексов), заголовки зеленые.</p></li>
+</ul></li>
+<li><p><strong>Эмпирическая автокорреляция остатков (ACF - Autocorrelation Function):</strong></p>
+<ul>
+<li><p>График показывает корреляцию остатков с их собственными лагированными значениями.</p></li>
+<li><p>Выполняется <strong>два теста на значимую автокорреляцию:</strong></p>
+<ol type="1">
+<li><p><strong>Тест Льюнга-Бокса (Ljung-Box test):</strong> Одновременный тест для нескольких лагов (здесь 4). Результат:</p>
+<ul>
+<li><p><strong><code>LBox p-val: X.XXXX</code></strong> в заголовке графика.</p></li>
+<li><p>На примере: Три теста незначимы (p=0.1348 для вылова, p=0.68 и p=0.3602 для индексов).</p></li>
+</ul></li>
+<li><p><strong>Тесты для отдельных лагов:</strong> Пунктирные горизонтальные линии на графике показывают критические значения для значимой автокорреляции на каждом конкретном лаге. Если столбики автокорреляции (вертикальные линии) выходят за эти пунктирные линии, это свидетельствует о значимой автокорреляции на данном лаге.</p></li>
+</ol></li>
+<li><p>На примере : Никаких нарушений (значимой автокорреляции) не выявлено.</p></li>
+</ul></li>
+<li><p><strong>Тесты на нормальность остатков:</strong></p>
+<ul>
+<li><p><strong>QQ-график (Quantile-Quantile plot):</strong> Сравнивает квантили остатков с квантилями теоретического нормального распределения. Прямая линия указывает на нормальность.</p></li>
+<li><p><strong>Тест Шапиро-Уилка (Shapiro-Wilk test):</strong> Формальный тест на нормальность. Результат:</p>
+<ul>
+<li><p><strong><code>Shapiro p-val: X.XXXX</code></strong> в заголовке графика.</p></li>
+<li><p>На примере: Три теста незначимы (p=0.1268 для вылова, p=0.9554 и p=0.9825 для индекса), нет свидетельств против нормальности.</p></li>
+</ul></li>
+</ul></li>
+</ol>
+<p><strong>Вывод для примера :</strong><br>
+Данные в этом примере <strong>не показали значимых нарушений</strong> предположений модели (нет систематической ошибки, автокорреляции или отклонения от нормальности остатков). Это <strong>повышает уверенность в полученных результатах</strong> моделирования.</p>
+<p><strong>Для обсуждения возможных нарушений и способов их устранения</strong> читатель отсылается к Pedersen and Berg (2017) см. <a href="https://github.com/DTUAqua/spict/raw/master/spict/inst/doc/spict_handbook.pdf" class="uri">https://github.com/DTUAqua/spict/raw/master/spict/inst/doc/spict_handbook.pdf</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT6.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 6.: Сравнение априорных и апостериорных распределений</figcaption>
+</figure>
+</div>
+<p><strong><code>n</code> (параметр формы продукционной функции)</strong></p>
+<ul>
+<li><p><strong>Описание:</strong> Определяет форму продукционной кривой (зависимость роста биомассы от самой биомассы).</p></li>
+<li><p><strong>Интерпретация:</strong></p>
+<ul>
+<li><p><strong><code>n = 2</code></strong>: Классическая модель Шефера (симметричная кривая, максимум производства при <strong><code>B/K = 0.5</code></strong>).</p></li>
+<li><p><strong><code>n ≠ 2</code></strong>: Обобщенная модель Пеллы-Томлинсона (асимметричная кривая).</p></li>
+</ul></li>
+<li><p><strong>Важность:</strong> влияет на оценку <strong><code>Bmsy</code></strong> (биомасса при MSY) и статус запаса (<strong><code>B/Bmsy</code></strong>).</p></li>
+</ul>
+<p><strong><code>alpha1</code>, <code>alpha2</code> (Параметры соотношения шумов для индексов)</strong></p>
+<ul>
+<li><p><strong>Описание:</strong> Логарифмы отношений стандартных отклонений ошибок наблюдения индексов (<strong><code>sdi1</code></strong>, <strong><code>sdi2</code></strong>) к стандартному отклонению процесса биомассы (<strong><code>sdb</code></strong>):<br>
+<strong><code>alpha1 = log(sdi1) - log(sdb)</code></strong><br>
+<strong><code>alpha2 = log(sdi2) - log(sdb)</code></strong></p></li>
+<li><p><strong>Интерпретация:</strong></p>
+<ul>
+<li><p>Отражают <em>относительную точность</em> каждого индекса биомассы по сравнению с изменчивостью самой биомассы.</p></li>
+<li><p><strong><code>alpha = 0</code></strong> (<strong><code>sdi = sdb</code></strong>): Шум индекса равен шуму биомассы.</p></li>
+<li><p><strong><code>alpha &lt; 0</code></strong> (<strong><code>sdi &lt; sdb</code></strong>): Индекс точнее, чем изменчивость биомассы (хорошо).</p></li>
+<li><p><strong><code>alpha &gt; 0</code></strong> (<strong><code>sdi &gt; sdb</code></strong>): Индекс шумнее, чем изменчивость биомассы (плохо).</p></li>
+</ul></li>
+<li><p><strong>Контекст:</strong> Появляются, только если в модели используется <strong>два или более индексов</strong> биомассы.</p></li>
+</ul>
+<p><strong><code>beta</code> (Параметр соотношения шумов для уловов)</strong></p>
+<ul>
+<li><p><strong>Описание:</strong> Логарифм отношения стандартного отклонения ошибок наблюдения уловов (<strong><code>sdc</code></strong>) к стандартному отклонению процесса промысловой смертности (<strong><code>sdf</code></strong>):<br>
+<strong><code>beta = log(sdc) - log(sdf)</code></strong></p></li>
+<li><p><strong>Интерпретация:</strong></p>
+<ul>
+<li><p>Отражает <em>относительную точность</em> данных по уловам по сравнению с изменчивостью промысловой смертности.</p></li>
+<li><p><strong><code>beta = 0</code></strong> (<strong><code>sdc = sdf</code></strong>): Шум уловов равен шуму F.</p></li>
+<li><p><strong><code>beta &lt; 0</code></strong> (<strong><code>sdc &lt; sdf</code></strong>): Данные по уловам точнее, чем изменчивость F (хорошо).</p></li>
+<li><p><strong><code>beta &gt; 0</code></strong> (<strong><code>sdc &gt; sdf</code></strong>): Данные по уловам шумнее, чем изменчивость F (плохо).</p></li>
+</ul></li>
+</ul>
+<p><strong><code>K</code> (емкость среды)</strong></p>
+<ul>
+<li><p><strong>Описание:</strong> Максимальная равновесная биомасса неэксплуатируемого запаса (carrying capacity).</p></li>
+<li><p><strong>Интерпретация:</strong> Верхняя асимптота кривой роста. Один из самых важных и часто трудных для оценки параметров, особенно при ограниченных данных.</p></li>
+<li><p><strong>Единицы измерения:</strong> Те же, что и у биомассы (например, тонны, тыс. особей).</p></li>
+</ul>
+<section id="bkfrac-начальная-биомасса" class="level3" data-number="6.9.1">
+<h3 data-number="6.9.1" class="anchored" data-anchor-id="bkfrac-начальная-биомасса"><span class="header-section-number">6.9.1</span> <strong><code>bkfrac</code> (Начальная биомасса)</strong></h3>
+<ul>
+<li><p><strong>Описание:</strong> Доля от <strong><code>K</code></strong>, которую составляла биомасса запаса в <strong>начальный год</strong> временного ряда:<br>
+<strong><code>bkfrac = B₀ / K</code></strong></p></li>
+<li><p><strong>Интерпретация:</strong></p>
+<ul>
+<li><p><strong><code>bkfrac = 1</code></strong>: Запас был в нетронутом состоянии в начальный год (<strong><code>B₀ = K</code></strong>).</p></li>
+<li><p><strong><code>bkfrac &lt; 1</code></strong>: Запас уже был эксплуатируемым к началу ряда данных.</p></li>
+</ul></li>
+<li><p><strong>Важность:</strong> Сильно влияет на реконструкцию исторической динамики биомассы, особенно если данные начинаются с периода интенсивного промысла.</p></li>
+</ul>
+<p><strong>Почему именно эти параметры?</strong></p>
+<p>Функция <strong><code>plotspict.priors(fit)</code></strong> по умолчанию фокусируется на параметрах, для которых:</p>
+<ol type="1">
+<li><p><strong>Заданы явные априорные распределения</strong> пользователем (как <strong><code>logK</code></strong> или <strong><code>bkfrac</code></strong> в примерах).</p></li>
+<li><p><strong>Применены стандартные полу-информативные априоры SPiCT</strong> для стабилизации оценки в условиях ограниченных данных. К ним относятся <strong><code>n</code></strong>, <strong><code>alpha1</code></strong>, <strong><code>alpha2</code></strong>, <strong><code>beta</code></strong>. SPiCT использует их, так как эти параметры (особенно <strong><code>n</code></strong> и соотношения шумов) часто плохо определяются только данными улова и индекса.</p></li>
+</ol>
+<p><strong>Сравнение априора и апостериора показывает:</strong></p>
+<ul>
+<li><p>Насколько <strong>данные обновили наши первоначальные представления</strong> (априорные) о параметре.</p></li>
+<li><p>Насколько <strong>информативны были априорные распределения</strong>.</p></li>
+<li><p><strong>Надежность оценки:</strong> Сильное сужение апостериорного распределения относительно априорного говорит о том, что данные содержат информацию о параметре. Если апостериорное распределение почти совпадает с априорным, данные не добавили новой информации (оценка держится на априорном распределение (прайере)).</p></li>
+</ul>
+</section>
+</section>
+<section id="проверка-корреляции-параметров" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="проверка-корреляции-параметров"><span class="header-section-number">6.10</span> Проверка корреляции параметров</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.4 Проверка корреляции параметров</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">cov2cor</span>(fit<span class="sc">$</span>cov.fixed)        <span class="co"># Матрица корреляций</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>              logm        logK        logq        logq      logsdb      logsdf</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>logm    <span class="fl">1.00000000</span> <span class="sc">-</span><span class="fl">0.44139706</span>  <span class="fl">0.24731406</span>  <span class="fl">0.26680092</span>  <span class="fl">0.10226103</span>  <span class="fl">0.05866772</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>logK   <span class="sc">-</span><span class="fl">0.44139706</span>  <span class="fl">1.00000000</span> <span class="sc">-</span><span class="fl">0.78966591</span> <span class="sc">-</span><span class="fl">0.84564098</span> <span class="sc">-</span><span class="fl">0.14502822</span>  <span class="fl">0.03159055</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>logq    <span class="fl">0.24731406</span> <span class="sc">-</span><span class="fl">0.78966591</span>  <span class="fl">1.00000000</span>  <span class="fl">0.92073272</span>  <span class="fl">0.09936208</span> <span class="sc">-</span><span class="fl">0.06019367</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>logq    <span class="fl">0.26680092</span> <span class="sc">-</span><span class="fl">0.84564098</span>  <span class="fl">0.92073272</span>  <span class="fl">1.00000000</span>  <span class="fl">0.10661957</span> <span class="sc">-</span><span class="fl">0.06022707</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>logsdb  <span class="fl">0.10226103</span> <span class="sc">-</span><span class="fl">0.14502822</span>  <span class="fl">0.09936208</span>  <span class="fl">0.10661957</span>  <span class="fl">1.00000000</span> <span class="sc">-</span><span class="fl">0.07548411</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>logsdf  <span class="fl">0.05866772</span>  <span class="fl">0.03159055</span> <span class="sc">-</span><span class="fl">0.06019367</span> <span class="sc">-</span><span class="fl">0.06022707</span> <span class="sc">-</span><span class="fl">0.07548411</span>  <span class="fl">1.00000000</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>logsdi  <span class="fl">0.04194204</span> <span class="sc">-</span><span class="fl">0.06650572</span>  <span class="fl">0.12991301</span>  <span class="fl">0.13206072</span>  <span class="fl">0.05802810</span> <span class="sc">-</span><span class="fl">0.02826486</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>logsdi <span class="sc">-</span><span class="fl">0.02144997</span>  <span class="fl">0.05063718</span> <span class="sc">-</span><span class="fl">0.08833322</span> <span class="sc">-</span><span class="fl">0.09060172</span>  <span class="fl">0.04142955</span>  <span class="fl">0.00688377</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>logsdc <span class="sc">-</span><span class="fl">0.03142644</span> <span class="sc">-</span><span class="fl">0.10430756</span>  <span class="fl">0.07611708</span>  <span class="fl">0.07988704</span>  <span class="fl">0.19380037</span> <span class="sc">-</span><span class="fl">0.38345908</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>            logsdi       logsdi       logsdc</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>logm    <span class="fl">0.04194204</span> <span class="sc">-</span><span class="fl">0.021449974</span> <span class="sc">-</span><span class="fl">0.031426440</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>logK   <span class="sc">-</span><span class="fl">0.06650572</span>  <span class="fl">0.050637182</span> <span class="sc">-</span><span class="fl">0.104307558</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>logq    <span class="fl">0.12991301</span> <span class="sc">-</span><span class="fl">0.088333221</span>  <span class="fl">0.076117083</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>logq    <span class="fl">0.13206072</span> <span class="sc">-</span><span class="fl">0.090601717</span>  <span class="fl">0.079887038</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>logsdb  <span class="fl">0.05802810</span>  <span class="fl">0.041429548</span>  <span class="fl">0.193800371</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>logsdf <span class="sc">-</span><span class="fl">0.02826486</span>  <span class="fl">0.006883770</span> <span class="sc">-</span><span class="fl">0.383459078</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>logsdi  <span class="fl">1.00000000</span> <span class="sc">-</span><span class="fl">0.024282304</span>  <span class="fl">0.029024203</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>logsdi <span class="sc">-</span><span class="fl">0.02428230</span>  <span class="fl">1.000000000</span> <span class="sc">-</span><span class="fl">0.005068705</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>logsdc  <span class="fl">0.02902420</span> <span class="sc">-</span><span class="fl">0.005068705</span>  <span class="fl">1.000000000</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">cov2cor</span>(fit<span class="sc">$</span>cov.fixed) <span class="sc">&gt;</span> <span class="fl">0.8</span>  <span class="co"># Выявление сильных корреляций (&gt;0.8)</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        logm  logK  logq  logq logsdb logsdf logsdi logsdi logsdc</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>logm    <span class="cn">TRUE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>logK   <span class="cn">FALSE</span>  <span class="cn">TRUE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>logq   <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">TRUE</span>  <span class="cn">TRUE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>logq   <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">TRUE</span>  <span class="cn">TRUE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>logsdb <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>   <span class="cn">TRUE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>logsdf <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>   <span class="cn">TRUE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>logsdi <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>   <span class="cn">TRUE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>logsdi <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>   <span class="cn">TRUE</span>  <span class="cn">FALSE</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>logsdc <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span> <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>  <span class="cn">FALSE</span>   <span class="cn">TRUE</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Анализ матрицы корреляций параметров модели SPiCT</strong></p>
+<p>Команды выполняют два действия:</p>
+<ol type="1">
+<li><p><strong><code>cov2cor(fit$cov.fixed)</code></strong> - преобразует матрицу ковариаций в матрицу корреляций</p></li>
+<li><p><strong><code>cov2cor(fit$cov.fixed) &gt; 0.8</code></strong> - выявляет сильные корреляции (&gt;0.8)</p></li>
+</ol>
+<p><strong>Умеренные корреляции (|r| &gt; 0.7):</strong></p>
+<ul>
+<li><p><strong>logK и logq (-0.79)</strong>:<br>
+Классическая <strong>отрицательная корреляция между емкостью среды и уловистостью</strong>. Означает, что:</p>
+<ul>
+<li><p>Данные можно объяснить либо:</p>
+<ul>
+<li><p>Большим запасом (высокий K) с низкой уловистостью (низкий q)</p></li>
+<li><p>Или малым запасом (низкий K) с высокой уловистостью (высокий q)</p></li>
+</ul></li>
+<li><p>Типично для моделей с ограниченными данными</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="визуализация-резульататов" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="визуализация-резульататов"><span class="header-section-number">6.11</span> Визуализация резульататов</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-----------------</span> <span class="fl">9.</span> ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ <span class="sc">-----------------</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.1 Основные графики</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit) \<span class="co"># Комплексный отчет</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.2 Биомасса в абсолютных величинах</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.biomass</span>( fit, <span class="at">logax =</span> <span class="cn">FALSE</span>, \<span class="co"># Линейная шкала main = "Абсолютная биомасса", ylim = c(0, 250), \# Ограничение по оси Y plot.obs = TRUE, \# Отображать наблюдения xlab = "Год", CI = 0.95, \# 95% доверительный интервал qlegend = FALSE, rel.axes = TRUE, rel.ci = TRUE )</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.3 Относительная биомасса (B/Bmsy)</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.bbmsy</span>(fit,<span class="at">qlegend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.4 Вылов</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.catch</span>(fit,<span class="at">qlegend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.5 Относительная смертность (F/Fmsy)</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.ffmsy</span>(fit,<span class="at">qlegend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.6 Продукционная кривая</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.production</span>(fit)</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.7 Kobe plot</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.fb</span>(fit, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">200</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT7.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 7.: Комплексный отчет</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT8.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 8.: Динамика абсолютной биомассы</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT9.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 9.: Динамика относительной биомассы</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT10.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 10.: Динамика относительной смертности</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT11.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 11.: Продукционная кривая</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT12.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 12.: Kobe plot</figcaption>
+</figure>
+</div>
+<p>График показывает динамику биомассы и смертности от промысла с начального года (здесь 2005), обозначенного кругом, до конечного года (здесь 2025), обозначенного квадратом. Жёлтый ромб обозначает среднюю биомассу за длительный период при сохранении текущей (2025) промысловой нагрузки. Эта точка может быть интерпретирована как равновесное значение вылова и обозначена в легенде как E(B∞) как статистический способ выражения ожидания биомассы при t → ∞. Поскольку текущая промысловая смертность близка к FMSY, ожидаемая долгосрочная биомасса близка к BMSY. Серая затенённая область в форме банана обозначает 95% доверительную область пары FMSY, BMSY. Эту область важно визуализировать совместно, поскольку две контрольные точки имеют сильную (отрицательную) корреляцию.</p>
+</section>
+<section id="анализ-результатов" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="анализ-результатов"><span class="header-section-number">6.12</span> Анализ результатов</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------- 10. АНАЛИЗ РЕЗУЛЬТАТОВ -----------------</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.1 Краткий отчет</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.2 Точечные оценки параметров</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>pars <span class="ot">&lt;-</span> <span class="fu">sumspict.parest</span>(fit)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.3 Ориентиры управления (стохастические)</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sumspict.srefpoints</span>(fit)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.4 Ориентиры управления (детерминированные)</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="fu">sumspict.drefpoints</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Краткий отчет</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mary</span>(fit)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Convergence<span class="sc">:</span> <span class="dv">0</span>  MSG<span class="sc">:</span> relative <span class="fu">convergence</span> (<span class="dv">4</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Objective <span class="cf">function</span> at optimum<span class="sc">:</span> <span class="sc">-</span><span class="fl">4.8303552</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Euler time <span class="fu">step</span> (years)<span class="sc">:</span>  <span class="dv">1</span><span class="sc">/</span><span class="dv">16</span> or <span class="fl">0.0625</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>Nobs C<span class="sc">:</span> <span class="dv">20</span>,  Nobs I1<span class="sc">:</span> <span class="dv">20</span>,  Nobs I2<span class="sc">:</span> <span class="dv">19</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>Residual <span class="fu">diagnostics</span> (p<span class="sc">-</span>values)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    shapiro   bias    acf   LBox shapiro bias acf LBox  </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a> C   <span class="fl">0.1268</span> <span class="fl">0.4386</span> <span class="fl">0.0562</span> <span class="fl">0.1348</span>       <span class="sc">-</span>    <span class="sc">-</span>   .    <span class="sc">-</span>  </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a> I1  <span class="fl">0.9554</span> <span class="fl">0.7813</span> <span class="fl">0.3360</span> <span class="fl">0.6800</span>       <span class="sc">-</span>    <span class="sc">-</span>   <span class="sc">-</span>    <span class="sc">-</span>  </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a> I2  <span class="fl">0.9825</span> <span class="fl">0.9472</span> <span class="fl">0.1390</span> <span class="fl">0.3602</span>       <span class="sc">-</span>    <span class="sc">-</span>   <span class="sc">-</span>    <span class="sc">-</span>  </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>Priors</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>      logn  <span class="sc">~</span>  dnorm[<span class="fu">log</span>(<span class="dv">2</span>), <span class="fl">0.1</span><span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  logalpha  <span class="sc">~</span>  dnorm[<span class="fu">log</span>(<span class="dv">1</span>), <span class="dv">2</span><span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>   logbeta  <span class="sc">~</span>  dnorm[<span class="fu">log</span>(<span class="dv">1</span>), <span class="dv">2</span><span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>      logK  <span class="sc">~</span>  dnorm[<span class="fu">log</span>(<span class="fl">148.413</span>), <span class="fl">0.7</span><span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a> logbkfrac  <span class="sc">~</span>  dnorm[<span class="fu">log</span>(<span class="fl">0.75</span>), <span class="fl">0.25</span><span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>Fixed parameters</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>   fixed.value  </span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a> n           <span class="dv">2</span>  </span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>Model parameter estimates w <span class="dv">95</span>% CI </span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>           estimate       cilow       ciupp    log.est  </span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a> alpha1  <span class="fl">11.9450241</span>   <span class="fl">2.6794895</span>  <span class="fl">53.2502930</span>  <span class="fl">2.4803148</span>  </span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a> alpha2   <span class="fl">5.0683878</span>   <span class="fl">1.1265510</span>  <span class="fl">22.8028330</span>  <span class="fl">1.6230228</span>  </span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a> beta     <span class="fl">0.1879597</span>   <span class="fl">0.0371609</span>   <span class="fl">0.9507000</span> <span class="sc">-</span><span class="fl">1.6715278</span>  </span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a> r        <span class="fl">0.3769549</span>   <span class="fl">0.2895415</span>   <span class="fl">0.4907586</span> <span class="sc">-</span><span class="fl">0.9756298</span>  </span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a> rc       <span class="fl">0.3769549</span>   <span class="fl">0.2895415</span>   <span class="fl">0.4907586</span> <span class="sc">-</span><span class="fl">0.9756298</span>  </span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a> rold     <span class="fl">0.3769549</span>   <span class="fl">0.2895415</span>   <span class="fl">0.4907586</span> <span class="sc">-</span><span class="fl">0.9756298</span>  </span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a> m       <span class="fl">17.8600178</span>  <span class="fl">16.2681570</span>  <span class="fl">19.6076444</span>  <span class="fl">2.8825646</span>  </span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a> K      <span class="fl">189.5188972</span> <span class="fl">153.7796069</span> <span class="fl">233.5642100</span>  <span class="fl">5.2444887</span>  </span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a> q1       <span class="fl">0.1446167</span>   <span class="fl">0.1110579</span>   <span class="fl">0.1883161</span> <span class="sc">-</span><span class="fl">1.9336685</span>  </span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a> q2       <span class="fl">0.1105024</span>   <span class="fl">0.0861636</span>   <span class="fl">0.1417164</span> <span class="sc">-</span><span class="fl">2.2027177</span>  </span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a> sdb      <span class="fl">0.0179239</span>   <span class="fl">0.0040818</span>   <span class="fl">0.0787065</span> <span class="sc">-</span><span class="fl">4.0216194</span>  </span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a> sdf      <span class="fl">0.3205493</span>   <span class="fl">0.2181678</span>   <span class="fl">0.4709762</span> <span class="sc">-</span><span class="fl">1.1377191</span>  </span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a> sdi1     <span class="fl">0.2141016</span>   <span class="fl">0.1563268</span>   <span class="fl">0.2932285</span> <span class="sc">-</span><span class="fl">1.5413046</span>  </span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a> sdi2     <span class="fl">0.0908454</span>   <span class="fl">0.0648365</span>   <span class="fl">0.1272875</span> <span class="sc">-</span><span class="fl">2.3985967</span>  </span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a> sdc      <span class="fl">0.0602503</span>   <span class="fl">0.0143610</span>   <span class="fl">0.2527760</span> <span class="sc">-</span><span class="fl">2.8092469</span>  </span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>Deterministic reference <span class="fu">points</span> (Drp)</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>         estimate      cilow       ciupp   log.est  </span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a> Bmsyd <span class="fl">94.7594486</span> <span class="fl">76.8898035</span> <span class="fl">116.7821050</span>  <span class="fl">4.551342</span>  </span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a> Fmsyd  <span class="fl">0.1884774</span>  <span class="fl">0.1447707</span>   <span class="fl">0.2453793</span> <span class="sc">-</span><span class="fl">1.668777</span>  </span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a> MSYd  <span class="fl">17.8600178</span> <span class="fl">16.2681570</span>  <span class="fl">19.6076444</span>  <span class="fl">2.882565</span>  </span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>Stochastic reference <span class="fu">points</span> (Srp)</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>        estimate      cilow       ciupp   log.est  rel.diff.Drp  </span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a> Bmsys <span class="fl">94.710229</span> <span class="fl">76.8402135</span> <span class="fl">116.7361074</span>  <span class="fl">4.550822</span> <span class="sc">-</span><span class="fl">0.0005196907</span>  </span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a> Fmsys  <span class="fl">0.188398</span>  <span class="fl">0.1447201</span>   <span class="fl">0.2452583</span> <span class="sc">-</span><span class="fl">1.669199</span> <span class="sc">-</span><span class="fl">0.0004216341</span>  </span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a> MSYs  <span class="fl">17.843213</span> <span class="fl">16.2542730</span>  <span class="fl">19.5874793</span>  <span class="fl">2.881623</span> <span class="sc">-</span><span class="fl">0.0009418271</span>  </span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>States w <span class="dv">95</span>% <span class="fu">CI</span> (inp<span class="sc">$</span>msytype<span class="sc">:</span> s)</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>                   estimate      cilow       ciupp    log.est  </span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a> B_2024<span class="fl">.94</span>      <span class="fl">118.8335053</span> <span class="fl">96.9318694</span> <span class="fl">145.6837887</span>  <span class="fl">4.7777234</span>  </span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a> F_2024<span class="fl">.94</span>        <span class="fl">0.1031939</span>  <span class="fl">0.0646828</span>   <span class="fl">0.1646340</span> <span class="sc">-</span><span class="fl">2.2711455</span>  </span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a> B_2024<span class="fl">.94</span><span class="sc">/</span>Bmsy   <span class="fl">1.2547061</span>  <span class="fl">1.0845329</span>   <span class="fl">1.4515812</span>  <span class="fl">0.2269014</span>  </span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a> F_2024<span class="fl">.94</span><span class="sc">/</span>Fmsy   <span class="fl">0.5477442</span>  <span class="fl">0.3417896</span>   <span class="fl">0.8778024</span> <span class="sc">-</span><span class="fl">0.6019469</span>  </span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>Predictions w <span class="dv">95</span>% <span class="fu">CI</span> (inp<span class="sc">$</span>msytype<span class="sc">:</span> s)</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>                 prediction       cilow       ciupp    log.est  </span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a> B_2026<span class="fl">.00</span>      <span class="fl">123.0873098</span> <span class="fl">100.3197792</span> <span class="fl">151.0219217</span>  <span class="fl">4.8128939</span>  </span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a> F_2026<span class="fl">.00</span>        <span class="fl">0.1031941</span>   <span class="fl">0.0464383</span>   <span class="fl">0.2293155</span> <span class="sc">-</span><span class="fl">2.2711437</span>  </span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a> B_2026<span class="fl">.00</span><span class="sc">/</span>Bmsy   <span class="fl">1.2996200</span>   <span class="fl">1.1150104</span>   <span class="fl">1.5147950</span>  <span class="fl">0.2620719</span>  </span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a> F_2026<span class="fl">.00</span><span class="sc">/</span>Fmsy   <span class="fl">0.5477452</span>   <span class="fl">0.2458405</span>   <span class="fl">1.2204040</span> <span class="sc">-</span><span class="fl">0.6019451</span>  </span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a> Catch_2025<span class="fl">.00</span>   <span class="fl">12.4909882</span>   <span class="fl">7.3033391</span>  <span class="fl">21.3634865</span>  <span class="fl">2.5250074</span>  </span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a> <span class="fu">E</span>(B_inf)       <span class="fl">137.4532783</span>          <span class="cn">NA</span>          <span class="cn">NA</span>  <span class="fl">4.9232841</span>  </span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Анализ результатов модели SPiCT</strong></p>
+<p><strong>1. Сходимость модели</strong></p>
+<p><strong><code>Convergence: 0 MSG: relative convergence (4)</code></strong><br>
+<em>Интерпретация:</em> Код 0 указывает на успешную сходимость оптимизации. Сообщение “relative convergence” подтверждает, что алгоритм достиг локального минимума с заданной точностью. Результаты могут считаться валидными.</p>
+<p><strong>2. Целевая функция</strong></p>
+<p><strong><code>Objective function at optimum: -4.8303552</code></strong><br>
+<em>Интерпретация:</em> Значение логарифмической апостериорной плотности (с учетом априорных распределений) в точке оптимума. Более высокие значения (менее отрицательные) указывают на лучшее соответствие модели данным.</p>
+<p><strong>3. Дискретизация времени</strong></p>
+<p><strong><code>Euler time step (years): 1/16 or 0.0625</code></strong><br>
+<em>Интерпретация:</em> Для решения дифференциальных уравнений использован шаг Эйлера 0.0625 года (~23 дня), что обеспечивает высокую точность расчетов.</p>
+<p><strong>4. Данные наблюдений</strong></p>
+<pre><code>Nobs C: 20,  Nobs I1: 20,  Nobs I2: 19</code></pre>
+<p><em>Интерпретация:</em></p>
+<ul>
+<li>C: 20 точек данных по вылову (2005-2024 гг.)</li>
+<li>I1: 20 значений индекса CPUE</li>
+<li>I2: 19 значений индекса BESS (отсутствует первое наблюдение)</li>
+</ul>
+<p><strong>5. Диагностика остатков</strong></p>
+<pre><code>Residual diagnostics (p-values)
+shapiro   bias    acf   LBox
+C   0.1268 0.4386 0.0562 0.1348
+I1  0.9554 0.7813 0.3360 0.6800
+I2  0.9825 0.9472 0.1390 0.3602  </code></pre>
+<p><em>Ключевые тесты:</em></p>
+<ul>
+<li><strong>Shapiro-Wilk:</strong> Нормальность остатков (p &gt; 0.05 → нормальность не отвергается)</li>
+<li><strong>Bias test:</strong> Систематическая ошибка (p &gt; 0.05 → смещение отсутствует)</li>
+<li><strong>ACF/Ljung-Box:</strong> Автокорреляция (p &lt; 0.1 для вылова → слабая автокорреляция)<br>
+<em>Заключение:</em> Остатки удовлетворительны, кроме возможной слабой автокорреляции в данных по вылову.</li>
+</ul>
+<p><strong>6. Априорные распределения</strong></p>
+<pre><code>Priors
+logn  ~  dnorm[log(2), 0.1^2]       # Фиксирован n = 2 (модель Шефера)   
+logK  ~  dnorm[log(148.413), 0.7^2]  # K ~ 148.4 тыс. тонн (CV=70%)   
+logbkfrac ~ dnorm[log(0.75), 0.25^2] # Начальная эксплуатация B/K = 0.75</code></pre>
+<p><em>Интерпретация:</em> Использованы информативные априорные распределения для ключевых параметров, что характерно для data-limited подходов.</p>
+<p><strong>7. Оценки параметров модели</strong></p>
+<pre><code>Model parameter estimates w 95% CI
+      estimate       cilow       ciupp  
+K      189.5 [153.8 - 233.6]  # Емкость среды (тыс. тонн)  
+r        0.38 [0.29 - 0.49]   # Внутренняя скорость роста 
+q1       0.14 [0.11 - 0.19]   # Catchability CPUE 
+q2       0.11 [0.09 - 0.14]   # Catchability BESS  
+sdf      0.32 [0.22 - 0.47]   # SD процесса для F</code></pre>
+<p><em>Ключевые выводы:</em> - Высокая неопределенность оценки K (дов. интервал ±40%) - Умеренная скорость восстановления запаса (r ≈ 38% в год) - Индекс BESS имеет более высокую catchability, чем CPUE</p>
+<p><strong>8. Ориентиры управления</strong></p>
+<pre><code>Deterministic reference points (Drp)
+estimate      95% CI  
+Bmsyd   94.8 [76.9 - 116.8]  # Биомасса при MSY  
+Fmsyd    0.19 [0.14 - 0.25]  # Смертность при MSY  
+MSYd    17.9 [16.3 - 19.6]   # Макс. устойчивый вылов  
+
+Stochastic reference points (Srp)          
+estimate      rel.diff.Drp    
+Bmsys   94.7         -0.05%        # Незначительные отличия от детерм. модели  
+Fmsys    0.19        -0.04%</code></pre>
+<p><em>Интерпретация:</em> Результаты устойчивы к стохастичности модели. MSY ≈ 18 тыс. тонн.</p>
+<p><strong>9. Состояние запаса в 2024 г.</strong></p>
+<pre><code>States w 95% CI (inp$msytype: s)                   
+estimate      95% CI  
+B_2024.94        118.8 [96.9 - 145.7]  # Абсолютная биомасса (тыс. т) 
+F_2024.94          0.10 [0.06 - 0.16]  # Смертность 
+B/Bmsy             1.25 [1.08 - 1.45]  # Биомасса выше Bmsy
+F/Fmsy             0.55 [0.34 - 0.88]  # Эксплуатация ниже Fmsy</code></pre>
+<p><em>Оценка состояния:</em> Запас находится в благополучном состоянии (B &gt; Bmsy, F &lt; Fmsy), но с высокой неопределенностью.</p>
+<p><strong>10. Прогнозы</strong></p>
+<pre><code>Predictions w 95% CI
+B_2026.00      123.1 [100.3 - 151.0]  # Прогноз биомассы
+Catch_2025.00   12.5 [7.3 - 21.4]     # Прогноз вылова на 2025 г.  
+E(B_inf)       137.5                   # Ожидаемая равновесная биомасса</code></pre>
+<p><em>Прогнозные показатели:</em> - Биомасса продолжит умеренный рост - Рекомендуемый вылов на 2025 г. ≈ 12.5 тыс. тонн (дов. интервал ±57%) - Потенциальная равновесная биомасса на 16% выше текущей</p>
+<p><strong>Ключевые выводы:</strong></p>
+<ol type="1">
+<li>Модель успешно сошлась с удовлетворительными остатками</li>
+<li>Запас оценивается выше целевого уровня (B/Bmsy &gt; 1)</li>
+<li>Эксплуатация находится на безопасном уровне (F/Fmsy &lt; 1)</li>
+<li>Рекомендуемый вылов на 2025 г. — 12.5 [7.3 - 21.4] тыс. тонн</li>
+<li>Основные источники неопределенности: оценка K и прогноз вылова</li>
+</ol>
+</section>
+<section id="ретроспективный-анализ" class="level2" data-number="6.13">
+<h2 data-number="6.13" class="anchored" data-anchor-id="ретроспективный-анализ"><span class="header-section-number">6.13</span> Ретроспективный анализ</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------- 11. РЕТРОСПЕКТИВНЫЙ АНАЛИЗ --------------</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 11.1 Запуск ретроспективного анализа</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">retro</span>(fit)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 11.2 Визуализация ретроспективы</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.retro</span>(fit, <span class="at">add.mohn =</span> <span class="cn">TRUE</span>, <span class="at">CI =</span> <span class="fl">0.95</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Интерпретация коэффициента Мона (Mohn's rho):</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Долгоживущие виды: |rho| &gt; 0.2 значимо</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Короткоживущие виды: |rho| &gt; 0.3 значимо</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT13.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 13.: Визуализация ретроспективного анализа</figcaption>
+</figure>
+</div>
+<p><strong>Суть ретроспективного анализа (Retrospective Analysis)</strong></p>
+<p><strong>Цель:</strong> Оценка устойчивости модели и выявление систематических смещений (ретроспективного сдвига) в оценках состояния запаса при добавлении новых данных.</p>
+<p><strong>Метод:</strong></p>
+<ol type="1">
+<li><p>Модель последовательно переоценивается с исключением по 1 последнему году данных (например: 2005-2023, 2005-2022 и т.д.)</p></li>
+<li><p>Для каждого урезанного периода рассчитываются показатели (B/Bmsy, F/Fmsy) в <strong>перекрывающиеся годы</strong></p></li>
+<li><p>Оценки сравниваются с “базовой” моделью (со всеми данными)</p></li>
+</ol>
+<p><strong>Коэффициент Мона (Mohn’s rho)</strong></p>
+<p><strong>Формула расчета:</strong></p>
+<pre><code>ρ = 1/N * Σ [ (X_retro,i - X_base,i) / X_base,i ]</code></pre>
+<p>где:</p>
+<ul>
+<li><p><strong><code>N</code></strong> – число исключенных лет</p></li>
+<li><p><strong><code>X_retro,i</code></strong> – оценка параметра (напр. B/Bmsy) в году i по урезанным данным</p></li>
+<li><p><strong><code>X_base,i</code></strong> – оценка того же параметра в году i по полным данным</p></li>
+</ul>
+<p><strong>Интерпретация результатов в вашем случае:</strong></p>
+<pre><code>        FFmsy         BBmsy   0.0028358361 -0.0002021046 </code></pre>
+<ol type="1">
+<li><p><strong>Для F/Fmsy:</strong> ρ = 0.0028 (0.28%)</p>
+<ul>
+<li><p>Положительное значение: текущие оценки F/Fmsy <strong>слегка завышены</strong> по сравнению с ретроспективой</p></li>
+<li><p>Величина &lt; 0.3% – незначима</p></li>
+</ul></li>
+<li><p><strong>Для B/Bmsy:</strong> ρ = -0.0002 (-0.02%)</p>
+<ul>
+<li><p>Отрицательное значение: текущие оценки B/Bmsy <strong>слегка занижены</strong></p></li>
+<li><p>Величина &lt; 0.1% – пренебрежимо мала</p></li>
+</ul></li>
+</ol>
+<p><strong>Вывод для модели:</strong></p>
+<ul>
+<li><p>Коэффициенты Мона близки к нулю (|ρ| &lt; 0.005)</p></li>
+<li><p><strong>Отсутствует статистически значимый ретроспективный сдвиг</strong></p></li>
+<li><p>Модель демонстрирует высокую устойчивость к добавлению новых данных</p></li>
+<li><p>Результаты можно считать надежными</p></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Важно!</strong> Значимый сдвиг (|ρ| &gt; 0.2-0.3) указывает на:</p>
+<ul>
+<li><p>Недостаточность данных</p></li>
+<li><p>Проблемы со спецификацией модели</p></li>
+<li><p>Систематические ошибки в данных</p></li>
+<li><p>Необходимость пересмотра модели</p></li>
+</ul>
+</blockquote>
+</section>
+<section id="прогнозирование-и-сценарии-управления" class="level2" data-number="6.14">
+<h2 data-number="6.14" class="anchored" data-anchor-id="прогнозирование-и-сценарии-управления"><span class="header-section-number">6.14</span> Прогнозирование и сценарии управления</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------- 12. ПРОГНОЗИРОВАНИЕ И СЦЕНАРИИ УПРАВЛЕНИЯ -----------</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 12.1 Установка интервала управления</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>maninterval <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2025</span>, <span class="dv">2026</span>) <span class="co"># Годы прогноза</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 12.2 Базовые сценарии управления</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">manage</span>(fit)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 12.3 Пользовательские сценарии (постоянный вылов)</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>catchvals <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">17</span>) <span class="co"># Варианты вылова в тыс.тонн</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(catchvals)){</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">add.man.scenario</span>(</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    fit,</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">scenarioTitle =</span> <span class="fu">paste0</span>(<span class="st">"Постоянный вылов "</span>, catchvals[i], <span class="st">" тыс.т"</span>),</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">cabs =</span> catchvals[i]  <span class="co"># Абсолютный вылов</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="do">## 12.4 Сводка по сценариям управления</span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="fu">sumspict.manage</span>(fit, <span class="at">include.unc =</span> <span class="cn">TRUE</span>) <span class="co"># С учетом неопределенности</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Получаем:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>SPiCT timeline<span class="sc">:</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>                                                  </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>      Observations              Management        </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fl">2005.00</span> <span class="sc">-</span> <span class="fl">2025.00</span>        <span class="fl">2025.00</span> <span class="sc">-</span> <span class="fl">2026.00</span>    </span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a> <span class="sc">|-----------------------</span><span class="er">|</span> <span class="sc">----------------------</span><span class="er">|</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>Management evaluation<span class="sc">:</span> <span class="fl">2026.00</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>Predicted catch <span class="cf">for</span> management period and states at management evaluation time<span class="sc">:</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>                                 C B<span class="sc">/</span>Bmsy F<span class="sc">/</span>Fmsy</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fl">1.</span> Keep current catch         <span class="fl">11.8</span>   <span class="fl">1.31</span>   <span class="fl">0.52</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="fl">2.</span> Keep current F             <span class="fl">12.5</span>   <span class="fl">1.30</span>   <span class="fl">0.55</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span> Fish at Fmsy               <span class="fl">22.0</span>   <span class="fl">1.20</span>   <span class="fl">1.00</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="fl">4.</span> No fishing                  <span class="fl">0.0</span>   <span class="fl">1.42</span>   <span class="fl">0.00</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="fl">5.</span> Reduce F by <span class="dv">25</span>%             <span class="fl">9.5</span>   <span class="fl">1.33</span>   <span class="fl">0.41</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="fl">6.</span> Increase F by <span class="dv">25</span>%          <span class="fl">15.4</span>   <span class="fl">1.27</span>   <span class="fl">0.68</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="fl">7.</span> MSY hockey<span class="sc">-</span>stick rule      <span class="fl">22.0</span>   <span class="fl">1.20</span>   <span class="fl">1.00</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="fl">8.</span> ICES advice rule           <span class="fl">19.9</span>   <span class="fl">1.23</span>   <span class="fl">0.90</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="fl">9.</span> Постоянный вылов <span class="dv">10</span> тыс.т  <span class="fl">10.0</span>   <span class="fl">1.32</span>   <span class="fl">0.43</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fl">10.</span> Постоянный вылов <span class="dv">12</span> тыс.т <span class="fl">12.0</span>   <span class="fl">1.30</span>   <span class="fl">0.53</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="fl">11.</span> Постоянный вылов <span class="dv">15</span> тыс.т <span class="fl">15.0</span>   <span class="fl">1.27</span>   <span class="fl">0.66</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fl">12.</span> Постоянный вылов <span class="dv">17</span> тыс.т <span class="fl">17.0</span>   <span class="fl">1.25</span>   <span class="fl">0.76</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a><span class="dv">95</span>% confidence intervals <span class="cf">for</span> states<span class="sc">:</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>                              B<span class="sc">/</span>Bmsy.lo B<span class="sc">/</span>Bmsy.hi F<span class="sc">/</span>Fmsy.lo F<span class="sc">/</span>Fmsy.hi</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="fl">1.</span> Keep current catch              <span class="fl">1.12</span>      <span class="fl">1.52</span>      <span class="fl">0.23</span>      <span class="fl">1.15</span></span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="fl">2.</span> Keep current F                  <span class="fl">1.12</span>      <span class="fl">1.51</span>      <span class="fl">0.25</span>      <span class="fl">1.22</span></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span> Fish at Fmsy                    <span class="fl">1.00</span>      <span class="fl">1.44</span>      <span class="fl">0.45</span>      <span class="fl">2.23</span></span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a><span class="fl">4.</span> No fishing                      <span class="fl">1.25</span>      <span class="fl">1.63</span>      <span class="fl">0.00</span>      <span class="fl">0.00</span></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a><span class="fl">5.</span> Reduce F by <span class="dv">25</span>%                 <span class="fl">1.15</span>      <span class="fl">1.54</span>      <span class="fl">0.18</span>      <span class="fl">0.92</span></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a><span class="fl">6.</span> Increase F by <span class="dv">25</span>%               <span class="fl">1.08</span>      <span class="fl">1.49</span>      <span class="fl">0.31</span>      <span class="fl">1.53</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a><span class="fl">7.</span> MSY hockey<span class="sc">-</span>stick rule           <span class="fl">1.00</span>      <span class="fl">1.44</span>      <span class="fl">0.45</span>      <span class="fl">2.23</span></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a><span class="fl">8.</span> ICES advice rule                <span class="fl">1.03</span>      <span class="fl">1.46</span>      <span class="fl">0.40</span>      <span class="fl">2.00</span></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a><span class="fl">9.</span> Постоянный вылов <span class="dv">10</span> тыс.т       <span class="fl">1.14</span>      <span class="fl">1.54</span>      <span class="fl">0.19</span>      <span class="fl">0.97</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a><span class="fl">10.</span> Постоянный вылов <span class="dv">12</span> тыс.т      <span class="fl">1.12</span>      <span class="fl">1.52</span>      <span class="fl">0.24</span>      <span class="fl">1.17</span></span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a><span class="fl">11.</span> Постоянный вылов <span class="dv">15</span> тыс.т      <span class="fl">1.09</span>      <span class="fl">1.49</span>      <span class="fl">0.30</span>      <span class="fl">1.48</span></span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a><span class="fl">12.</span> Постоянный вылов <span class="dv">17</span> тыс.т      <span class="fl">1.06</span>      <span class="fl">1.48</span>      <span class="fl">0.34</span>      <span class="fl">1.69</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SPICT14.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 14.: Правило хоккейной клюшки и ICES</figcaption>
+</figure>
+</div>
+<p><strong>Процесс прогнозирования и оценки сценариев управления</strong></p>
+<p><strong>1. Установка горизонта прогнозирования</strong></p>
+<pre><code>inp$maninterval &lt;- c(2025, 2026)</code></pre>
+<ul>
+<li><strong>Цель:</strong> Определить период, для которого делаются прогнозы (2025-2026 гг.)</li>
+<li><strong>Механика:</strong> Модель будет рассчитывать состояние запаса и возможный вылов на эти годы</li>
+</ul>
+<p><strong>2. Базовые сценарии управления</strong></p>
+<pre><code>fit &lt;- manage(fit)</code></pre>
+<p>Автоматически генерируются стандартные сценарии:</p>
+<ol type="1">
+<li><strong><code>currentCatch</code></strong>: Сохранение текущего вылова (среднее за последние 3 года)</li>
+<li><strong><code>currentF</code></strong>: Сохранение текущего уровня смертности (F)</li>
+<li><strong><code>Fmsy</code></strong>: Эксплуатация на уровне F<sub>MSY</sub></li>
+<li><strong><code>noF</code></strong>: Полное прекращение промысла</li>
+<li><strong><code>reduceF25</code></strong>: Снижение F на 25%</li>
+<li><strong><code>increaseF25</code></strong>: Увеличение F на 25%</li>
+<li><strong><code>msyHockeyStick</code></strong>: Правило “хоккейной клюшки” (F=0 при B&gt;B<sub>MSY</sub>, F=F<sub>MSY</sub> при B≥B<sub>MSY</sub>)</li>
+<li><strong><code>ices</code></strong>: Правило ICES (F пропорционален уровню биомассы)</li>
+</ol>
+<p><strong>3. Пользовательские сценарии</strong></p>
+<pre><code>catchvals = c(10, 12, 15, 17) for(i in seq_along(catchvals)){   fit &lt;- add.man.scenario(     fit,     scenarioTitle = paste0("Постоянный вылов ", catchvals[i], " тыс.т"),     cabs = catchvals[i]   ) }</code></pre>
+<ul>
+<li><strong>Стратегия:</strong> Фиксированный вылов указанного объема в 2025-2026 гг.</li>
+<li><strong>Диапазон:</strong> От консервативного (10 тыс.т) до рискованного (17 тыс.т)</li>
+</ul>
+<p><strong>4. Сводка результатов</strong></p>
+<pre><code>sumspict.manage(fit, include.unc = TRUE)</code></pre>
+<p><strong>Ключевые выводы из результатов (на 2026 г.)</strong></p>
+<p><strong>1. Прогноз состояния запаса</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 19%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Показатель</strong></th>
+<th style="text-align: left;"><strong>Значение</strong></th>
+<th style="text-align: left;"><strong>Интерпретация</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">B/B<sub>MSY</sub></td>
+<td style="text-align: left;">1.25-1.31</td>
+<td style="text-align: left;">Запас выше целевого уровня (B&gt;B<sub>MSY</sub>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F/F<sub>MSY</sub></td>
+<td style="text-align: left;">0.52-0.55</td>
+<td style="text-align: left;">Эксплуатация ниже предельной (F&lt;F<sub>MSY</sub>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. Сравнение сценариев</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Сценарий</strong></th>
+<th style="text-align: left;"><strong>Вылов (тыс.т)</strong></th>
+<th style="text-align: left;"><strong>B/</strong>B<sub>MSY</sub></th>
+<th style="text-align: left;"><strong>F/</strong>F<sub>MSY</sub></th>
+<th style="text-align: left;"><strong>Риск перелова</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Безопасные:</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>noF</code></strong> (нет промысла)</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: left;">1.42</td>
+<td style="text-align: left;">0.00</td>
+<td style="text-align: left;">Нет</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>reduceF25</code></strong></td>
+<td style="text-align: left;">9.5</td>
+<td style="text-align: left;">1.33</td>
+<td style="text-align: left;">0.41</td>
+<td style="text-align: left;">Низкий</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Вылов 10 тыс.т</td>
+<td style="text-align: left;">10.0</td>
+<td style="text-align: left;">1.32</td>
+<td style="text-align: left;">0.43</td>
+<td style="text-align: left;">Низкий</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Оптимальные:</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>currentCatch</code></strong></td>
+<td style="text-align: left;">11.8</td>
+<td style="text-align: left;">1.31</td>
+<td style="text-align: left;">0.52</td>
+<td style="text-align: left;">Низкий</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Вылов 12 тыс.т</td>
+<td style="text-align: left;">12.0</td>
+<td style="text-align: left;">1.30</td>
+<td style="text-align: left;">0.53</td>
+<td style="text-align: left;">Низкий</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Рискованные:</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>increaseF25</code></strong></td>
+<td style="text-align: left;">15.4</td>
+<td style="text-align: left;">1.27</td>
+<td style="text-align: left;">0.68</td>
+<td style="text-align: left;">Умеренный</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Вылов 15 тыс.т</td>
+<td style="text-align: left;">15.0</td>
+<td style="text-align: left;">1.27</td>
+<td style="text-align: left;">0.66</td>
+<td style="text-align: left;">Умеренный</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Опасные:</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F<sub>MSY</sub></td>
+<td style="text-align: left;">22.0</td>
+<td style="text-align: left;">1.20</td>
+<td style="text-align: left;">1.00</td>
+<td style="text-align: left;">Высокий</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Вылов 17 тыс.т</td>
+<td style="text-align: left;">17.0</td>
+<td style="text-align: left;">1.25</td>
+<td style="text-align: left;">0.76</td>
+<td style="text-align: left;">Высокий</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3. Анализ неопределенности</strong></p>
+<p>Для ключевых сценариев:</p>
+<ul>
+<li><p><strong>Вылов 12 тыс.т:</strong><br>
+F/F<sub>MSY</sub>&gt; = 0.53 [0.24-1.17] → 10% вероятность превышения F<sub>MSY</sub></p></li>
+<li><p><strong>Вылов 15 тыс.т:</strong><br>
+F/F<sub>MSY</sub> = 0.66 [0.30-1.48] → 30% вероятность превышения F<sub>MSY</sub></p></li>
+<li><p><strong>Вылов 17 тыс.т:</strong><br>
+F/F<sub>MSY</sub> = 0.76 [0.34-1.69] → 45% вероятность превышения F<sub>MSY</sub></p></li>
+</ul>
+<p><strong>Рекомендации по управлению</strong></p>
+<ol type="1">
+<li><strong>Оптимальный вылов:</strong> 12 тыс. тонн
+<ul>
+<li>Сохраняет запас в безопасной зоне (B/B<sub>MSY</sub> &gt; 1.3)</li>
+<li>Минимизирует риск перелова (F/F<sub>MSY</sub> &lt; 0.55)</li>
+<li>Учитывает неопределенность модельных оценок</li>
+</ul></li>
+<li><strong>Предельно допустимый вылов:</strong> 15 тыс. тонн
+<ul>
+<li>Требует усиленного мониторинга</li>
+<li>Необходим ежегодный пересмотр квот</li>
+</ul></li>
+<li><strong>Не рекомендуются:</strong>
+<ul>
+<li>Сценарии с F≥F<sub>MSY</sub> (22 тыс.т)</li>
+<li>Фиксированный вылов &gt;15 тыс.т</li>
+<li>Стратегии, приводящие к снижению B/B<sub>MSY</sub> &lt; 1.25</li>
+</ul></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Критический фактор:</strong> Высокая неопределенность прогноза вылова (дов. интервал 7.3-21.4 тыс.т для текущего сценария) требует осторожного подхода.</p>
+</blockquote>
 
 
 </section>
