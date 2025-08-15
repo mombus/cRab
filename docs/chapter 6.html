@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Байесовский подход – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>7&nbsp; Продукционная модель JABBA – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -111,7 +146,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 6.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Байесовский подход</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 6.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -181,7 +216,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter 6.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Байесовский подход</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -218,8 +253,15 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#лекция-введение" id="toc-лекция-введение" class="nav-link active" data-scroll-target="#лекция-введение"><span class="header-section-number">7.1</span> Лекция-Введение</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">7.2</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">7.1</span> Введение</a></li>
+  <li><a href="#подготовка-среды-и-загрузка-данных" id="toc-подготовка-среды-и-загрузка-данных" class="nav-link" data-scroll-target="#подготовка-среды-и-загрузка-данных"><span class="header-section-number">7.2</span> Подготовка среды и загрузка данных</a></li>
+  <li><a href="#настройка-и-запуск-модели-jabba" id="toc-настройка-и-запуск-модели-jabba" class="nav-link" data-scroll-target="#настройка-и-запуск-модели-jabba"><span class="header-section-number">7.3</span> Настройка и запуск модели JABBA</a></li>
+  <li><a href="#анализ-параметров-модели-jabba-fitpars" id="toc-анализ-параметров-модели-jabba-fitpars" class="nav-link" data-scroll-target="#анализ-параметров-модели-jabba-fitpars"><span class="header-section-number">7.4</span> Анализ параметров модели JABBA (fit$pars)</a>
+  <ul class="collapse">
+  <li><a href="#дополнительные-диагностики" id="toc-дополнительные-диагностики" class="nav-link" data-scroll-target="#дополнительные-диагностики"><span class="header-section-number">7.4.1</span> Дополнительные диагностики</a></li>
+  </ul></li>
+  <li><a href="#ретроспективный-анализ" id="toc-ретроспективный-анализ" class="nav-link" data-scroll-target="#ретроспективный-анализ"><span class="header-section-number">7.5</span> Ретроспективный анализ</a></li>
+  <li><a href="#прогнозирование" id="toc-прогнозирование" class="nav-link" data-scroll-target="#прогнозирование"><span class="header-section-number">7.6</span> Прогнозирование</a></li>
   </ul>
 </nav>
     </div>
@@ -228,7 +270,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Байесовский подход</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></h1>
 </div>
 
 
@@ -245,15 +287,658 @@ window.Quarto = {
 </header>
 
 
-<section id="лекция-введение" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="лекция-введение"><span class="header-section-number">7.1</span> Лекция-Введение</h2>
-<p><span class="math display">\[  
-P(\theta|x)=\frac{L(x|\theta)P(\theta)}{\sum\limits_{i=1}^{n}{\left[ L(x_i|\theta)P(\theta)\right]}}  
-\]</span></p>
+<section id="введение" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">7.1</span> Введение</h2>
+<p>Библиотека JABBA <a href="https://github.com/jabbamodel/JABBA" class="uri">https://github.com/jabbamodel/JABBA</a> - оценка запаса с помощью стохастической версии продукционной модели и байесовского подхода. <strong>JABBA</strong> и <strong>SPiCT</strong> – наиболее распространенные в международной практике инструменты, реализующие продукционный подход к оценке запасов гидробионтов при нехватки данных.</p>
+<p>Помимо <a href="https://cran.r-project.org/">R</a> JABBA требует дополнительно установки <a href="https://sourceforge.net/projects/mcmc-jags/">JAGS</a>. Для демонстрации основных функций пакета в настоящем скрипте используются входные данные из примера <a href="https://mombus.github.io/cRab/chapter%205.html">SPiCT</a>, поэтому в скрипте демонстрации модели JABBA сценарий моделирования назван “SPiCT_adapted”.</p>
+<p>Скрипт этого практического занятия можно скачать по <a href="https://mombus.github.io/cRab/data/JABBA.R">ссылке</a>.</p>
 </section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">7.2</span> Описательная статистика и визуализация</h2>
-<p>Текст. Текст. Текст.</p>
+<section id="подготовка-среды-и-загрузка-данных" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="подготовка-среды-и-загрузка-данных"><span class="header-section-number">7.2</span> Подготовка среды и загрузка данных</h2>
+<p>В данном разделе выполняется базовая настройка среды R для работы с пакетом JABBA. Инициируется загрузка двух необходимых пакетов: <strong>JABBA</strong> (основной инструмент оценки запасов) и <strong>reshape2</strong> (для преобразования структур данных). Создается целевая директория “NEW JABBA” для автоматического сохранения всех результатов анализа, после чего рабочая среда переключается на эту папку.</p>
+<p>Формируются три обязательных компонента входных данных:</p>
+<ol type="1">
+<li><p><strong>Данные по вылову</strong> (catch): Годовые значения уловов за 20-летний период (2005-2024 гг.), представленные в виде вектора из 20 числовых значений.</p></li>
+<li><p><strong>Два индекса обилия</strong>:</p></li>
+</ol>
+<ul>
+<li><p><strong>CPUE</strong> (улов на единицу усилия): 20 наблюдений</p></li>
+<li><p><strong>BESS</strong> (альтернативный индекс, например, данные съемок): 19 наблюдений (первое значение отсутствует, обозначено как NA)</p></li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Стандартные ошибки</strong> (SE) для индексов: Для упрощения примера задаются фиксированным коэффициентом вариации (CV=20%). Это означает, что для каждого ненулевого значения индекса SE рассчитывается как 20% от его величины. Пропуски в индексах (NA) автоматически сохраняются как NA в таблице SE.</li>
+</ol>
+<p>Все данные структурируются в три таблицы с единой временной осью (2005-2024 гг.): отдельно для уловов, значений индексов и их стандартных ошибок. Эта подготовка обеспечивает корректный формат входных данных, необходимых для последующего построения продукционной модели в JABBA.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------- 1. ПОДГОТОВКА СРЕДЫ ---------------------------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Загрузка необходимых пакетов</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(JABBA) <span class="co"># Основной пакет для оценки запасов</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2) <span class="co"># Для преобразования данных (функция dcast)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории (папки, где будут храниться результаты)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/BAKANEV/JABBA"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание папки для результатов анализа</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>assessment <span class="ot">&lt;-</span> <span class="st">"NEW JABBA"</span> <span class="co"># Название оценки</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>output.dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), assessment) <span class="co"># Создание пути к папке</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(output.dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co"># Создание папки (если не существует)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(output.dir) <span class="co"># Переход в созданную папку</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------- 2. ЗАГРУЗКА И ПОДГОТОВКА ДАННЫХ ---------------------------</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание вектора лет анализа</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Year <span class="ot">&lt;-</span> <span class="dv">2005</span><span class="sc">:</span><span class="dv">2024</span> <span class="co"># Последовательность лет от 2005 до 2024</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Вектор данных об уловах (catch)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>Catch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">6</span>,<span class="dv">10</span>,<span class="dv">14</span>,<span class="dv">25</span>,<span class="dv">28</span>,<span class="dv">30</span>,<span class="dv">32</span>,<span class="dv">35</span>,<span class="dv">25</span>,<span class="dv">20</span>,<span class="dv">15</span>,<span class="dv">12</span>,<span class="dv">10</span>,<span class="dv">12</span>,<span class="dv">10</span>,<span class="dv">13</span>,<span class="dv">11</span>,<span class="dv">12</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Вектор данных индекса обилия CPUE (catch per unit effort)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>CPUE <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">27.4</span>,<span class="fl">26.8</span>,<span class="fl">16.8</span>,<span class="fl">23.0</span>,<span class="fl">29.0</span>,<span class="fl">30.0</span>,<span class="fl">16.5</span>,<span class="fl">17.2</span>,<span class="fl">10.5</span>,<span class="fl">14.6</span>,<span class="fl">8.3</span>,<span class="fl">11.4</span>,<span class="fl">15.5</span>,<span class="fl">13.8</span>,<span class="fl">11.5</span>,<span class="fl">15.3</span>,<span class="fl">12.2</span>,<span class="fl">15.6</span>,<span class="fl">16.2</span>,<span class="fl">13.4</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Вектор данных индекса обилия BESS</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>BESS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>,<span class="fl">16.3</span>,<span class="fl">20.7</span>,<span class="fl">15.1</span>,<span class="fl">18.6</span>,<span class="fl">16.0</span>,<span class="fl">13.8</span>,<span class="fl">13.3</span>,<span class="fl">11.7</span>,<span class="fl">11.8</span>,<span class="fl">9.3</span>,<span class="fl">7.1</span>,<span class="fl">8.0</span>,<span class="fl">9.2</span>,<span class="fl">10.3</span>,<span class="fl">9.8</span>,<span class="fl">10.3</span>,<span class="fl">11.7</span>,<span class="fl">13.7</span>,<span class="fl">13.4</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Форматирование данных в таблицы для JABBA</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>catch_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">year =</span> Year, <span class="at">catch =</span> Catch) <span class="co"># Таблица уловов</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>cpue_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">year =</span> Year, <span class="at">CPUE =</span> CPUE, <span class="at">BESS =</span> BESS) <span class="co"># Таблица индексов</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет стандартных ошибок (SE) для индексов</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Используем коэффициент вариации (CV) = 20% (0.2)</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>se_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a> <span class="at">year =</span> Year,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a> <span class="at">CPUE =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(CPUE), <span class="cn">NA</span>, <span class="fl">0.2</span>),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a> <span class="at">BESS =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(BESS), <span class="cn">NA</span>, <span class="fl">0.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="настройка-и-запуск-модели-jabba" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="настройка-и-запуск-модели-jabba"><span class="header-section-number">7.3</span> Настройка и запуск модели JABBA</h2>
+<p>В этом разделе выполняется конфигурация и запуск JABBA. Сначала с помощью функции <code>build_jabba</code> формируется структура входных данных для модели, куда передаются подготовленные таблицы уловов, индексов CPUE/BESS и их стандартных ошибок. Указывается название оценки (“NEW JABBA”) и сценарий моделирования (“SPiCT_adapted”). В качестве биологической основы выбрана модель Шефера (логистический рост). Настраиваются ключевые априорные распределения: для темпа роста популяции (r) задано нормальное распределение N(0.2±0.5), для емкости среды (<em>K</em>) - логнормальное LN(189.6±0.795), для начальной заполненности запаса (<em>ψ</em>) - бета-распределение Beta(0.75±0.25). Установлена оценка процессной ошибки (sigma.est=TRUE) и слабоинформативные априоры для дисперсии наблюдений.</p>
+<p>Непосредственный запуск Байесовской оценки выполняется функцией <code>fit_jabba</code>, которая использует MCMC-алгоритм. Конфигурация MCMC включает 50,000 итераций с отбрасыванием первых 10,000 (фаза “burn-in”), прореживанием цепей в 5 раз и запуском 2 независимых цепей для проверки сходимости. Результатом работы является объект <code>fit</code>, содержащий апостериорные распределения параметров, оценки биомассы и диагностику модели, которые будут использоваться для последующего анализа состояния запаса.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 3. НАСТРОЙКА И ЗАПУСК МОДЕЛИ JABBA --------------------</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание входных данных для модели</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>jbinput <span class="ot">&lt;-</span> <span class="fu">build_jabba</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">catch =</span> catch_data,<span class="co"># Данные об уловах</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">cpue =</span> cpue_data,<span class="co"># Данные индексов обилия</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">se =</span> se_data,<span class="co"># Стандартные ошибки</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">assessment =</span> assessment, <span class="co"># Название оценки</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">scenario =</span> <span class="st">"SPiCT_adapted"</span>, <span class="co"># Сценарий модели</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">model.type =</span> <span class="st">"Schaefer"</span>, <span class="co"># Тип модели (Шефера)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">sigma.est =</span> <span class="cn">TRUE</span>, <span class="co"># Оценивать изменчивость процесса?</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">r.prior =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>),<span class="co"># Априорное распределение для r (среднее, SD)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">K.prior =</span> <span class="fu">c</span>(<span class="fl">189.6</span>, <span class="fl">0.795</span>),<span class="co"># Априорное для K (среднее, SD)</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">psi.prior =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.25</span>),<span class="co"># Априорное для начального заполнения</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">igamma =</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.001</span>), <span class="co"># Параметры для дисперсии наблюдений</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">verbose =</span> <span class="cn">FALSE</span> <span class="co"># Отключить подробный вывод</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Запуск Байесовской модели (MCMC)</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">fit_jabba</span>(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>jbinput,<span class="co"># Входные данные</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="at">ni =</span> <span class="dv">50000</span>, <span class="co"># Общее количество итераций</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="at">nb =</span> <span class="dv">10000</span>, <span class="co"># Количество "выжигаемых" итераций (burn-in)</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="at">nt =</span> <span class="dv">5</span>,<span class="co"># Частота прореживания (thinning)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="at">nc =</span> <span class="dv">2</span> <span class="co"># Количество цепей MCMC</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="анализ-параметров-модели-jabba-fitpars" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="анализ-параметров-модели-jabba-fitpars"><span class="header-section-number">7.4</span> Анализ параметров модели JABBA (fit$pars)</h2>
+<p>Команда <code>fit$pars</code> выведет таблицу, содержит медианные значения, 95% доверительные интервалы и результаты тестов сходимости MCMC для ключевых характеристик модели.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> fit<span class="sc">$</span>pars</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        Median        LCI           UCI          Geweke.p Heidel.p</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>K      <span class="fl">257.137636616</span> <span class="fl">178.4613660245</span> <span class="fl">442.25933810</span> <span class="fl">0.533</span>    <span class="fl">0.401</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>r      <span class="fl">0.268924223</span>   <span class="fl">0.1517493450</span>   <span class="fl">0.42756749</span>   <span class="fl">0.324</span>    <span class="fl">0.864</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>q<span class="fl">.1</span>    <span class="fl">0.102043488</span>   <span class="fl">0.0565010978</span>   <span class="fl">0.15490243</span>   <span class="fl">0.920</span>    <span class="fl">0.967</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>q<span class="fl">.2</span>    <span class="fl">0.078076035</span>   <span class="fl">0.0433099875</span>   <span class="fl">0.11858679</span>   <span class="fl">0.986</span>    <span class="fl">0.954</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>psi    <span class="fl">0.875023951</span>   <span class="fl">0.5909908905</span>   <span class="fl">1.23643434</span>   <span class="fl">0.970</span>    <span class="fl">0.470</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>sigma2 <span class="fl">0.003477230</span>   <span class="fl">0.0005645686</span>   <span class="fl">0.02110338</span>   <span class="fl">0.369</span>    <span class="fl">0.563</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>tau2<span class="fl">.1</span> <span class="fl">0.006817871</span>   <span class="fl">0.0006978604</span>   <span class="fl">0.05031429</span>   <span class="fl">0.845</span>    <span class="fl">0.392</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>tau2<span class="fl">.2</span> <span class="fl">0.002775946</span>   <span class="fl">0.0004835058</span>   <span class="fl">0.01978467</span>   <span class="fl">0.522</span>    <span class="fl">0.445</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>m      <span class="fl">2.000000000</span>   <span class="fl">2.0000000000</span>   <span class="fl">2.00000000</span>   <span class="cn">NaN</span>      <span class="cn">NA</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Биологические параметры</strong>:</p>
+<ul>
+<li><em>K</em>(емкость среды): Медиана 257.14 единиц биомассы, например тыс.тонн (95% ДИ: 178.46–442.26). Широкий доверительный интервал отражает типичную неопределенность при отсутствии данных о периоде, когда запас приближался к нетронутому состоянию.</li>
+<li><em>r</em>(темп роста): Медиана 0.269 год⁻¹ (95% ДИ: 0.152–0.428) соответствует биологическим ожиданиям для многих промысловых видов рыб.</li>
+<li><em>ψ</em>(начальная биомасса): Медиана 0.875 (95% ДИ: 0.591–1.236) указывает, что в 2005 году биомасса составляла ~87.5% от K.</li>
+</ul>
+<p><strong>Параметры наблюдений</strong>:</p>
+<ul>
+<li><p><em>q.1</em>(коэффициент уловистости (улавливаемости) CPUE): Медиана 0.102 (95% ДИ: 0.056–0.155)</p></li>
+<li><p><em>q.2</em>(коэффициент уловистости (улавливаемости) BESS): Медиана 0.078 (95% ДИ: 0.043–0.119) Широкие доверительные интервалы (&gt;50% от медианы) подтверждают недостаточную информативность данных для точной оценки этих параметров.</p></li>
+</ul>
+<p><strong>Оценки ошибок</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><strong>Параметр</strong></td>
+<td></td>
+<td><strong>Медиана</strong></td>
+<td></td>
+<td><strong>95% ДИ</strong></td>
+<td></td>
+<td><strong>Назначение</strong></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>sigma2</td>
+<td></td>
+<td>0.0035</td>
+<td></td>
+<td>[0.0006, 0.021]</td>
+<td></td>
+<td>Дисперсия ошибки процесса</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>tau2.1</td>
+<td></td>
+<td>0.0068</td>
+<td></td>
+<td>[0.0007, 0.050]</td>
+<td></td>
+<td>Дисперсия ошибки CPUE</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>tau2.2</td>
+<td></td>
+<td>0.0028</td>
+<td></td>
+<td>[0.0005, 0.020]</td>
+<td></td>
+<td>Дисперсия ошибки BESS</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Соотношение σ²/τ² показывает:</td>
+<td></td>
+<td>Для CPUE: 0.0035/0.0068 ≈ 0.51</td>
+<td></td>
+<td>Для BESS: 0.0035/0.0028 ≈ 1.25</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Это свидетельствует, что неопределенность в большей степени обусловлена погрешностью данных, чем стохастичностью биологической динамики.</p>
+<p><strong>Диагностика сходимости MCMC</strong>: Все p-значения тестов (Geweke, Heidel) превышают 0.05, что подтверждает сходимость цепей:</p>
+<p><strong>Управленческие выводы</strong>:</p>
+<p>1.Из-за неопределенности в оценках K и q интерпретацию следует фокусировать на относительных показателях (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>).</p>
+<p>2.Для повышения точности модели требуется:</p>
+<ul>
+<li><p>Дополнительные данные за периоды высокой биомассы (для уточнения <em>K</em>)</p></li>
+<li><p>Калибровка индексов обилия (для снижения <em>τ²</em>)</p></li>
+</ul>
+<p>3.Высокие значения <em>τ²</em> указывают на необходимость улучшения качества данных CPUE и BESS.</p>
+<p><strong>Диагностика и визуализация результатов</strong></p>
+<p>После выполнения байесовской оценки в JABBA проводится комплексная диагностика и визуализация результатов. Автоматически генерируется набор стандартных графиков через функцию jabba_plots, которые сохраняются в рабочую директорию. Для углубленного анализа последовательно строятся специализированные графики: динамика уловов с модельными значениями, согласованность наблюдаемых и предсказанных индексов CPUE/BESS, сравнение априорных и апостериорных распределений ключевых параметров (<em>r</em>, <em>K</em>, <em>q</em>), а также диагностика остатков модели. Особое внимание уделяется сходимости MCMC-цепей для исключения вычислительных ошибок.</p>
+<p>Важнейшая часть анализа - визуализация временных трендов: абсолютной биомассы (<em>B</em>), промысловой смертности (<em>F</em>) и их соотношений с целевыми уровнями (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>). Фазовый портрет и Кобэ-график интегрируют эти показатели, наглядно отображая историческую и текущую позицию запаса относительно ориентиров управления (перелов/недолов). Дополнительно выполняются тест на случайность остатков, логарифмические аппроксимации и анализ отклонений процесса, что обеспечивает всестороннюю проверку адекватности модели. Финал этапа - экспорт рассчитанных временных рядов (биомасса, <em>F</em>, <em>B/B<sub>msy</sub></em> и др.) в CSV-файл для дальнейшего использования.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 4. ДИАГНОСТИКА И ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ --------------------</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Генерация стандартных диагностических графиков</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_ensemble</span>(fit)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">jabba_plots</span>(fit, <span class="at">output.dir =</span> output.dir)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Индивидуальные графики для детального анализа:</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_catch</span>(fit)<span class="co"># График уловов</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_cpuefits</span>(fit)<span class="co"># Сравнение модельных и наблюдаемых индексов</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_ppdist</span>(fit)<span class="co"># Распределения априорных и апостериорных параметров</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_residuals</span>(fit)<span class="co"># Остатки модели</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_mcmc</span>(fit)<span class="co"># Диагностика сходимости MCMC</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_trj</span>(fit, <span class="at">type =</span> <span class="st">"B"</span>)<span class="co"># Динамика биомассы</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_trj</span>(fit, <span class="at">type =</span> <span class="st">"F"</span>)<span class="co"># Динамика промысловой смертности</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_trj</span>(fit, <span class="at">type =</span> <span class="st">"BBmsy"</span>)<span class="co"># Отношение *B/B~msy~*</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_trj</span>(fit, <span class="at">type =</span> <span class="st">"FFmsy"</span>)<span class="co"># Отношение *F/F~msy~*</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_spphase</span>(fit)<span class="co"># **График продуктивности запаса с разметкой фаз Kobe**</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_kobe</span>(fit)<span class="co"># Кобэ-график (*B/B~msy~* vs *F/F~msy~*)</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Дополнительные диагностики:</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_runstest</span>(fit)<span class="co"># Тест на случайность остатков</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_logfits</span>(fit)<span class="co"># Графики в логарифмической шкале</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_procdev</span>(fit)<span class="co"># Отклонения процесса</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение временных рядов результатов</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(fit<span class="sc">$</span>timeseries, <span class="at">file =</span> <span class="st">"results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA1.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 1.: Генерация стандартных графиков: относительной и абсолютной промысловой биомассы, а также смертности, ошибки процесса и динамики вылова.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA2.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 2.: Сравнение модельных и наблюдаемых индексов</figcaption>
+</figure>
+</div>
+<p>График сравнения позволяет визуально оценить <strong>адекватность модели реальным данным</strong> и выявить систематические расхождения. Он отображает: 1.<strong>Наблюдаемые значения</strong>индексов (например, CPUE и BESS) в виде точек с вертикальными отрезками, отражающими доверительные интервалы на основе стандартных ошибок. 2.<strong>Модельные предсказания</strong> в виде сплошной линии с затененной областью (50 и 95% доверительные интервалы апостериорного распределения).</p>
+<p><strong>Ключевые аспекты интерпретации</strong>:</p>
+<p><strong>Согласованность</strong>: Если модельная кривая проходит в пределах доверительных интервалов наблюдаемых точек, это свидетельствует о хорошем описании трендов. <strong>Смещения</strong>: Систематическое занижение/завышение предсказаний для определенных периодов указывает на недостатки модели (например, недоучет факторов среды или нелегального вылова). <strong>Чувствительность индексов</strong>: Различия в точности аппроксимации CPUE и BESS помогают оценить, какой индекс информативнее отражает динамику биомассы. <strong>Аномалии</strong>: Резкие выбросы точек за пределы доверительной зоны модели сигнализируют о годах с нетипичными условиями (ошибки данных, природные катаклизмы). <strong>Практическое значение</strong>: График отвечает на вопрос — способна ли выбранная продукционная модель (в данном случае Шефера) достоверно воспроизводить историческую динамику запаса, что является основой для корректных прогнозов.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA3.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 3.: Распределения априорных и апостериорных параметров</figcaption>
+</figure>
+</div>
+<p>Этот график предоставляет <strong>инструмент для анализа влияния данных на исходные предположения модели</strong>. Он визуализирует:</p>
+<p>1.<strong>Априорные распределения</strong>(темные области): - Заданные до анализа (например:r ~ N(0.2, 0.5),K ~ LN(189.6, 0.795)). - Отражают экспертные гипотезы или литературные данные о параметрах.</p>
+<p>2.<strong>Апостериорные распределения</strong>(светлые области): - Рассчитанные в ходе Байесовского вывода (MCMC) после учета данных (уловы, индексы). - Показывают,<em>как фактическая информация модифицировала первоначальные предположения</em>.</p>
+<p><strong>Аспекты интерпретации</strong>:</p>
+<p><strong>Сдвиг пиков</strong>: Если апостериор смещен относительно априора (напр., пик для <em>r</em> сдвинулся от 0.2 к 0.3) – данные “перевесили” априорную гипотезу. <strong>Сужение кривой</strong>: Резкое сокращение дисперсии апостериора (напр., для <em>K</em>) свидетельствует о высокой информативности данных по этому параметру. <strong>Конфликт</strong>: Если апостериорный пик находится в “хвосте” априора (напр., априор для <em>q</em> задан N(1,0.2), а апостериор с пиком при 2.5) – сигнал о несоответствии данных или модели.</p>
+<p><strong>Параметры-индикаторы</strong>:</p>
+<ul>
+<li><em>r</em> (темп роста): Четкий апостериор указывает на надежную оценку продуктивности запаса.</li>
+<li><em>K</em> (емкость среды): Узкий апостериор – уверенность в оценке исторической биомассы.</li>
+<li><em>ψ</em> (начальная заполненность): Расхождение с априором может указывать на ошибку в задании начальных условий.</li>
+</ul>
+<p><strong>Диагностическое значение</strong>:</p>
+<p>Если апостериоры близки к априорам – данные не внесли новую информацию (требует пересмотра индексов). Если апостериоры асимметричны/многомодальны – возможны проблемы идентификации параметров (необходимы дополнительные диагностики).</p>
+<p><strong>Вывод</strong>: График отвечает на вопрос – <em>насколько исходные биологические гипотезы подтвердились реальными данными</em>, что критично для обоснованности оценки.</p>
+<p>Касательно графиков коэффициентов пропорциональности или улавливаемости <em>q</em>. Здесь, для простоты примера, вручную не задаются. JABBA по умолчанию (автоматически) назначает слабый или малоинформативный априор: <code>q ~ LogNormal(mean = 1, SD = 1000)</code> Это практически <strong>равномерное распределение</strong> в широком диапазоне (от ~0 до +∞). Поэтому на графиках не видны темные области априорных распределений <em>q1</em> и <em>q2</em>. <em>Физический смысл</em>: Мы не знаем, во сколько раз индекс отличается от абсолютной биомассы.</p>
+<p><strong>PPMR и PPVR: диагностические показатели в JABBA</strong></p>
+<p>В байесовском анализе, который лежит в основе работы JABBA, ключевым этапом является проверка сходимости MCMC-цепей. Именно для этой цели используются диагностические показатели PPMR (Potential Scale Reduction Factor for Multivariate Monitoring) и PPVR (Potential Scale Reduction Factor for Predictive Variance). Эти статистики позволяют оценить, насколько надежны полученные оценки параметров модели. PPMR представляет собой многомерный аналог классического R-hat критерия и оценивает сходимость сразу для всех параметров модели, учитывая их взаимосвязи. Он рассчитывается как корень из отношения дисперсии между цепями к дисперсии внутри цепей. Идеальное значение PPMR должно быть близко к 1, а значения выше 1.1 указывают на серьезные проблемы со сходимостью. PPVR же фокусируется конкретно на сходимости дисперсии апостериорных предсказаний, что особенно важно для оценки надежности доверительных интервалов прогнозируемых величин, таких как <em>B/B<sub>msy</sub></em> или <em>F/F<sub>msy</sub></em>. Значения PPVR также должны стремиться к 1.</p>
+<p>В вашем конкретном случае анализ этих показателей дает неоднозначную картину. Для параметра K (несущая способность) мы видим практически идеальную сходимость: PPMR равен 0.97, что даже немного меньше 1, что указывает на превосходную стабильность оценок между цепями, а крайне низкое значение PPVR (0.109) говорит о высокой согласованности в оценке неопределенности. Это позволяет с уверенностью доверять полученным значениям <em>K</em>. Однако ситуация с параметром <em>r</em> (темп роста популяции) вызывает серьезные опасения. Значение PPMR 1.471 существенно превышает критический порог, что свидетельствует о явных проблемах со сходимостью цепей. Хотя PPVR 0.322 выглядит лучше, это не компенсирует высокий PPMR. Такая ситуация часто возникает при слишком широких априорных распределениях или недостатке информативных данных, особенно в периоды роста популяции. Для параметра <em>ψ</em> (начальная заполненность запаса) ситуация промежуточная: PPMR 1.174 находится на границе допустимого, а PPVR 0.501 указывает на умеренную согласованность в оценке неопределенности.</p>
+<p>Для улучшения сходимости рекомендуется предпринять несколько шагов. Во-первых, стоит значительно увеличить количество итераций MCMC - например, до 100000 для ni и 20000 для фазы “burn-in” (nb). Во-вторых, необходимо пересмотреть априорные распределения, особенно для параметра r: возможно, стоит уменьшить стандартное отклонение с 0.5 до 0.2-0.3, если есть экспертные основания для такого ужесточения. В-третьих, стоит проверить качество входных данных - достаточно ли репрезентативны имеющиеся индексы обилия, особенно в ключевые периоды динамики популяции. Важно понимать, что при сохраняющихся проблемах со сходимостью абсолютные оценки биомассы и темпа роста могут оставаться ненадежными, однако относительные показатели, такие как <em>B/B<sub>msy</sub></em>, часто оказываются более устойчивыми к подобным проблемам. Это связано с тем, что они в меньшей степени зависят от абсолютных значений проблемных параметров. Таким образом, несмотря на выявленные сложности, модель может оставаться полезной для принятия управленческих решений, особенно если фокусироваться на относительных показателях состояния запаса.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA4.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 4.: Остатки модели</figcaption>
+</figure>
+</div>
+<p>График остатков в JABBA (jbplot_residuals) представляет собой важный диагностический инструмент, позволяющий оценить качество соответствия модели реальным данным. На этом графике отображаются остатки - разницы между наблюдаемыми значениями индексов обилия (CPUE и BESS) и их модельными оценками. В вашем случае график строится на основе конкретных значений остатков, где для CPUE они варьируются от -0.38 до +0.31, а для BESS - от -0.20 до +0.17, с отсутствующим значением (NA) для BESS в 2005 году.</p>
+<p>График имеет несколько ключевых элементов. Во-первых, это боксплоты, которые визуализируют распределение остатков для каждого индекса в целом, показывая медиану, квартили и возможные выбросы. Во-вторых, на график накладывается сглаженная линия (loess), которая помогает выявить систематические тренды в остатках. Например, если остатки демонстрируют явную тенденцию к увеличению или уменьшению со временем, это может указывать на неучтенные факторы в модели. В ваших данных остатки CPUE показывают некоторую изменчивость, но без явного тренда, в то время как BESS имеет более стабильные остатки с меньшим разбросом.</p>
+<p>Интерпретация остатков имеет решающее значение. В идеале остатки должны быть случайно распределены вокруг нуля без видимых закономерностей. Наличие кластеров положительных или отрицательных остатков в определенные периоды может указывать на систематические ошибки модели. В нашем случае отсутствие явных трендов на графике - хороший знак, хотя отдельные выбросы, такие как отрицательный остаток CPUE в 2013 году (-0.38), заслуживают внимания. Размеры остатков также важны: значения, превышающие по модулю 0.5, считаются значительными и могут указывать на проблемы с данными или спецификацией модели.</p>
+<p>График остатков особенно полезен для сравнения разных индексов. В нашем анализе видно, что остатки CPUE имеют больший разброс по сравнению с BESS, что может говорить либо о более высокой вариабельности данных CPUE, либо о том, что модель хуже описывает эту компоненту. Отсутствие данных BESS для 2005 года (NA) корректно обрабатывается графиком. Важно отметить, что систематические смещения остатков вверх или вниз могут указывать на проблемы с калибровкой коэффициентов уловистости (q), что согласуется с ранее выявленными сложностями в их оценке.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA5.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 5.: График продуктивности запаса с разметкой фаз Кобэ с динамикой вылова</figcaption>
+</figure>
+</div>
+<p>График представляет собой комплексную визуализацию, объединяющую три ключевых аспекта анализа продукционной модели: 1) продукционную функцию (дуга), 2) динамику вылова относительно биомассы и 3) фазовые переходы состояния запаса в координатах Кобэ-графика</p>
+<p>На графике по оси X отображается <strong>биомасса</strong> (в абсолютных единицах или относительно <em>B<sub>msy</sub></em>), а по оси Y — <strong>вылов</strong> и <strong>чистая продукция</strong> (surplus production). Кривая производственной функции (обычно параболическая для модели Шефера) показывает зависимость между биомассой и устойчивым выловом. Точки на графике представляют фактические годовые значения биомассы и вылова, соединенные линиями в хронологическом порядке. Цвет точек кодирует фазовое состояние запаса согласно классификации Kobe: зеленый — устойчивое состояние (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>), желтый/оранжевый — перелов (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em> или <em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>), красный — коллапс (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA6.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 6.: Кобэ-график (<em>B/B<sub>msy</sub></em> vs <em>F/F<sub>msy</sub></em>) с динамикой вылова</figcaption>
+</figure>
+</div>
+<p>График Кобэ, генерируемый функцией <code>jbplot_kobe(fit)</code>, представляет собой фазовый портрет, где по оси X отложено отношение биомассы к целевому уровню (<em>B/B<sub>msy</sub></em>), а по оси Y — отношение промысловой смертности к устойчивому уровню (<em>F/F<sub>msy</sub></em>). Этот график разделен на четыре квадранта, определяющих статус запаса. Зеленый квадрант (<em>B/B<sub>msy</sub></em> &gt; 1, <em>F/F<sub>msy</sub></em> &lt; 1) соответствует устойчивому состоянию без перелова. Желтый квадрант (<em>B/B<sub>msy</sub></em> &gt; 1, <em>F/F<sub>msy</sub></em> &gt; 1) сигнализирует о риске перелова. Оранжевый квадрант (<em>B/B<sub>msy</sub></em> &lt; 1, <em>F/F<sub>msy</sub></em> &gt; 1) указывает на активный перелов, а желтый (<em>B/B<sub>msy</sub></em> &lt; 1, <em>F/F<sub>msy</sub></em> &lt; 1) — на фазу восстановления запаса.</p>
+<p>В нашем анализе целевые ориентиры рассчитаны на основе параметров модели: <em>B<sub>msy</sub></em> = <em>K</em>/2 = 257.14/2 ≈ 128.57, а <em>MSY</em> = <em>r</em>×<em>K</em>/4 ≈ 0.269×257.14/4 ≈ 17.29. На графике отображена траектория запаса с 2005 по 2024 годы, где каждая точка соответствует медианным оценкам за год, а соединяющие их линии показывают хронологическую динамику. В 2005 году запас находился в идеальном состоянии: <em>B/B<sub>msy</sub></em> = 1.83 (95% ДИ: 1.25–2.52), <em>F/F<sub>msy</sub></em> = 0.15 (0.09–0.26), что помещает его глубоко в зеленый квадрант.</p>
+<p>Период 2010-2015 годов демонстрирует критическое ухудшение состояния: к 2013 году <em>B/B<sub>msy</sub></em> снижается до 0.89 (0.64–1.15), а <em>F/F<sub>msy</sub></em> достигает пика 1.74 (1.16–2.86) в 2011 году, что соответствует оранжевому квадранту активного перелова. Это совпадает с историческими данными о максимальных уловах (28-35 единиц в 2009-2013 гг.), превышающих расчетный <em>MSY</em> (17.29). Последующий период (2016-2024) показывает восстановление: к 2024 году <em>B/B<sub>msy</sub></em> возрастает до 1.29 (0.90–1.64), а <em>F/F<sub>msy</sub></em> снижается до 0.51 (0.31–0.93), возвращая запас в зеленый квадрант.</p>
+<p>Текущее положение (2024 год) указывает на восстановление запаса, однако горизонтально вытянутое облако неопределенности для <em>B/B<sub>msy</sub></em> отражает чувствительность к оценке параметра K, чей широкий доверительный интервал (178–442) обусловлен исторической нехваткой данных о периоде высокой биомассы. Вертикальная компактность <em>F/F<sub>msy</sub></em> подтверждает относительно точную оценку промысловой смертности. Управленческая рекомендация основывается на медианных значениях: поддержание <em>F/F<sub>msy</sub></em> на уровне ≈0.5 позволит сохранить запас в устойчивом состоянии. Однако из-за неопределенности в оценке <em>B/B<sub>msy</sub></em> (риск попадания в желтый квадрант при нижней границе ДИ 0.90) необходим ежегодный мониторинг с обновлением модели по новым данным. Исторический пример перелова 2011-2013 годов демонстрирует последствия превышения <em>F/F<sub>msy</sub></em> &gt;1.5, что должно учитываться при установке лимитов вылова.</p>
+<section id="дополнительные-диагностики" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="дополнительные-диагностики"><span class="header-section-number">7.4.1</span> Дополнительные диагностики</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Дополнительные диагностики:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_runstest</span>(fit)    <span class="co"># Тест на случайность остатков</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_logfits</span>(fit)     <span class="co"># Графики в логарифмической шкале</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_procdev</span>(fit)     <span class="co"># Отклонения процесса</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение временных рядов результатов</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(fit<span class="sc">$</span>timeseries, <span class="at">file =</span> <span class="st">"results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA7.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 7.: График теста серий (runs test) для диагностики остатков</figcaption>
+</figure>
+</div>
+<p>Дублирование графика остатков, но для каждого индекса выводится отдельный график. На графике отображаются остатки модели (разницы между наблюдаемыми и предсказанными значениями индексов обилия) в виде последовательности точек, упорядоченных по времени.Тест серий (runs test) анализирует последовательность чередований положительных и отрицательных остатков. Случайное распределение остатков (что является желаемым результатом) будет проявляться в частом чередовании положительных и отрицательных значений. Напротив, наличие длинных серий (несколько положительных или отрицательных остатков подряд) может указывать на:</p>
+<ul>
+<li><p>Неучтенные временные зависимости в данных</p></li>
+<li><p>Неадекватность структуры модели (например, пропущенные важные переменные)</p></li>
+<li><p>Систематические ошибки в данных</p></li>
+<li><p>Неправильную спецификацию функциональной формы модели</p></li>
+</ul>
+<p><strong>График отклонений процесса (Process Deviations) в JABBA</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA8.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 8.: Отклонения процесса</figcaption>
+</figure>
+</div>
+<p>График отклонений процесса (<strong><code>jbplot_procdev(fit)</code></strong>) отображает различия между фактической динамикой биомассы и теоретическими предсказаниями продукционной модели. Эти отклонения (Bdev) количественно выражают влияние неучтенных моделью факторов на популяцию — от климатических аномалий до изменений в кормовой базе. В нашем анализе медианные значения Bdev колеблются в узком диапазоне от -0.024 (2011) до +0.021 (2017), при этом все 95% доверительные интервалы включают ноль. Это свидетельствует об отсутствии статистически значимых отклонений, что подтверждает адекватность базовой модели Шефера. Биологически положительные Bdev указывают на неожиданный рост биомассы (например, за счет улучшения условий воспроизводства), тогда как отрицательные — на незапланированные потери (эпизоотии, незарегистрированную смертность).</p>
+<p>Особый интерес представляют два периода: 2011 год с минимальным <em>Bdev</em> (-0.024) совпадает с пиком промысловой нагрузки (<em>F/F<sub>msy</sub></em> ≈ 1.74), что может отражать дополнительную естественную смертность, вызванную переловом. В 2017 году положительное отклонение (+0.021) соответствует фазе активного восстановления запаса. Важно, что 80% лет показывают абсолютные значения <em>Bdev</em> &lt; 0.01 — исключительно высокий показатель, подчеркивающий надежность модели. Приемлемым диапазоном считаются отклонения в пределах ±0.05 при сохранении доверительных интервалов, пересекающих ноль; наши данные существенно строже этих критериев.</p>
+<p>Существенное влияние на отклонения процесса оказывает неучтенный вылов. Если такой вылов присутствует, модель, не получая данных о реальном изъятии, будет систематически переоценивать биомассу. Это проявляется как стабильно отрицательные <em>Bdev</em>, особенно выраженные в периоды интенсивного промысла. Например, при ежегодном неучтенном изъятии в 20% от официального улова, медианные отклонения сместились бы в зону -0.05…-0.10, а доверительные интервалы перестали бы включать ноль. В нашем случае отсутствие таких систематических сдвигов (разброс Bdev симметричен относительно нуля) позволяет заключить, что неучтенный вылов не является критическим фактором для данной популяции. Однако для окончательных выводов требуется анализ ретроспективных данных по промысловому усилию и независимая верификация учетных методик.</p>
+<p>Помимо визуализации, используя нижеприведенный скрипт, можно получить фактические значения, например, с 90%-ным доверительным интервалом: years &lt;- fit$yr</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Агрегировать Bdev по годам (медиана и 90% интервал)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>proc_dev \<span class="ot">&lt;-</span> <span class="fu">aggregate</span>(Bdev \<span class="sc">~</span> year, <span class="at">data =</span> fit\<span class="sc">$</span>kbtrj, <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">median =</span> <span class="fu">median</span>(x), <span class="at">lci =</span> <span class="fu">quantile</span>(x, <span class="fl">0.05</span>), <span class="at">uci =</span> <span class="fu">quantile</span>(x, <span class="fl">0.95</span>)))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(proc_dev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="ретроспективный-анализ" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="ретроспективный-анализ"><span class="header-section-number">7.5</span> Ретроспективный анализ</h2>
+<p>Мы переходим к ретроспективному анализу (hindcasting), который является важным инструментом для оценки устойчивости модели и ее чувствительности к новым данным. В ретроспективном анализе модель последовательно переоценивается с исключением последних лет данных (по одному году за раз, в данном случае от 1 до 5 лет). Это позволяет проверить, насколько сильно меняются оценки ключевых параметров и статуса запаса при поступлении новых данных.</p>
+<p>В вашем скрипте ретроспективный анализ запускается функцией `hindcast_jabba()`, которая использует исходные настройки модели (`jbinput`) и результаты базовой оценки (`fit`). Аргумент `peels = 1:5` указывает, что нужно последовательно удалять от 1 до 5 последних лет данных. Результаты сохраняются в объект `hc`.</p>
+<p>Затем с помощью функции `jbplot_retro()` визуализируются результаты ретроспективного анализа. График показывает, как меняется оценка биомассы (или B/Bmsy) при исключении данных за последние годы. На графике будет изображена траектория базовой оценки (со всеми данными) и траектории, полученные при удалении 1, 2, 3, 4 и 5 лет. Также рассчитывается и отображается статистика Мона (Mohn’s rho), которая количественно оценивает смещение ретроспективных оценок относительно базовой.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 5. РЕТРОСПЕКТИВНЫЙ АНАЛИЗ --------------------</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание папки для результатов ретроспективы</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>retro.dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(output.dir, <span class="st">"retro"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(retro.dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Запуск ретроспективного анализа (убираем по 1-5 лет)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hindcast_jabba</span>(<span class="at">jbinput =</span> jbinput, <span class="at">fit =</span> fit, <span class="at">peels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация ретроспективного анализа</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>mohnsrho <span class="ot">&lt;-</span> <span class="fu">jbplot_retro</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  hc, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">as.png =</span> <span class="cn">FALSE</span>,         <span class="co"># Чтобы сохранить как PNG-файл установите TRUE</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">output.dir =</span> retro.dir,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2022</span>)   <span class="co"># Ограничения по годам на графике</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Кросс-валидация</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>mase <span class="ot">&lt;-</span> <span class="fu">jbplot_hcxval</span>(hc, <span class="at">as.png =</span> <span class="cn">FALSE</span>, <span class="at">output.dir =</span> retro.dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Статистика Мона (Mohn’s rho)</strong>:<br>
+Ключевой показатель смещения, рассчитываемый как относительная разница между ретроспективной и базовой оценкой в год исключения:</p>
+<p><span class="math display">\[
+\rho = \frac{X_{\text{ретро}} - X_{\text{база}}}{X_{\text{база}}}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> mohnsrho</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                 B           F         Bmsy        Fmsy         procB</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2024</span>   <span class="sc">-</span><span class="fl">0.01949857</span>  <span class="fl">0.01635894</span>  <span class="fl">0.031098563</span> <span class="sc">-</span><span class="fl">0.05870471</span>  <span class="fl">0.0019184659</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="dv">2023</span>    <span class="fl">0.06336652</span> <span class="sc">-</span><span class="fl">0.05341885</span> <span class="sc">-</span><span class="fl">0.009782004</span>  <span class="fl">0.03945419</span> <span class="sc">-</span><span class="fl">0.0004440846</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="dv">2022</span>   <span class="sc">-</span><span class="fl">0.04605748</span>  <span class="fl">0.04811313</span> <span class="sc">-</span><span class="fl">0.043482407</span>  <span class="fl">0.10142418</span> <span class="sc">-</span><span class="fl">0.0029895725</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="dv">2021</span>   <span class="sc">-</span><span class="fl">0.04274631</span>  <span class="fl">0.03790912</span>  <span class="fl">0.014020696</span> <span class="sc">-</span><span class="fl">0.03150997</span>  <span class="fl">0.0011936097</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="dv">2020</span>   <span class="sc">-</span><span class="fl">0.04268405</span>  <span class="fl">0.04748624</span> <span class="sc">-</span><span class="fl">0.034149276</span>  <span class="fl">0.04684297</span> <span class="sc">-</span><span class="fl">0.0006575862</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rho.mu <span class="sc">-</span><span class="fl">0.01752398</span>  <span class="fl">0.01928972</span> <span class="sc">-</span><span class="fl">0.008458886</span>  <span class="fl">0.01950133</span> <span class="sc">-</span><span class="fl">0.0001958335</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>               MSY</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="dv">2024</span>    <span class="fl">0.02871203</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="dv">2023</span>   <span class="sc">-</span><span class="fl">0.02266077</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="dv">2022</span>   <span class="sc">-</span><span class="fl">0.03747819</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="dv">2021</span>    <span class="fl">0.02474720</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="dv">2020</span>    <span class="fl">0.00148479</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>rho.mu <span class="sc">-</span><span class="fl">0.00103899</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA9.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 9.: Графики ретроспективного анализа</figcaption>
+</figure>
+</div>
+<ol type="1">
+<li><p><strong>Наши результаты:</strong></p>
+<ul>
+<li><p>Биомасса (*Bм): ρ=−0.018 (слабое отрицательное смещение)</p></li>
+<li><p>Смертность (<em>F</em>): ρ=+0.019 (слабое положительное смещение)</p></li>
+<li><p><em>MSY</em>: ρ=−0.001 (незначимое смещение) Критерий: ∣ρ∣&lt;0.2 приемлемо наши значения ≪0.2.</p></li>
+</ul></li>
+<li><p><strong>Визуализация (<code>jbplot_retro</code>)</strong> показывает:</p>
+<ul>
+<li><p>Как меняется траектория биомассы при исключении данных</p></li>
+<li><p>“Веер” расходящихся линий: чем сильнее расхождение, тем выше нестабильность модели</p></li>
+<li><p>В вашем случае линии остаются близкими — <strong>модель устойчива</strong>.</p></li>
+</ul></li>
+</ol>
+<p><strong>Метрика MASE</strong> (Mean Absolute Scaled Error).</p>
+<p>Кросс-валидация с помощью <code>jbplot_hcxval()</code> оценивает предсказательную способность модели. Для каждого “среза” (peel) модель предсказывает индекс обилия для удаленных лет, а затем эти предсказания сравниваются с фактическими наблюдениями. Рассчитывается MASE (Mean Absolute Scaled Error) — средняя абсолютная ошибка прогноза, нормированная на ошибку наивного прогноза (который предполагает, что будущее значение равно последнему наблюдённому).</p>
+<p><span class="math display">\[
+\mathrm{MASE} = \frac{\text{Средняя ошибка прогноза}}{\text{Средняя ошибка наивного прогноза}}
+\]</span></p>
+<ul>
+<li><p>MASE &lt; 1: Модель лучше наивного метода (предсказывающего “завтра=сегодня”)</p></li>
+<li><p>MASE &gt; 1: Модель работает хуже наивного метода</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA10.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 10.: Метрика MASE</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> mase</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  Index      MASE  MASE.adj     MAE.PR   MAE.base n.eval</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>  CPUE <span class="fl">0.6806899</span> <span class="fl">0.6402326</span> <span class="fl">0.13413055</span> <span class="fl">0.19705090</span>      <span class="dv">5</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>  BESS <span class="fl">0.9539647</span> <span class="fl">0.6632760</span> <span class="fl">0.07763672</span> <span class="fl">0.08138322</span>      <span class="dv">5</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> joint <span class="fl">0.7605651</span> <span class="fl">0.7605651</span> <span class="fl">0.10588363</span> <span class="fl">0.13921706</span>     <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Наши результаты показывают, что для CPUE модель предсказывает лучше, чем наивный метод (0.68&lt;1), а для BESS — немного хуже (0.95≈1). Совместный MASE (0.76) указывает на удовлетворительную общую прогнозную способность. Однако для индекса BESS стоит обратить внимание на возможные улучшения.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Индекс</strong></th>
+<th style="text-align: left;"><strong>MASE</strong></th>
+<th style="text-align: left;"><strong>Интерпретация</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CPUE</td>
+<td style="text-align: left;">0.68</td>
+<td style="text-align: left;"><strong>Хорошо</strong>: Прогноз на 32% точнее наивного</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BESS</td>
+<td style="text-align: left;">0.95</td>
+<td style="text-align: left;"><strong>Удовлетворительно</strong>: Почти эквивалентен наивному методу</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Совместно</td>
+<td style="text-align: left;">0.76</td>
+<td style="text-align: left;">Приемлемая общая точность</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Почему это важно?</strong></p>
+<ol type="1">
+<li><strong>Для управления запасами</strong>:</li>
+</ol>
+<ul>
+<li>Стабильность Mohn’s rho (ρ≈0) означает, что текущие рекомендации по вылову не изменятся радикально при получении новых данных.</li>
+<li>Низкий MASE подтверждает надежность краткосрочных прогнозов.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Для диагностики модели</strong>:</li>
+</ol>
+<ul>
+<li>Систематическое смещение ρB&gt;0.3 могло бы указывать на переоценку запаса (риск перелова).</li>
+<li>MASE &gt; 1 для BESS требует улучшения описания этого индекса (например, через калибровку <em>q</em>).</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Исторический контекст</strong>:<br>
+В наших данных слабое смещение для <em>MSY</em> (ρ=−0.001) подтверждает, что модель корректно определяет максимальный устойчивый вылов (17.29), несмотря на проблемы с оценкой <em>r</em> (PPMR=1.47).</li>
+</ol>
+<p><strong>Выводы для нашего случая:</strong></p>
+<p>Ретроспективный анализ показал:</p>
+<ol type="1">
+<li><strong>Высокую стабильность</strong>: Смещения параметров статистически незначимы.</li>
+<li><strong>Удовлетворительную прогнозную силу</strong>: Особенно для CPUE (MASE=0.68).</li>
+<li><strong>Область улучшения</strong>: Индекс BESS требует внимания (MASE=0.95), возможно, за счет включения ковариат или пересмотра ошибок наблюдений.</li>
+<li><strong>Надежность управленческих выводов</strong>: Текущие оценки статуса запаса (B/Bmsy = 1.29, F/Fmsy = 0.51) устойчивы к добавлению новых данных.</li>
+</ol>
+<p>Этот этап завершает валидацию модели, подтверждая, что она пригодна для разработки рекомендаций по управлению промыслом.</p>
+</section>
+<section id="прогнозирование" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="прогнозирование"><span class="header-section-number">7.6</span> Прогнозирование</h2>
+<p>Прогнозирование в JABBA представляет собой заключительный этап оценки запасов, позволяющий смоделировать будущую динамику популяции при различных сценариях управления промыслом. В нашем случае был выполнен 10-летний стохастический прогноз (2025-2034 гг.), основанный на текущем состоянии запаса, где биомасса в 2024 году оценивается в 148.6 тыс. т при соотношении B/Bmsy = 1.29 и промысловой нагрузке F/Fmsy = 0.51. Были рассмотрены четыре сценария годового изъятия: консервативный (10 тыс. т), умеренные (12 и 14 тыс. т) и интенсивный (16 тыс. т), что соответствует 58-93% от расчетного максимального устойчивого улова (MSY = 17.29).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 6. ПРОГНОЗИРОВАНИЕ --------------------</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Прогноз на основе F (ловушечное усилие)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>fw1 <span class="ot">&lt;-</span> <span class="fu">fw_jabba</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nyears =</span> <span class="dv">10</span>,       <span class="co"># Длина прогноза (лет)</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">imp.yr =</span> <span class="dv">1</span>,        <span class="co"># Год внедрения новых правил</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">imp.values =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">16</span>, <span class="dv">2</span>), <span class="co"># Варианты управления (уровни улова)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">quant =</span> <span class="st">"Catch"</span>,   <span class="co"># Прогнозировать по уловам</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"abs"</span>,      <span class="co"># Абсолютные значения</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">stochastic =</span> <span class="cn">TRUE</span>  <span class="co"># Стохастический прогноз</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Графики ансамбля прогнозов</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">jbpar</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>)) <span class="co"># Настройка макета графиков (3 строки, 2 столбца)</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_ensemble</span>(fw1)    <span class="co"># Основной график прогнозов</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA11.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 11.: Прогностические графики</figcaption>
+</figure>
+</div>
+<p>Ключевой особенностью прогноза является его стохастическая природа — каждый сценарий учитывает неопределенность параметров модели, включая вариабельность темпа роста популяции (r) и ёмкости среды (K), а также ошибку процесса (σ² = 0.0035). Это позволяет получить не точечные предсказания, а вероятностные распределения будущих состояний. Результаты показывают дифференцированную динамику: при вылове 10-12 тыс. т биомасса демонстрирует устойчивый рост (до 178 и 168 тыс. т к 2034 году), сценарий с 14 тыс. т стабилизирует запас на уровне около 158 тыс. т, тогда как интенсивный вылов (16 тыс. т) приводит к постепенному снижению биомассы до 147 единиц.</p>
+<p>Биологическая интерпретация этих траекторий основывается на соотношении прогнозируемых показателей с целевыми ориентирами. Для сценария C16 к 2034 году ожидается приближение B/Bmsy к 1.14, что хотя и остается выше единицы, но указывает на сокращение “буферного” запаса. Особое внимание следует уделить чувствительности модели к оценке параметра r, чья высокая неопределенность (PPMR = 1.47) может существенно влиять на долгосрочные прогнозы — например, если реальный темп роста окажется ближе к нижней границе доверительного интервала (0.15), сценарий C16 может привести к переходу в зону перелова уже к 2030 году.</p>
+<p>Управленческие рекомендации, вытекающие из анализа, предлагают компромисс между экономической эффективностью и предосторожностью. Оптимальным признается диапазон вылова 12-14 единиц, обеспечивающий 70-80% от потенциального прироста продукции без риска снижения запаса ниже целевого уровня. Сценарий C16 может рассматриваться как временная мера только при наличии подтверждающих данных о высоком продуктивном потенциале популяции, но требует ежегодного мониторинга с коррекцией лимитов. Визуализация результатов через <strong><code>jbplot_ensemble()</code></strong> наглядно демонстрирует “веер” траекторий, где расхождение доверительных интервалов усиливается к концу периода прогноза — это прямое отражение кумулятивного эффекта неопределенности параметров и случайных факторов среды.</p>
+<p>Важным аспектом является интеграция прогноза в адаптивную систему управления: установив начальный лимит на уровне 14 тыс. т, следует планировать повторные оценки по данным ежегодных съемок, что позволит корректировать вылов в зависимости от фактического состояния запаса. Такой подход минимизирует риски, связанные с ограниченной точностью продукционных моделей при работе с данными низкой разрешающей способности. Исторический урок нашего анализа — пример перелова 2011-2013 годов — напоминает, что превышение F/Fmsy &gt; 1.5 способно за несколько лет подорвать даже запас, находившийся в благополучном состоянии.</p>
+<p>При работе с JABBA есть трудности в получении различных графиков и фактических значений, например прогнозных. Ниже приводятся скрипты получения отдельных прогностических графиков и таблицы прогнозных значений выловов и биомасс.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График для B/Bmsy с кастомизацией</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jbplot_ensemble</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  fw1,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">subplots =</span> <span class="fu">c</span>(<span class="dv">1</span>),        <span class="co"># Только B/Bmsy</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">add =</span> <span class="cn">TRUE</span>,             <span class="co"># Добавить к текущему графику</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">2020</span>, <span class="dv">2035</span>),   <span class="co"># Ограничение по годам</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.loc =</span> <span class="st">"topleft"</span>  <span class="co"># Позиция легенды</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/JABBA12.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 12.: Отдельный график прогноза</figcaption>
+</figure>
+</div>
+<p>Извлечение прогостических данных:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Фильтрация данных прогноза (2025-2034) для выбранных сценариев</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>forecast_data <span class="ot">&lt;-</span> <span class="fu">subset</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  fw1, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  year <span class="sc">%in%</span> <span class="dv">2025</span><span class="sc">:</span><span class="dv">2034</span> <span class="sc">&amp;</span>    <span class="co"># Годы прогноза</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    run <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"C10"</span>, <span class="st">"C12"</span>, <span class="st">"C14"</span>, <span class="st">"C16"</span>) <span class="sc">&amp;</span> <span class="co"># Сценарии управления</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"prj"</span>           <span class="co"># Только прогнозные значения</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет медиан биомассы (B) по годам и сценариям</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>median_B <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  B <span class="sc">~</span> year <span class="sc">+</span> run,          <span class="co"># Формула: группировка по году и сценарию</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> forecast_data, </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> median             <span class="co"># Функция агрегации</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет медиан улова (Catch) по годам и сценариям</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>median_Catch <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  Catch <span class="sc">~</span> year <span class="sc">+</span> run, </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> forecast_data, </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> median</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование в широкий формат (годы по строкам, сценарии по столбцам)</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>b_table <span class="ot">&lt;-</span> <span class="fu">dcast</span>(median_B, year <span class="sc">~</span> run, <span class="at">value.var =</span> <span class="st">"B"</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>catch_table <span class="ot">&lt;-</span> <span class="fu">dcast</span>(median_Catch, year <span class="sc">~</span> run, <span class="at">value.var =</span> <span class="st">"Catch"</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод таблиц</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Медианная биомасса:"</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(b_table)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Медианные уловы:"</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(catch_table)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение таблиц</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(b_table, <span class="st">"biomass_forecast.csv"</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(catch_table, <span class="st">"catch_forecast.csv"</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
