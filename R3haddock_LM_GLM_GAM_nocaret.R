@@ -46,7 +46,7 @@ glimpse(model_data)
 
 # 2) Формулы моделей и вспомогательные функции --------------------------------
 f_lm  <- as.formula("R3haddock ~ codTSB + T12 + I5 + NAOspring + haddock68")
-f_gam <- as.formula("R3haddock ~ s(codTSB,bs='tp') + s(T12,bs='tp') + s(I5,bs='tp') + s(NAOspring,bs='tp') + s(haddock68,bs='tp')")
+f_gam <- as.formula("R3haddock ~ s(codTSB,bs='tp',k=5) + s(T12,bs='tp',k=5) + s(I5,bs='tp',k=5) + s(NAOspring,bs='tp',k=5) + s(haddock68,bs='tp',k=5)")
 
 rmse <- function(a, p) sqrt(mean((a - p)^2, na.rm = TRUE))
 mae  <- function(a, p) mean(abs(a - p), na.rm = TRUE)
@@ -106,8 +106,8 @@ for (i in seq(initialWindow, n_train - horizon)) {
     }
   }
 
-  # GAM
-  gam_fit <- safe_fit(quote(mgcv::gam(f_gam, data = dtr, method = "REML", select = TRUE)))
+  # GAM (Gamma log), ограничиваем сложность k для стабильности на малом n
+  gam_fit <- safe_fit(quote(mgcv::gam(f_gam, data = dtr, family = Gamma(link = "log"), method = "REML", select = TRUE)))
   if (!is.null(gam_fit)) {
     pr <- try(predict(gam_fit, newdata = dte, type = "response"), silent = TRUE)
     if (!inherits(pr, "try-error")) {
@@ -128,11 +128,12 @@ cat(sprintf("\nЛучшая модель по time-slice CV: %s\n", best_model_n
 fit_on <- function(model_name, data) {
   if (model_name == "LM") return(lm(f_lm, data = data))
   if (model_name == "GLM") return(glm(f_lm, data = data, family = Gamma(link = "log")))
-  mgcv::gam(f_gam, data = data, method = "REML", select = TRUE)
+  mgcv::gam(f_gam, data = data, family = Gamma(link = "log"), method = "REML", select = TRUE)
 }
 
 predict_on <- function(fit, newdata, model_name) {
   if (model_name == "GLM") return(predict(fit, newdata = newdata, type = "response"))
+  if (inherits(fit, "gam")) return(predict(fit, newdata = newdata, type = "response"))
   predict(fit, newdata = newdata)
 }
 
@@ -152,7 +153,7 @@ full_fit_df <- md_for_fit
 
 lm_full  <- lm(f_lm,  data = full_fit_df)
 glm_full <- glm(f_lm, data = full_fit_df, family = Gamma(link = "log"))
-gam_full <- mgcv::gam(f_gam, data = full_fit_df, method = "REML", select = TRUE)
+gam_full <- mgcv::gam(f_gam, data = full_fit_df, family = Gamma(link = "log"), method = "REML", select = TRUE)
 
 cat("\n[LM] Сводка:\n"); print(summary(lm_full))
 cat("\n[LM] VIF:\n"); print(car::vif(lm_full))
@@ -164,8 +165,15 @@ cat("\n[GLM-Gamma] Сводка:\n"); print(summary(glm_full))
 cat(sprintf("[GLM-Gamma] Pearson dispersion: %.3f\n", sum(glm_resid^2, na.rm = TRUE) / glm_full$df.residual))
 
 cat("\n[GAM] Сводка:\n"); print(summary(gam_full))
-cat("\n[GAM] Concurvity:\n"); print(mgcv::concurvity(gam_full, full = TRUE))
-mgcv::gam.check(gam_full)
+cat("\n[GAM] Concurvity (коротко):\n")
+ccv <- try(mgcv::concurvity(gam_full, full = FALSE), silent = TRUE)
+if (!inherits(ccv, "try-error") && is.list(ccv)) {
+  # Выведем усечённо и безопасно
+  print(lapply(ccv, function(m) if (is.null(m)) NULL else round(m, 3)))
+} else {
+  cat("не удалось оценить concurvity\n")
+}
+invisible(try(mgcv::gam.check(gam_full), silent = TRUE))
 
 
 # 5) Прогноз 2022–2024 и эмпирические интервалы ------------------------------
@@ -187,14 +195,28 @@ fc_start <- 2022
 pred_cols <- c("codTSB","T12","I5","NAOspring","haddock68")
 mu <- md %>% filter(YEAR > 1989 & YEAR < fc_start) %>% summarise(across(all_of(pred_cols), ~mean(.x, na.rm = TRUE))) %>% as.list()
 
-build_future <- function(years, mu) {
+if (!exists("user_future")) user_future <- NULL
+
+build_future <- function(years, mu, user_df = NULL) {
   df <- tibble::tibble(YEAR = years)
   for (v in pred_cols) df[[v]] <- mu[[v]]
+  if (!is.null(user_df)) {
+    for (i in seq_len(nrow(user_df))) {
+      yr <- user_df$YEAR[i]
+      if (yr %in% years) {
+        idx <- which(df$YEAR == yr)
+        for (v in intersect(pred_cols, names(user_df))) {
+          val <- user_df[[v]][i]
+          if (!is.na(val)) df[[v]][idx] <- val
+        }
+      }
+    }
+  }
   df
 }
 
 future_years <- fc_start:2024
-scenario_future <- build_future(future_years, mu)
+scenario_future <- build_future(future_years, mu, user_future)
 
 predict_best <- function(fit, newdata, model_name) {
   if (model_name == "GLM") return(predict(fit, newdata = newdata, type = "response"))
@@ -239,6 +261,14 @@ ggplot() +
        x = "Год", y = "R3haddock") +
   theme_minimal(base_size = 12) +
   theme(legend.position = "none")
+
+# AIC-таблица (LM/GLM сопоставимы напрямую; для GAM также показываем ML)
+cat("\nAIC (LM): ",  AIC(lm_full),  "\n", sep = "")
+cat("AIC (GLM): ", AIC(glm_full), "\n", sep = "")
+gam_full_ml <- mgcv::gam(f_gam, data = full_fit_df, family = Gamma(link = "log"), method = "ML", select = TRUE)
+cat("AIC (GAM, REML): ", AIC(gam_full),    "\n", sep = "")
+cat("AIC (GAM, ML):   ", AIC(gam_full_ml), "\n", sep = "")
+
 
 # ============================================================================
 # Конец
