@@ -33,7 +33,7 @@ bioindexP1\[i\] \~ lognormal(log(q1×P1\[i\]), precbioindexP1),
 
 ```{r}
 # ========================================================================================================================
-# ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛЬ Catch-Survey Analysis (CSA) - три #категории (пререкруты (P1), рекруты (R), пострекруты (P)
+# ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛЬ Catch-Survey Analysis (CSA) - три категории (пререкруты (P1), рекруты (R), пострекруты (P)
 # Курс: "Оценка водных биоресурсов в среде R (для начинающих)"
 # Автор: Баканев С. В. Дата: 20.08.2025
 # Структура:
@@ -51,7 +51,7 @@ setwd("C:/CSA")
 # install.packages(c("rjags", "coda"))  # Раскомментировать для установки
 library(rjags)  # Для работы с JAGS
 library(coda)   # Для анализа MCMC-выхода
-library(ggplot2) # Рисунки
+library(ggplot2)# Рисунки
 
 # ========================================================================================================================
 # --- Входные данные ---
@@ -73,31 +73,38 @@ YEAR <- 2000 + 0:(data_list$N - 1)
 # ========================================================================================================================
 model_string <- "
 model {
-  # Observation model
+ # Модель наблюдений (связь ненаблюдаемых состояний с данными)
   for (i in 1:N) {
+    # Медиана для P1 в лог-нормальном распределении
     bioindexP1med[i] <- log(1.0E-6 + q1 * P1[i])
+    # Наблюдения для P1 следуют лог-нормальному распределению
     bioindexP1[i] ~ dlnorm(bioindexP1med[i], precbioindexP1)
 
+    # Аналогично для R
     bioindexRmed[i]  <- log(1.0E-6 + q2 * R[i])
     bioindexR[i] ~ dlnorm(bioindexRmed[i],  precbioindexR)
 
+    # Аналогично для P
     bioindexPmed[i]  <- log(1.0E-6 + q3 * P[i])
     bioindexP[i] ~ dlnorm(bioindexPmed[i],  precbioindexP)
   }
 
-  # State dynamics
-  inv_surv <- exp(-M)
+  # Динамика состояний (модель процесса)
+  inv_surv <- exp(-M)# Коэффициент естественной смертности
   for (i in 2:N) {
+    # Динамика для P (с защитой от отрицательных значений)
     tmpPraw[i] <- (P1[i-1]*Gp*Mp + R[i-1] + P[i-1] - catch[i-1]) * inv_surv
-    tmpPpos[i] <- tmpPraw[i] * step(tmpPraw[i])
-    Pmed[i] <- log(1.0E-6 + tmpPpos[i])
-    P[i] ~ dlnorm(Pmed[i], precP)
+    tmpPpos[i] <- tmpPraw[i] * step(tmpPraw[i]) # Обнуляем если отрицательный
+    Pmed[i] <- log(1.0E-6 + tmpPpos[i])# Медиана в лог-пространстве
+    P[i] ~ dlnorm(Pmed[i], precP)# Процессная ошибка для P
 
+    # Динамика для R (аналогично P)
     tmpRraw[i] <- (P1[i-1]*Gr*Mp) * inv_surv
     tmpRpos[i] <- tmpRraw[i] * step(tmpRraw[i])
     Rmed[i] <- log(1.0E-6 + tmpRpos[i])
     R[i] ~ dlnorm(Rmed[i], precR)
 
+   # Динамика для P1 (лог-случайное блуждание)
     P1med[i] <- log(1.0E-6 + P1[i-1])
     P1[i] ~ dlnorm(P1med[i], precP1)
   }
@@ -109,7 +116,10 @@ model {
   }
   PRlim <- 4000
 
-  # Priors
+# ========================================================================================================================
+#       ПРАЙЕРЫ - PRIORS
+# ========================================================================================================================
+  #  # Априорные распределения параметров (Priors)
   P1[1] ~ dunif(200,4000)
   P[1]  ~ dunif(200,6000)
   R[1]  ~ dunif(200,25000)
@@ -118,18 +128,22 @@ model {
   Gp ~ dnorm(0.075,500)
   Mp ~ dnorm(0.95, 500)
 
+ # Точности для ошибок наблюдений
   precbioindexP1 ~ dgamma(12.22, 1.1)
   precbioindexR  ~ dgamma(12.22, 1.1)
   precbioindexP  ~ dgamma(12.22, 1.1)
 
+ #Прайеры для коэффициентов улавливаемости (catchability)
   q1 ~ dunif(0.1,1)
   q2 ~ dunif(0.1,1)
-  q3 ~ dunif(0.1,1)
+  q3 ~ dunif(0.1,1) 
 
+  # Точности для ошибок процесса
   precP1 ~ dgamma(12.22, 1.1)
   precR  ~ dgamma(12.22, 1.1)
   precP  ~ dgamma(12.22, 1.1)
 
+# Прайер для коэффициента естественной смертности
   M ~ dnorm(0.2, 100)
 }
 "
@@ -505,6 +519,4 @@ p_P <- ggplot(df_p, aes(x = YEAR)) +
   theme_minimal(base_size = 12)
 
 print(p_P)
-
-
 ```

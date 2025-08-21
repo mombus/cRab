@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="9.2" class="anchored" data-anchor-id="реализация-модели"><span class="header-section-number">9.2</span> Реализация модели</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛЬ Catch-Survey Analysis (CSA) - три #категории (пререкруты (P1), рекруты (R), пострекруты (P)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛЬ Catch-Survey Analysis (CSA) - три категории (пререкруты (P1), рекруты (R), пострекруты (P)</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Курс: "Оценка водных биоресурсов в среде R (для начинающих)"</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Автор: Баканев С. В. Дата: 20.08.2025</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Структура:</span></span>
@@ -288,13 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("rjags", "coda"))  # Раскомментировать для установки</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)  <span class="co"># Для работы с JAGS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: пакет 'rjags' был собран под R версии 4.5.1</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>Загрузка требуемого пакета: coda</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: пакет 'coda' был собран под R версии 4.5.1</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Linked to JAGS 4.3.1</code></pre>
@@ -302,102 +296,118 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stderr">
 <pre><code>Loaded modules: basemod,bugs</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)   <span class="co"># Для анализа MCMC-выхода</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co"># Рисунки</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Входные данные ---</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="dv">16</span>,<span class="co"># Количество временных точек</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a> <span class="co"># Наблюдаемые данные (индексы запаса)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP1 =</span> <span class="fu">c</span>(<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>,<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexR  =</span> <span class="fu">c</span>(<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,   <span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>,<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,<span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>),</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP  =</span> <span class="fu">c</span>(<span class="dv">13741</span>,<span class="dv">13770</span>,<span class="dv">13060</span>,<span class="dv">11653</span>,<span class="dv">9782</span>,<span class="dv">8634</span>,<span class="dv">8321</span>,<span class="dv">8793</span>,<span class="dv">9809</span>,<span class="dv">10177</span>,<span class="dv">9776</span>,<span class="dv">9566</span>,<span class="dv">8789</span>,<span class="dv">8640</span>,<span class="dv">9240</span>,<span class="dv">10547</span>),</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">catch      =</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">15</span>,<span class="dv">21</span>,<span class="dv">37</span>,<span class="dv">37</span>,<span class="dv">315</span>,<span class="dv">945</span>,<span class="dv">890</span>,<span class="dv">991</span>,<span class="dv">1060</span>,<span class="dv">1000</span>,<span class="dv">1000</span>,<span class="dv">1600</span>,<span class="dv">1673</span>,<span class="dv">1250</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)   <span class="co"># Для анализа MCMC-выхода</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)<span class="co"># Рисунки</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: пакет 'ggplot2' был собран под R версии 4.4.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Входные данные ---</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="dv">16</span>,<span class="co"># Количество временных точек</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># Наблюдаемые данные (индексы запаса)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP1 =</span> <span class="fu">c</span>(<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>,<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexR  =</span> <span class="fu">c</span>(<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,   <span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>,<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,<span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP  =</span> <span class="fu">c</span>(<span class="dv">13741</span>,<span class="dv">13770</span>,<span class="dv">13060</span>,<span class="dv">11653</span>,<span class="dv">9782</span>,<span class="dv">8634</span>,<span class="dv">8321</span>,<span class="dv">8793</span>,<span class="dv">9809</span>,<span class="dv">10177</span>,<span class="dv">9776</span>,<span class="dv">9566</span>,<span class="dv">8789</span>,<span class="dv">8640</span>,<span class="dv">9240</span>,<span class="dv">10547</span>),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">catch      =</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">15</span>,<span class="dv">21</span>,<span class="dv">37</span>,<span class="dv">37</span>,<span class="dv">315</span>,<span class="dv">945</span>,<span class="dv">890</span>,<span class="dv">991</span>,<span class="dv">1060</span>,<span class="dv">1000</span>,<span class="dv">1000</span>,<span class="dv">1600</span>,<span class="dv">1673</span>,<span class="dv">1250</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание вектора лет для подписей</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>YEAR <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>(data_list<span class="sc">$</span>N <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание вектора лет для подписей</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>YEAR <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>(data_list<span class="sc">$</span>N <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Генерация модели CSA --</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>model_string <span class="ot">&lt;-</span> <span class="st">"</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">  # Observation model</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 1:N) {</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1med[i] &lt;- log(1.0E-6 + q1 * P1[i])</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1[i] ~ dlnorm(bioindexP1med[i], precbioindexP1)</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Генерация модели CSA --</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>model_string <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st"> # Модель наблюдений (связь ненаблюдаемых состояний с данными)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 1:N) {</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">    # Медиана для P1 в лог-нормальном распределении</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1med[i] &lt;- log(1.0E-6 + q1 * P1[i])</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="st">    # Наблюдения для P1 следуют лог-нормальному распределению</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1[i] ~ dlnorm(bioindexP1med[i], precbioindexP1)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="st">    # Аналогично для R</span></span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexRmed[i]  &lt;- log(1.0E-6 + q2 * R[i])</span></span>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexR[i] ~ dlnorm(bioindexRmed[i],  precbioindexR)</span></span>
 <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexPmed[i]  &lt;- log(1.0E-6 + q3 * P[i])</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP[i] ~ dlnorm(bioindexPmed[i],  precbioindexP)</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="st">  # State dynamics</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="st">  inv_surv &lt;- exp(-M)</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 2:N) {</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpPraw[i] &lt;- (P1[i-1]*Gp*Mp + R[i-1] + P[i-1] - catch[i-1]) * inv_surv</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpPpos[i] &lt;- tmpPraw[i] * step(tmpPraw[i])</span></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="st">    Pmed[i] &lt;- log(1.0E-6 + tmpPpos[i])</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="st">    P[i] ~ dlnorm(Pmed[i], precP)</span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRraw[i] &lt;- (P1[i-1]*Gr*Mp) * inv_surv</span></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRpos[i] &lt;- tmpRraw[i] * step(tmpRraw[i])</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="st">    Rmed[i] &lt;- log(1.0E-6 + tmpRpos[i])</span></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="st">    R[i] ~ dlnorm(Rmed[i], precR)</span></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="st">    P1med[i] &lt;- log(1.0E-6 + P1[i-1])</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="st">    P1[i] ~ dlnorm(P1med[i], precP1)</span></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="st">  # Risk</span></span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 1:N) {</span></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="st">    PR[i] &lt;- P[i] + R[i]</span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="st">    p.PRlim[i] &lt;- step(PRlim - PR[i])</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="st">  PRlim &lt;- 4000</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="st">  # Priors</span></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="st">  P1[1] ~ dunif(200,4000)</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="st">  P[1]  ~ dunif(200,6000)</span></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="st">  R[1]  ~ dunif(200,25000)</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="st">  Gr ~ dnorm(0.9,  500)</span></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="st">  Gp ~ dnorm(0.075,500)</span></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="st">  Mp ~ dnorm(0.95, 500)</span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexP1 ~ dgamma(12.22, 1.1)</span></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexR  ~ dgamma(12.22, 1.1)</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexP  ~ dgamma(12.22, 1.1)</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="st">  q1 ~ dunif(0.1,1)</span></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="st">  q2 ~ dunif(0.1,1)</span></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="st">  q3 ~ dunif(0.1,1)</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="st">  precP1 ~ dgamma(12.22, 1.1)</span></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="st">  precR  ~ dgamma(12.22, 1.1)</span></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="st">  precP  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="st">    # Аналогично для P</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexPmed[i]  &lt;- log(1.0E-6 + q3 * P[i])</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP[i] ~ dlnorm(bioindexPmed[i],  precbioindexP)</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="st">  # Динамика состояний (модель процесса)</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="st">  inv_surv &lt;- exp(-M)# Коэффициент естественной смертности</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 2:N) {</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="st">    # Динамика для P (с защитой от отрицательных значений)</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpPraw[i] &lt;- (P1[i-1]*Gp*Mp + R[i-1] + P[i-1] - catch[i-1]) * inv_surv</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpPpos[i] &lt;- tmpPraw[i] * step(tmpPraw[i]) # Обнуляем если отрицательный</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="st">    Pmed[i] &lt;- log(1.0E-6 + tmpPpos[i])# Медиана в лог-пространстве</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="st">    P[i] ~ dlnorm(Pmed[i], precP)# Процессная ошибка для P</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="st">    # Динамика для R (аналогично P)</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRraw[i] &lt;- (P1[i-1]*Gr*Mp) * inv_surv</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRpos[i] &lt;- tmpRraw[i] * step(tmpRraw[i])</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="st">    Rmed[i] &lt;- log(1.0E-6 + tmpRpos[i])</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="st">    R[i] ~ dlnorm(Rmed[i], precR)</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="st">   # Динамика для P1 (лог-случайное блуждание)</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="st">    P1med[i] &lt;- log(1.0E-6 + P1[i-1])</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="st">    P1[i] ~ dlnorm(P1med[i], precP1)</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="st">  # Risk</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 1:N) {</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="st">    PR[i] &lt;- P[i] + R[i]</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="st">    p.PRlim[i] &lt;- step(PRlim - PR[i])</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="st">  PRlim &lt;- 4000</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="st"># ========================================================================================================================</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="st">#       ПРАЙЕРЫ - PRIORS</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="st"># ========================================================================================================================</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="st">  #  # Априорные распределения параметров (Priors)</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="st">  P1[1] ~ dunif(200,4000)</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="st">  P[1]  ~ dunif(200,6000)</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="st">  R[1]  ~ dunif(200,25000)</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="st">  Gr ~ dnorm(0.9,  500)</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="st">  Gp ~ dnorm(0.075,500)</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="st">  Mp ~ dnorm(0.95, 500)</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="st"> # Точности для ошибок наблюдений</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexP1 ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexR  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexP  ~ dgamma(12.22, 1.1)</span></span>
 <span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="st">  M ~ dnorm(0.2, 100)</span></span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="st"> #Прайеры для коэффициентов улавливаемости (catchability)</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="st">  q1 ~ dunif(0.1,1)</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="st">  q2 ~ dunif(0.1,1)</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="st">  q3 ~ dunif(0.1,1) </span></span>
 <span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Обучение модели ---</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)  <span class="co"># Для воспроизводимости</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Инициализация модели JAGS</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>jm <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(</span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textConnection</span>(model_string),  <span class="co"># Модель из строки</span></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_list,             <span class="co"># Данные</span></span>
-<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>,                 <span class="co"># Количество цепей</span></span>
-<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.adapt =</span> <span class="dv">1500</span>                <span class="co"># Длина адаптационной фазы</span></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="st">  # Точности для ошибок процесса</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="st">  precP1 ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="st">  precR  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="st">  precP  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="st"># Прайер для коэффициента естественной смертности</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="st">  M ~ dnorm(0.2, 100)</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Обучение модели ---</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)  <span class="co"># Для воспроизводимости</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Инициализация модели JAGS</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>jm <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(</span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textConnection</span>(model_string),  <span class="co"># Модель из строки</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_list,             <span class="co"># Данные</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>,                 <span class="co"># Количество цепей</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.adapt =</span> <span class="dv">1500</span>                <span class="co"># Длина адаптационной фазы</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Compiling model graph
    Resolving undeclared variables
@@ -566,14 +576,14 @@ Initializing model</code></pre>
  $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
  $ #Vectors to monitor: chr  "x[1]&lt;-M" "x[2]&lt;-q1" "x[3]&lt;-q2" "x[4]&lt;-q3" ...
  $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
- $ mean               : num  0.175 0.414 0.735 0.935 0.315 ...
- $ sd                 : num  0.0642 0.0912 0.1343 0.0602 0.0417 ...
- $ MC error           : num  0.002072 0.006449 0.008274 0.001534 0.000584 ...
- $ 2.50%              : num  0.0483 0.2653 0.4895 0.7802 0.2451 ...
- $ 25.00%             : num  0.131 0.347 0.633 0.909 0.285 ...
- $ median             : num  0.174 0.403 0.731 0.953 0.311 ...
- $ 75.00%             : num  0.218 0.468 0.839 0.98 0.34 ...
- $ 97.50%             : num  0.299 0.621 0.978 0.998 0.409 ...</code></pre>
+ $ mean               : num  0.174 0.414 0.733 0.934 0.315 ...
+ $ sd                 : num  0.0645 0.0939 0.1404 0.0601 0.0416 ...
+ $ MC error           : num  0.002376 0.007207 0.009502 0.001679 0.000579 ...
+ $ 2.50%              : num  0.0468 0.2522 0.4501 0.7726 0.2451 ...
+ $ 25.00%             : num  0.13 0.347 0.635 0.907 0.285 ...
+ $ median             : num  0.173 0.406 0.734 0.951 0.311 ...
+ $ 75.00%             : num  0.218 0.473 0.839 0.979 0.34 ...
+ $ 97.50%             : num  0.302 0.616 0.978 0.998 0.409 ...</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация априорных и апостериорных параметров</span></span>
