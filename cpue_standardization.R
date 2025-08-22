@@ -154,7 +154,9 @@ gam_fit <- mgcv::gam(
 
 png(file.path(PLOT_DIR, "gam_diagnostics.png"), width = 1200, height = 800, res = 150)
 par(mfrow = c(2, 2))
-plot(gam_fit, shade = TRUE, pages = 1)
+if (length(gam_fit$smooth) > 0) {
+	plot(gam_fit, shade = TRUE, pages = 1)
+}
 mgcv::gam.check(gam_fit)
 dev.off()
 
