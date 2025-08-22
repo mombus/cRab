@@ -22,7 +22,7 @@ suppressPackageStartupMessages({
   if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman", repos = "https://cloud.r-project.org")
   pacman::p_load(
     biomod2, sf, marmap, tidyverse, rnaturalearth, rnaturalearthdata,
-    ggspatial, viridis, readr, dplyr, ggplot2, janitor
+    ggspatial, viridis, readr, dplyr, ggplot2, janitor, mgcv
   )
 })
 
@@ -303,6 +303,33 @@ p_raster <- ggplot() +
   theme(legend.position = "right")
 
 # Сохранение карт
+# Сглаженная поверхность по GAM (тонкие пластинные сплайны)
+p_smooth <- NULL
+try({
+  md_nn <- map_data %>% dplyr::filter(!is.na(pred))
+  if (nrow(md_nn) >= 50) {
+    k_basis <- min(200, max(20L, floor(nrow(md_nn) / 5)))
+    res_x <- max((lon_max - lon_min) / 200, 0.05)
+    res_y <- max((lat_max - lat_min) / 200, 0.05)
+    grid <- expand.grid(
+      x = seq(lon_min, lon_max, by = res_x),
+      y = seq(lat_min, lat_max, by = res_y)
+    )
+    gam_fit <- mgcv::gam(pred ~ s(x, y, bs = "tp", k = k_basis), data = md_nn, family = gaussian())
+    grid$pred_smooth <- as.numeric(predict(gam_fit, newdata = grid, type = "response"))
+    grid$pred_smooth <- pmin(pmax(grid$pred_smooth, 0), 1)
+    p_smooth <- ggplot() +
+      geom_raster(data = grid, aes(x = x, y = y, fill = pred_smooth), interpolate = TRUE) +
+      scale_fill_viridis_c(option = "D", name = "Вероятность") +
+      { if (!is.null(world)) geom_sf(data = world, linewidth = 0.2, fill = NA) } +
+      coord_sf(xlim = c(lon_min, lon_max), ylim = c(lat_min, lat_max), expand = FALSE) +
+      ggspatial::annotation_scale(location = "tr", width_hint = 0.4) +
+      labs(title = "SDM: сглаженная поверхность (GAM)") +
+      theme_minimal(base_size = 11) +
+      theme(legend.position = "right")
+    ggsave(filename = file.path(paths$figures, paste0(modeling_id, "_map_smooth_gam.png")), plot = p_smooth, width = 8, height = 6, dpi = 220)
+  }
+}, silent = TRUE)
 try(ggsave(filename = file.path(paths$figures, paste0(modeling_id, "_map_points.png")), plot = p_points, width = 8, height = 6, dpi = 220))
 try(ggsave(filename = file.path(paths$figures, paste0(modeling_id, "_map_raster.png")), plot = p_raster, width = 8, height = 6, dpi = 220))
 
