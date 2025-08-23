@@ -596,7 +596,7 @@ window.Quarto = {
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA2.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA2.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 2.: Сравнение модельных и наблюдаемых индексов</figcaption>
 </figure>
 </div>
@@ -605,7 +605,7 @@ window.Quarto = {
 <p><strong>Согласованность</strong>: Если модельная кривая проходит в пределах доверительных интервалов наблюдаемых точек, это свидетельствует о хорошем описании трендов. <strong>Смещения</strong>: Систематическое занижение/завышение предсказаний для определенных периодов указывает на недостатки модели (например, недоучет факторов среды или нелегального вылова). <strong>Чувствительность индексов</strong>: Различия в точности аппроксимации CPUE и BESS помогают оценить, какой индекс информативнее отражает динамику биомассы. <strong>Аномалии</strong>: Резкие выбросы точек за пределы доверительной зоны модели сигнализируют о годах с нетипичными условиями (ошибки данных, природные катаклизмы). <strong>Практическое значение</strong>: График отвечает на вопрос — способна ли выбранная продукционная модель (в данном случае Шефера) достоверно воспроизводить историческую динамику запаса, что является основой для корректных прогнозов.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA3.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA3.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 3.: Распределения априорных и апостериорных параметров</figcaption>
 </figure>
 </div>
@@ -630,7 +630,7 @@ window.Quarto = {
 <p>Для улучшения сходимости рекомендуется предпринять несколько шагов. Во-первых, стоит значительно увеличить количество итераций MCMC - например, до 100000 для ni и 20000 для фазы “burn-in” (nb). Во-вторых, необходимо пересмотреть априорные распределения, особенно для параметра r: возможно, стоит уменьшить стандартное отклонение с 0.5 до 0.2-0.3, если есть экспертные основания для такого ужесточения. В-третьих, стоит проверить качество входных данных - достаточно ли репрезентативны имеющиеся индексы обилия, особенно в ключевые периоды динамики популяции. Важно понимать, что при сохраняющихся проблемах со сходимостью абсолютные оценки биомассы и темпа роста могут оставаться ненадежными, однако относительные показатели, такие как <em>B/B<sub>msy</sub></em>, часто оказываются более устойчивыми к подобным проблемам. Это связано с тем, что они в меньшей степени зависят от абсолютных значений проблемных параметров. Таким образом, несмотря на выявленные сложности, модель может оставаться полезной для принятия управленческих решений, особенно если фокусироваться на относительных показателях состояния запаса.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA4.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA4.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 4.: Остатки модели</figcaption>
 </figure>
 </div>
@@ -640,7 +640,7 @@ window.Quarto = {
 <p>График остатков особенно полезен для сравнения разных индексов. В нашем анализе видно, что остатки CPUE имеют больший разброс по сравнению с BESS, что может говорить либо о более высокой вариабельности данных CPUE, либо о том, что модель хуже описывает эту компоненту. Отсутствие данных BESS для 2005 года (NA) корректно обрабатывается графиком. Важно отметить, что систематические смещения остатков вверх или вниз могут указывать на проблемы с калибровкой коэффициентов уловистости (q), что согласуется с ранее выявленными сложностями в их оценке.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA5.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA5.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 5.: График продуктивности запаса с разметкой фаз Кобэ с динамикой вылова</figcaption>
 </figure>
 </div>
@@ -648,7 +648,7 @@ window.Quarto = {
 <p>На графике по оси X отображается <strong>биомасса</strong> (в абсолютных единицах или относительно <em>B<sub>msy</sub></em>), а по оси Y — <strong>вылов</strong> и <strong>чистая продукция</strong> (surplus production). Кривая производственной функции (обычно параболическая для модели Шефера) показывает зависимость между биомассой и устойчивым выловом. Точки на графике представляют фактические годовые значения биомассы и вылова, соединенные линиями в хронологическом порядке. Цвет точек кодирует фазовое состояние запаса согласно классификации Kobe: зеленый — устойчивое состояние (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>), желтый/оранжевый — перелов (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em> или <em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>), красный — коллапс (<em>B/B<sub>msy</sub></em>, <em>F/F<sub>msy</sub></em>).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA6.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA6.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 6.: Кобэ-график (<em>B/B<sub>msy</sub></em> vs <em>F/F<sub>msy</sub></em>) с динамикой вылова</figcaption>
 </figure>
 </div>
@@ -669,7 +669,7 @@ window.Quarto = {
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA7.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA7.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 7.: График теста серий (runs test) для диагностики остатков</figcaption>
 </figure>
 </div>
@@ -683,7 +683,7 @@ window.Quarto = {
 <p><strong>График отклонений процесса (Process Deviations) в JABBA</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA8.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/JABBA8.png" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Рис. 8.: Отклонения процесса</figcaption>
 </figure>
 </div>
@@ -751,7 +751,7 @@ window.Quarto = {
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA9.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="images/JABBA9.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Рис. 9.: Графики ретроспективного анализа</figcaption>
 </figure>
 </div>
@@ -780,7 +780,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA10.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="images/JABBA10.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Рис. 10.: Метрика MASE</figcaption>
 </figure>
 </div>
@@ -875,7 +875,7 @@ window.Quarto = {
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA11.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="images/JABBA11.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Рис. 11.: Прогностические графики</figcaption>
 </figure>
 </div>
@@ -896,7 +896,7 @@ window.Quarto = {
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/JABBA12.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="images/JABBA12.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Рис. 12.: Отдельный график прогноза</figcaption>
 </figure>
 </div>
