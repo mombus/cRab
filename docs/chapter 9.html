@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>10&nbsp; Модели пространственного распределения видов (SDM) – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>10&nbsp; Стандартизация CPUE – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -82,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 9.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Модели пространственного распределения видов (SDM)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter 9.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -170,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter 9.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Модели пространственного распределения видов (SDM)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,8 +225,11 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">10.1</span> Введение</a></li>
-  <li><a href="#загрузка-данных-и-первичный-осмотр" id="toc-загрузка-данных-и-первичный-осмотр" class="nav-link" data-scroll-target="#загрузка-данных-и-первичный-осмотр"><span class="header-section-number">10.2</span> Загрузка данных и первичный осмотр</a></li>
-  <li><a href="#описательная-статистика-и-визуализация" id="toc-описательная-статистика-и-визуализация" class="nav-link" data-scroll-target="#описательная-статистика-и-визуализация"><span class="header-section-number">10.3</span> Описательная статистика и визуализация</a></li>
+  <li><a href="#пошаговое-описание-скрипта" id="toc-пошаговое-описание-скрипта" class="nav-link" data-scroll-target="#пошаговое-описание-скрипта"><span class="header-section-number">10.2</span> Пошаговое описание скрипта</a></li>
+  <li><a href="#анализ-glm-модели-с-гамма-распределением-и-лог-ссылкой" id="toc-анализ-glm-модели-с-гамма-распределением-и-лог-ссылкой" class="nav-link" data-scroll-target="#анализ-glm-модели-с-гамма-распределением-и-лог-ссылкой"><span class="header-section-number">10.3</span> Анализ GLM модели с гамма-распределением и лог-ссылкой</a></li>
+  <li><a href="#анализ-gam-модели-с-гамма-распределением-и-логарифмической-связью" id="toc-анализ-gam-модели-с-гамма-распределением-и-логарифмической-связью" class="nav-link" data-scroll-target="#анализ-gam-модели-с-гамма-распределением-и-логарифмической-связью"><span class="header-section-number">10.4</span> Анализ GAM модели с гамма-распределением и логарифмической связью</a></li>
+  <li><a href="#анализ-gamm-модели" id="toc-анализ-gamm-модели" class="nav-link" data-scroll-target="#анализ-gamm-модели"><span class="header-section-number">10.5</span> Анализ GAMM модели</a></li>
+  <li><a href="#сравнительный-анализ-моделей-по-информационным-критериям" id="toc-сравнительный-анализ-моделей-по-информационным-критериям" class="nav-link" data-scroll-target="#сравнительный-анализ-моделей-по-информационным-критериям"><span class="header-section-number">10.6</span> Сравнительный анализ моделей по информационным критериям</a></li>
   </ul>
 </nav>
     </div>
@@ -200,7 +238,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Модели пространственного распределения видов (SDM)</span></h1>
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE</span></h1>
 </div>
 
 
@@ -219,14 +257,1515 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="введение" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">10.1</span> Введение</h2>
+<p>В рамках данного практического занятия рассматриваются методы стандартизации улова на усилие (CPUE) с использованием обобщенных линейных (GLM), обобщенных аддитивных (GAM) и обобщенных аддитивных смешанных моделей (GAMM). Стандартизированный индекс CPUE служит важным показателем состояния запаса, который часто используется в качестве входных данных в моделях “запас-промысел”. Исходные данные уловов на усилие обычно содержат неучтенную вариацию, вызванную влиянием различных факторов, таких как сезон, район промысла, глубина, тип грунта, орудия лова или особенности конкретного судна . Если эту вариацию не устранить, то сырой, нестандартизированный индекс CPUE может давать искаженную картину динамики запаса. Цель стандартизации заключается в том, чтобы отделить изменение численности запаса от влияния этих побочных факторов, получив таким образом более надежный и сопоставимый с истиной численностью популяции (части популяции) индекс.</p>
+<p>Полный скрипт можно скачать по <a href="https://mombus.github.io/cRab/data/GLM.R">ссылке</a>.</p>
+<p><strong>Для работы скрипта:</strong></p>
+<ol type="1">
+<li><p>Скачайте файл данных (<a href="https://mombus.github.io/cRab/data/KARTOGRAPHIC.xlsx">KARTOGRAPHIC.xlsx</a>)</p></li>
+<li><p>Установите рабочую директорию в setwd()</p></li>
+<li><p>Установите необходимые пакеты : <strong><code>install.packages(c("readxl", "tidyverse, "mgcv", "gamm4", "DHARMa" ))</code></strong> <code>и др.</code></p></li>
+</ol>
 </section>
-<section id="загрузка-данных-и-первичный-осмотр" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="загрузка-данных-и-первичный-осмотр"><span class="header-section-number">10.2</span> Загрузка данных и первичный осмотр</h2>
-<p>Текст. Текст. Текст.</p>
+<section id="пошаговое-описание-скрипта" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="пошаговое-описание-скрипта"><span class="header-section-number">10.2</span> Пошаговое описание скрипта</h2>
+<p>Скрипт начинается с загрузки необходимых пакетов для обработки данных, построения моделей и визуализации результатов. Среда настраивается путем установки рабочей директории и фиксации случайного зерна для обеспечения воспроизводимости всех последующих вычислений.</p>
+<p>На следующем этапе происходит загрузка исходных данных из файла Excel. Данные представляют собой промысловую статистику, содержащую информацию о году, месяце, судне, районе, величине улова на усилие (CPUE) и др. Выполняется их предварительная обработка: фильтрация по осенним месяцам, преобразование типов переменных в факторы и числовой формат, а также удаление пропущенных значений. Поскольку для моделирования с гамма-распределением требуются строго положительные значения, для нулевых и отрицательных величин CPUE рассчитывается и добавляется малая поправка. Для первичного ознакомления с данными строится диаграмма размаха, показывающая распределение CPUE по годам.</p>
+<p>Далее определяются вспомогательные функции. Одна функция предназначена для нормировки рассчитанных индексов либо на среднее значение, либо на значение первого года. Другая функция использует метод маргинальных средних для расчета стандартизированных индексов и их доверительных интервалов на основе подобранной модели. Третья функция реализует расчет индексов и оценку неопределенности через бутстреп для моделей со сложной структурой.</p>
+<p>Основная часть скрипта посвящена построению и анализу трех типов моделей. Первой подбирается обобщенная линейная модель (GLM) с гамма-распределением ошибок и логарифмической связью. В качестве предикторов используются факторы: год, месяц, судно и район. Для визуальной и численной диагностики адекватности модели выводятся ее сводка, таблица коэффициентов, стандартные диагностические графики и графики остатков, проверенные с помощью пакета DHARMa.</p>
+<p>Следующей строится обобщенная аддитивная модель (GAM). На этом этапе используется та же формула и семейство распределений, что и в GLM, но метод подбора гиперпараметров отличается. Проводится аналогичная диагностика модели с помощью функций <strong><code>summary</code></strong> и <strong><code>gam.check</code></strong>.</p>
+<p>Затем подбирается обобщенная аддитивная смешанная модель (GAMM), которая дополнительно включает случайный эффект от судна. Это позволяет учесть вариацию, вызванную индивидуальными особенностями каждого судна, которые не описываются другими факторами. Диагностика этой модели более сложна и включает анализ остатков, проверку случайных эффектов и тест на гетероскедастичность.</p>
+<p>После построения всех моделей для каждой из них рассчитываются стандартизированные индексы CPUE и их доверительные интервалы. Для GLM и GAM это делается с помощью функции, основанной на маргинальных средних, а для GAMM применяется метод бутстрепа.</p>
+<p>Финальный этап включает объединение результатов всех трех моделей в единую таблицу и их визуальное сравнение на графике. На этот же график добавляются фактические медианные значения CPUE по годам из исходных данных для сопоставления со стандартизированными кривыми. В заключение модели сравниваются по информационным критериям (AIC, BIC) и другим метрикам, чтобы дать рекомендации по выбору наиболее адекватной из них.</p>
+<p>Ниже приводится скрипт, а ниже скрипта - описание результатов моделирования.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: СТАНДАРТИЗАЦИЯ CPUE С ИСПОЛЬЗОВАНИЕМ GLM, GAM И GAMM</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Курс: "Оценка водных биоресурсов в среде R (для начинающих)"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Автор: Баканев С.В. </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Дата: 20.08.2025</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Структура:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Загрузка пакетов и настройка среды</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Загрузка и предварительная обработка данных</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Вспомогательные функции для расчета индексов</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Моделирование GLM (Gamma с лог-ссылкой)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) Моделирование GAM (обобщенная аддитивная модель)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) Моделирование GAMM (смешанная модель со случайными эффектами)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 7) Сравнение моделей и финальная визуализация результатов</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 1: ЗАГРУЗКА ПАКЕТОВ И НАСТРОЙКА СРЕДЫ</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Отключаем вспомогательные сообщения при загрузке пакетов</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)   <span class="co"># Основные пакеты для обработки данных и визуализации</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(readxl)      <span class="co"># Чтение данных из Excel-файлов</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(mgcv)        <span class="co"># Обобщенные аддитивные модели (GAM)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(gamm4)       <span class="co"># GAM со смешанными эффектами</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(emmeans)     <span class="co"># Расчет маргинальных средних и контрастов</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(broom)       <span class="co"># Преобразование результатов моделей в таблицы</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(broom.mixed) <span class="co"># Поддержка смешанных моделей для broom</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(DHARMa)      <span class="co"># Диагностика остатков обобщенных моделей</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(knitr)       <span class="co"># Форматирование таблиц для отчетов</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/GLM/"</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Фиксируем случайное зерно для воспроизводимости результатов</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 2: ЗАГРУЗКА И ПРЕДОБРАБОТКА ДАННЫХ</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Определяем путь к файлу с данными</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>DATA_PATH <span class="ot">&lt;-</span> <span class="st">"C:/GLM/data/KARTOGRAPHIC.xlsx"</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Чтение данных из листа "FISHERY" и фильтрация осенних месяцев</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>DATA <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(DATA_PATH, <span class="at">sheet =</span> <span class="st">"FISHERY"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span>  <span class="co"># Преобразуем в современный формат таблицы</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(MONTH <span class="sc">&gt;</span> <span class="dv">8</span> <span class="sc">&amp;</span> MONTH <span class="sc">&lt;</span> <span class="dv">12</span>)  <span class="co"># Сентябрь-ноябрь (осенний сезон)</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Преобразование типов переменных и обработка пропусков</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>DATA <span class="ot">&lt;-</span> DATA <span class="sc">%&gt;%</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> <span class="fu">as.factor</span>(YEAR),           <span class="co"># Год как категориальная переменная</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">MONTH =</span> <span class="fu">as.factor</span>(MONTH),         <span class="co"># Месяц как фактор</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">CALL =</span> <span class="fu">as.factor</span>(CALL),           <span class="co"># Идентификатор судна</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">REGION =</span> <span class="fu">as.factor</span>(REGION),       <span class="co"># Рыбохозяйственный район</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">VESSELNUMBER =</span> <span class="fu">as.factor</span>(VESSELNUMBER),  <span class="co"># Номер судна</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">CPUE =</span> <span class="fu">as.numeric</span>(CPUE)           <span class="co"># Целевой показатель - улов на усилие</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(CPUE))  <span class="co"># Удаление строк с пропусками в CPUE</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Обработка нулевых значений CPUE для Gamma-моделей</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">any</span>(DATA<span class="sc">$</span>CPUE <span class="sc">&lt;=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>  min_pos <span class="ot">&lt;-</span> <span class="fu">min</span>(DATA<span class="sc">$</span>CPUE[DATA<span class="sc">$</span>CPUE <span class="sc">&gt;</span> <span class="dv">0</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="co"># Минимальный положительный улов</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>  offset <span class="ot">&lt;-</span> min_pos <span class="sc">/</span> <span class="dv">2</span>  <span class="co"># Величина поправки</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>  DATA <span class="ot">&lt;-</span> DATA <span class="sc">%&gt;%</span> </span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">CPUE_POS =</span> <span class="fu">if_else</span>(CPUE <span class="sc">&lt;=</span> <span class="dv">0</span>, CPUE <span class="sc">+</span> offset, CPUE))  <span class="co"># Добавляем поправку</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>  DATA <span class="ot">&lt;-</span> DATA <span class="sc">%&gt;%</span> </span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">CPUE_POS =</span> CPUE)  <span class="co"># Исходные данные если нулей нет</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Рассчитываем медианные значения CPUE по годам из исходных данных</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>actual_medians <span class="ot">&lt;-</span> DATA <span class="sc">%&gt;%</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(YEAR) <span class="sc">%&gt;%</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median_cpue =</span> <span class="fu">median</span>(CPUE, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Рассчитываем медианные значения CPUE по годам из исходных данных для последующих графиков</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>actual_medians</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 x 2
+  YEAR  median_cpue
+  &lt;fct&gt;       &lt;dbl&gt;
+1 2019        200. 
+2 2020        116. 
+3 2021        132. 
+4 2022         84  
+5 2023         79.4
+6 2024         58.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Экспресс-визуализация распределения CPUE по годам</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>DATA <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> CPUE)) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Распределение CPUE по годам"</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"CPUE (улов на усилие)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 3: ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАСЧЕТА ИНДЕКСОВ</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция нормировки индексов</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>scale_to_index <span class="ot">&lt;-</span> <span class="cf">function</span>(values, <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"first"</span>)) {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  method <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(method)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (method <span class="sc">==</span> <span class="st">"mean"</span>) {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Нормировка на среднее значение</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">as.numeric</span>(values) <span class="sc">/</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(values), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (method <span class="sc">==</span> <span class="st">"first"</span>) {</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Нормировка на значение первого года</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">as.numeric</span>(values) <span class="sc">/</span> <span class="fu">as.numeric</span>(values[<span class="dv">1</span>]))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция расчета индексов для GLM/GAM через маргинальные средние</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>emmeans_standardized_index <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">variable =</span> <span class="st">"YEAR"</span>) {</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">emmeans</span>(model, </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">specs =</span> <span class="fu">as.formula</span>(<span class="fu">paste0</span>(<span class="st">"~ "</span>, variable)), </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(out) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!!</span><span class="fu">sym</span>(variable), <span class="at">response =</span> response, lower.CL, upper.CL)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"value"</span>, <span class="st">"lcl"</span>, <span class="st">"ucl"</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  df</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция расчета индексов для GAMM через бутстреп</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>compute_standardized_index <span class="ot">&lt;-</span> <span class="cf">function</span>(model, base_data, year_levels, predict_fun,</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">response_transform =</span> identity, </span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">n_boot =</span> <span class="dv">200</span>L, </span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">seed =</span> <span class="dv">7</span>L) {</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  acc <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">length</span>(year_levels))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(year_levels)) {</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    newdata <span class="ot">&lt;-</span> base_data</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    newdata<span class="sc">$</span>YEAR <span class="ot">&lt;-</span> <span class="fu">factor</span>(year_levels[i], <span class="at">levels =</span> <span class="fu">levels</span>(base_data<span class="sc">$</span>YEAR))</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    preds <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">predict_fun</span>(model, newdata))</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">response_transform</span>(preds), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Бутстреп для оценки неопределенности</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_boot, {</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>      idx <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(<span class="fu">nrow</span>(base_data), <span class="fu">nrow</span>(base_data), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>      bd <span class="ot">&lt;-</span> newdata[idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>      p <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">predict_fun</span>(model, bd))</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mean</span>(<span class="fu">response_transform</span>(p), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_vals, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    acc[[i]] <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">YEAR =</span> year_levels[i], <span class="at">value =</span> mu, <span class="at">lcl =</span> ci[[<span class="dv">1</span>]], <span class="at">ucl =</span> ci[[<span class="dv">2</span>]])</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(acc)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 4: МОДЕЛИРОВАНИЕ GLM (GAMMA С ЛОГ-ССЫЛКОЙ)</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Подбор модели с фиксированными эффектами</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>glm_gamma_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  CPUE_POS <span class="sc">~</span> YEAR <span class="sc">+</span> MONTH <span class="sc">+</span> CALL <span class="sc">+</span> REGION,  <span class="co"># Формула с факторными предикторами</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),            <span class="co"># Гамма-распределение с логарифмической связью</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> DATA</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Диагностика модели</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_gamma_fit)  <span class="co"># Стандартная сводка модели</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = CPUE_POS ~ YEAR + MONTH + CALL + REGION, family = Gamma(link = "log"), 
+    data = DATA)
+
+Coefficients:
+                                                  Estimate Std. Error t value
+(Intercept)                                        5.57642    0.07942  70.216
+YEAR2020                                          -0.22713    0.04586  -4.953
+YEAR2021                                          -0.22438    0.04557  -4.924
+YEAR2022                                          -0.64329    0.04345 -14.806
+YEAR2023                                          -0.77311    0.04647 -16.637
+YEAR2024                                          -1.12817    0.05157 -21.879
+MONTH10                                           -0.13725    0.02443  -5.617
+MONTH11                                           -0.13714    0.03540  -3.874
+CALLUAAK                                          -0.29534    0.06092  -4.848
+CALLUAKC                                          -0.53490    0.06381  -8.382
+CALLUBEV                                          -3.67233    0.12187 -30.133
+CALLUBQQ                                          -0.35433    0.07057  -5.021
+CALLUBSR                                          -0.33516    0.06266  -5.349
+CALLUBUR                                          -0.58246    0.06175  -9.433
+CALLUBYT                                          -0.21520    0.06088  -3.535
+CALLUCFF                                          -0.06756    0.09825  -0.688
+CALLUCXF                                          -2.34302    0.10638 -22.025
+CALLUDII                                          -0.46287    0.05710  -8.107
+CALLUDUT                                          -1.02162    0.07550 -13.532
+CALLUDWM                                          -2.42502    0.09480 -25.582
+CALLUEBK                                           0.25852    0.13371   1.934
+CALLUEMO                                          -0.17024    0.08103  -2.101
+CALLUENZ                                           0.04928    0.06442   0.765
+CALLUFIK                                           0.29700    0.13043   2.277
+CALLUGXE                                          -0.56384    0.06265  -9.000
+CALLUIVO                                          -0.21572    0.06500  -3.319
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                         0.16521    0.46672   0.354
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            -0.07615    0.15513  -0.491
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                       0.16332    0.08236   1.983
+REGIONKAHИHCKAЯ БAHKA                              0.06291    0.07875   0.799
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH)  0.21310    0.08519   2.501
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE              0.18223    0.07757   2.349
+REGIONMУPMAHCKOE MEЛKOBOДЬE                        0.07737    0.07753   0.998
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                          0.72882    0.46327   1.573
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                         0.13328    0.08416   1.584
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                      0.64238    0.11646   5.516
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                       0.69320    0.13068   5.305
+                                                  Pr(&gt;|t|)    
+(Intercept)                                        &lt; 2e-16 ***
+YEAR2020                                          7.62e-07 ***
+YEAR2021                                          8.85e-07 ***
+YEAR2022                                           &lt; 2e-16 ***
+YEAR2023                                           &lt; 2e-16 ***
+YEAR2024                                           &lt; 2e-16 ***
+MONTH10                                           2.08e-08 ***
+MONTH11                                           0.000109 ***
+CALLUAAK                                          1.30e-06 ***
+CALLUAKC                                           &lt; 2e-16 ***
+CALLUBEV                                           &lt; 2e-16 ***
+CALLUBQQ                                          5.36e-07 ***
+CALLUBSR                                          9.37e-08 ***
+CALLUBUR                                           &lt; 2e-16 ***
+CALLUBYT                                          0.000413 ***
+CALLUCFF                                          0.491691    
+CALLUCXF                                           &lt; 2e-16 ***
+CALLUDII                                          6.93e-16 ***
+CALLUDUT                                           &lt; 2e-16 ***
+CALLUDWM                                           &lt; 2e-16 ***
+CALLUEBK                                          0.053247 .  
+CALLUEMO                                          0.035718 *  
+CALLUENZ                                          0.444299    
+CALLUFIK                                          0.022839 *  
+CALLUGXE                                           &lt; 2e-16 ***
+CALLUIVO                                          0.000913 ***
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                        0.723377    
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            0.623533    
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                      0.047425 *  
+REGIONKAHИHCKAЯ БAHKA                             0.424416    
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH) 0.012413 *  
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE             0.018863 *  
+REGIONMУPMAHCKOE MEЛKOBOДЬE                       0.318379    
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                         0.115753    
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                        0.113361    
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                     3.69e-08 ***
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                      1.19e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for Gamma family taken to be 0.4172272)
+
+    Null deviance: 2980.2  on 3890  degrees of freedom
+Residual deviance: 1785.6  on 3854  degrees of freedom
+AIC: 42851
+
+Number of Fisher Scoring iterations: 11</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Таблица коэффициентов в форматированном виде</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(glm_gamma_fit) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(estimate<span class="sc">:</span>statistic, <span class="sc">~</span><span class="fu">round</span>(.x, <span class="dv">4</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Коэффициенты GLM модели"</span>, <span class="at">align =</span> <span class="st">"lrrrr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Коэффициенты GLM модели</caption>
+<colgroup>
+<col style="width: 56%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">5.5764</td>
+<td style="text-align: right;">0.0794</td>
+<td style="text-align: right;">70.2164</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">YEAR2020</td>
+<td style="text-align: right;">-0.2271</td>
+<td style="text-align: right;">0.0459</td>
+<td style="text-align: right;">-4.9530</td>
+<td style="text-align: right;">0.0000008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">YEAR2021</td>
+<td style="text-align: right;">-0.2244</td>
+<td style="text-align: right;">0.0456</td>
+<td style="text-align: right;">-4.9236</td>
+<td style="text-align: right;">0.0000009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">YEAR2022</td>
+<td style="text-align: right;">-0.6433</td>
+<td style="text-align: right;">0.0434</td>
+<td style="text-align: right;">-14.8059</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">YEAR2023</td>
+<td style="text-align: right;">-0.7731</td>
+<td style="text-align: right;">0.0465</td>
+<td style="text-align: right;">-16.6372</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">YEAR2024</td>
+<td style="text-align: right;">-1.1282</td>
+<td style="text-align: right;">0.0516</td>
+<td style="text-align: right;">-21.8785</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MONTH10</td>
+<td style="text-align: right;">-0.1372</td>
+<td style="text-align: right;">0.0244</td>
+<td style="text-align: right;">-5.6170</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MONTH11</td>
+<td style="text-align: right;">-0.1371</td>
+<td style="text-align: right;">0.0354</td>
+<td style="text-align: right;">-3.8736</td>
+<td style="text-align: right;">0.0001090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUAAK</td>
+<td style="text-align: right;">-0.2953</td>
+<td style="text-align: right;">0.0609</td>
+<td style="text-align: right;">-4.8479</td>
+<td style="text-align: right;">0.0000013</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUAKC</td>
+<td style="text-align: right;">-0.5349</td>
+<td style="text-align: right;">0.0638</td>
+<td style="text-align: right;">-8.3823</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUBEV</td>
+<td style="text-align: right;">-3.6723</td>
+<td style="text-align: right;">0.1219</td>
+<td style="text-align: right;">-30.1334</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUBQQ</td>
+<td style="text-align: right;">-0.3543</td>
+<td style="text-align: right;">0.0706</td>
+<td style="text-align: right;">-5.0213</td>
+<td style="text-align: right;">0.0000005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUBSR</td>
+<td style="text-align: right;">-0.3352</td>
+<td style="text-align: right;">0.0627</td>
+<td style="text-align: right;">-5.3488</td>
+<td style="text-align: right;">0.0000001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUBUR</td>
+<td style="text-align: right;">-0.5825</td>
+<td style="text-align: right;">0.0618</td>
+<td style="text-align: right;">-9.4326</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUBYT</td>
+<td style="text-align: right;">-0.2152</td>
+<td style="text-align: right;">0.0609</td>
+<td style="text-align: right;">-3.5347</td>
+<td style="text-align: right;">0.0004130</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUCFF</td>
+<td style="text-align: right;">-0.0676</td>
+<td style="text-align: right;">0.0982</td>
+<td style="text-align: right;">-0.6877</td>
+<td style="text-align: right;">0.4916914</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUCXF</td>
+<td style="text-align: right;">-2.3430</td>
+<td style="text-align: right;">0.1064</td>
+<td style="text-align: right;">-22.0254</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUDII</td>
+<td style="text-align: right;">-0.4629</td>
+<td style="text-align: right;">0.0571</td>
+<td style="text-align: right;">-8.1065</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUDUT</td>
+<td style="text-align: right;">-1.0216</td>
+<td style="text-align: right;">0.0755</td>
+<td style="text-align: right;">-13.5319</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUDWM</td>
+<td style="text-align: right;">-2.4250</td>
+<td style="text-align: right;">0.0948</td>
+<td style="text-align: right;">-25.5817</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUEBK</td>
+<td style="text-align: right;">0.2585</td>
+<td style="text-align: right;">0.1337</td>
+<td style="text-align: right;">1.9335</td>
+<td style="text-align: right;">0.0532474</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUEMO</td>
+<td style="text-align: right;">-0.1702</td>
+<td style="text-align: right;">0.0810</td>
+<td style="text-align: right;">-2.1009</td>
+<td style="text-align: right;">0.0357185</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUENZ</td>
+<td style="text-align: right;">0.0493</td>
+<td style="text-align: right;">0.0644</td>
+<td style="text-align: right;">0.7650</td>
+<td style="text-align: right;">0.4442989</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUFIK</td>
+<td style="text-align: right;">0.2970</td>
+<td style="text-align: right;">0.1304</td>
+<td style="text-align: right;">2.2770</td>
+<td style="text-align: right;">0.0228387</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CALLUGXE</td>
+<td style="text-align: right;">-0.5638</td>
+<td style="text-align: right;">0.0627</td>
+<td style="text-align: right;">-8.9996</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CALLUIVO</td>
+<td style="text-align: right;">-0.2157</td>
+<td style="text-align: right;">0.0650</td>
+<td style="text-align: right;">-3.3187</td>
+<td style="text-align: right;">0.0009126</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H</td>
+<td style="text-align: right;">0.1652</td>
+<td style="text-align: right;">0.4667</td>
+<td style="text-align: right;">0.3540</td>
+<td style="text-align: right;">0.7233768</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ</td>
+<td style="text-align: right;">-0.0762</td>
+<td style="text-align: right;">0.1551</td>
+<td style="text-align: right;">-0.4909</td>
+<td style="text-align: right;">0.6235329</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONCEBEPO-KAHИHCKAЯ БAHKA</td>
+<td style="text-align: right;">0.1633</td>
+<td style="text-align: right;">0.0824</td>
+<td style="text-align: right;">1.9831</td>
+<td style="text-align: right;">0.0474248</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REGIONKAHИHCKAЯ БAHKA</td>
+<td style="text-align: right;">0.0629</td>
+<td style="text-align: right;">0.0788</td>
+<td style="text-align: right;">0.7989</td>
+<td style="text-align: right;">0.4244161</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH)</td>
+<td style="text-align: right;">0.2131</td>
+<td style="text-align: right;">0.0852</td>
+<td style="text-align: right;">2.5013</td>
+<td style="text-align: right;">0.0124133</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE</td>
+<td style="text-align: right;">0.1822</td>
+<td style="text-align: right;">0.0776</td>
+<td style="text-align: right;">2.3492</td>
+<td style="text-align: right;">0.0188631</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONMУPMAHCKOE MEЛKOBOДЬE</td>
+<td style="text-align: right;">0.0774</td>
+<td style="text-align: right;">0.0775</td>
+<td style="text-align: right;">0.9979</td>
+<td style="text-align: right;">0.3183790</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REGIONЗAП.-ПPИБPEЖHЫЙ P-H</td>
+<td style="text-align: right;">0.7288</td>
+<td style="text-align: right;">0.4633</td>
+<td style="text-align: right;">1.5732</td>
+<td style="text-align: right;">0.1157534</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H</td>
+<td style="text-align: right;">0.1333</td>
+<td style="text-align: right;">0.0842</td>
+<td style="text-align: right;">1.5836</td>
+<td style="text-align: right;">0.1133609</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ</td>
+<td style="text-align: right;">0.6424</td>
+<td style="text-align: right;">0.1165</td>
+<td style="text-align: right;">5.5160</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ</td>
+<td style="text-align: right;">0.6932</td>
+<td style="text-align: right;">0.1307</td>
+<td style="text-align: right;">5.3046</td>
+<td style="text-align: right;">0.0000001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Графики диагностики остатков</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(glm_gamma_fit)  <span class="co"># Стандартные диагностические графики GLM</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Диагностика остатков GLM с использованием DHARMa</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>sim_glm <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(glm_gamma_fit, <span class="at">n =</span> <span class="dv">1000</span>, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sim_glm, <span class="at">main =</span> <span class="st">"GLM"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет и визуализация индексов</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>idx_glm <span class="ot">&lt;-</span> <span class="fu">emmeans_standardized_index</span>(glm_gamma_fit) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"GLM_Gamma"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">index_mean =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"mean"</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">index_first =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"first"</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавление доверительных интервалов</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>idx_glm <span class="ot">&lt;-</span> idx_glm <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">lcl_index_mean =</span> <span class="fu">scale_to_index</span>(lcl, <span class="st">"mean"</span>),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ucl_index_mean =</span> <span class="fu">scale_to_index</span>(ucl, <span class="st">"mean"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация индексов GLM</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>idx_glm <span class="sc">%&gt;%</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> value, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lcl, <span class="at">ymax =</span> ucl), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> actual_medians, </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>           <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> median_cpue), </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">shape =</span> <span class="dv">4</span>,  <span class="co"># 4 соответствует крестику (x)</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">3</span>, </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>           <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Индексы CPUE по GLM модели (крестики - факт)"</span>, </span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Стандартизированный индекс"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 5: МОДЕЛИРОВАНИЕ GAM</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Подбор обобщенной аддитивной модели</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>gam_fit <span class="ot">&lt;-</span> <span class="fu">gam</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  CPUE_POS <span class="sc">~</span> YEAR <span class="sc">+</span> MONTH <span class="sc">+</span> CALL <span class="sc">+</span> REGION,  <span class="co"># Линейная формула без сглаживания</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),            <span class="co"># Аналогичное GLM распределение</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"REML"</span>,                         <span class="co"># Метод оптимизации гиперпараметров</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> DATA</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gam_fit)  <span class="co"># Сводка модели</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+CPUE_POS ~ YEAR + MONTH + CALL + REGION
+
+Parametric coefficients:
+                                                  Estimate Std. Error t value
+(Intercept)                                        5.57646    0.07942  70.217
+YEAR2020                                          -0.22712    0.04586  -4.953
+YEAR2021                                          -0.22438    0.04557  -4.924
+YEAR2022                                          -0.64329    0.04345 -14.806
+YEAR2023                                          -0.77309    0.04647 -16.637
+YEAR2024                                          -1.12812    0.05156 -21.878
+MONTH10                                           -0.13725    0.02443  -5.617
+MONTH11                                           -0.13714    0.03540  -3.874
+CALLUAAK                                          -0.29528    0.06092  -4.847
+CALLUAKC                                          -0.53484    0.06381  -8.381
+CALLUBEV                                          -3.67226    0.12187 -30.133
+CALLUBQQ                                          -0.35427    0.07057  -5.020
+CALLUBSR                                          -0.33512    0.06266  -5.348
+CALLUBUR                                          -0.58242    0.06175  -9.432
+CALLUBYT                                          -0.21516    0.06088  -3.534
+CALLUCFF                                          -0.06750    0.09825  -0.687
+CALLUCXF                                          -2.34296    0.10638 -22.025
+CALLUDII                                          -0.46282    0.05710  -8.106
+CALLUDUT                                          -1.02155    0.07550 -13.531
+CALLUDWM                                          -2.42497    0.09479 -25.581
+CALLUEBK                                           0.25858    0.13371   1.934
+CALLUEMO                                          -0.17018    0.08103  -2.100
+CALLUENZ                                           0.04934    0.06442   0.766
+CALLUFIK                                           0.29706    0.13043   2.278
+CALLUGXE                                          -0.56375    0.06265  -8.998
+CALLUIVO                                          -0.21565    0.06500  -3.318
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                         0.16508    0.46672   0.354
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            -0.07627    0.15513  -0.492
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                       0.16322    0.08236   1.982
+REGIONKAHИHCKAЯ БAHKA                              0.06281    0.07875   0.798
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH)  0.21299    0.08519   2.500
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE              0.18213    0.07757   2.348
+REGIONMУPMAHCKOE MEЛKOBOДЬE                        0.07728    0.07753   0.997
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                          0.72877    0.46327   1.573
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                         0.13318    0.08416   1.583
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                      0.64226    0.11646   5.515
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                       0.69310    0.13068   5.304
+                                                  Pr(&gt;|t|)    
+(Intercept)                                        &lt; 2e-16 ***
+YEAR2020                                          7.62e-07 ***
+YEAR2021                                          8.85e-07 ***
+YEAR2022                                           &lt; 2e-16 ***
+YEAR2023                                           &lt; 2e-16 ***
+YEAR2024                                           &lt; 2e-16 ***
+MONTH10                                           2.08e-08 ***
+MONTH11                                           0.000109 ***
+CALLUAAK                                          1.30e-06 ***
+CALLUAKC                                           &lt; 2e-16 ***
+CALLUBEV                                           &lt; 2e-16 ***
+CALLUBQQ                                          5.39e-07 ***
+CALLUBSR                                          9.39e-08 ***
+CALLUBUR                                           &lt; 2e-16 ***
+CALLUBYT                                          0.000414 ***
+CALLUCFF                                          0.492100    
+CALLUCXF                                           &lt; 2e-16 ***
+CALLUDII                                          6.98e-16 ***
+CALLUDUT                                           &lt; 2e-16 ***
+CALLUDWM                                           &lt; 2e-16 ***
+CALLUEBK                                          0.053187 .  
+CALLUEMO                                          0.035785 *  
+CALLUENZ                                          0.443735    
+CALLUFIK                                          0.022810 *  
+CALLUGXE                                           &lt; 2e-16 ***
+CALLUIVO                                          0.000916 ***
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                        0.723578    
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            0.623006    
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                      0.047563 *  
+REGIONKAHИHCKAЯ БAHKA                             0.425185    
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH) 0.012456 *  
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE             0.018931 *  
+REGIONMУPMAHCKOE MEЛKOBOДЬE                       0.318981    
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                         0.115776    
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                        0.113615    
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                     3.72e-08 ***
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                      1.20e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+R-sq.(adj) =  0.397   Deviance explained = 40.1%
+-REML =  21455  Scale est. = 0.41722   n = 3891</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверка адекватности модели (графики остатков)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mgcv<span class="sc">::</span><span class="fu">gam.check</span>(gam_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Method: REML   Optimizer: outer newton
+full convergence after 5 iterations.
+Gradient range [-0.0003574844,-0.0003574844]
+(score 21454.84 &amp; scale 0.4172217).
+Hessian positive definite, eigenvalue range [2198.061,2198.061].
+Model rank =  37 / 37 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Диагностика остатков GAM с использованием DHARMa</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>sim_gam <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(gam_fit, <span class="at">n =</span> <span class="dv">1000</span>, <span class="at">refit =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'mgcViz':
+  method from   
+  +.gg   ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sim_gam, <span class="at">main =</span> <span class="st">"GAM"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет индексов</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>idx_gam <span class="ot">&lt;-</span> <span class="fu">emmeans_standardized_index</span>(gam_fit) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"GAM"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">index_mean =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"mean"</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">index_first =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"first"</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Доверительные интервалы</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>idx_gam <span class="ot">&lt;-</span> idx_gam <span class="sc">%&gt;%</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">lcl_index_mean =</span> <span class="fu">scale_to_index</span>(lcl, <span class="st">"mean"</span>),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ucl_index_mean =</span> <span class="fu">scale_to_index</span>(ucl, <span class="st">"mean"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>idx_gam <span class="sc">%&gt;%</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> value, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lcl, <span class="at">ymax =</span> ucl), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> actual_medians, </span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>           <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> median_cpue), </span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">shape =</span> <span class="dv">4</span>,  <span class="co"># 4 соответствует крестику (x)</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">3</span>, </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>           <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Индексы CPUE по GAM модели (крестики - факт"</span>, </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Стандартизированный индекс"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 6: МОДЕЛИРОВАНИЕ GAMM (СМЕШАННАЯ МОДЕЛЬ)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Подбор модели со смешанными эффектами</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>gamm_fit <span class="ot">&lt;-</span> gamm4<span class="sc">::</span><span class="fu">gamm4</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> CPUE_POS <span class="sc">~</span> YEAR <span class="sc">+</span> MONTH <span class="sc">+</span> REGION,  <span class="co"># Фиксированные эффекты</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> CALL),                       <span class="co"># Случайный эффект для судна</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),               <span class="co"># Распределение</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> DATA</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. График остатков от предсказанных значений</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(gamm_fit<span class="sc">$</span>gam), <span class="fu">residuals</span>(gamm_fit<span class="sc">$</span>gam, <span class="at">type =</span> <span class="st">"deviance"</span>),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Предсказанные значения"</span>, <span class="at">ylab =</span> <span class="st">"Девиансные остатки"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Остатки GAMM vs. Предсказания"</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. QQ-plot для остатков</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(gamm_fit<span class="sc">$</span>gam, <span class="at">type =</span> <span class="st">"deviance"</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"QQ-plot для остатков GAMM"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">residuals</span>(gamm_fit<span class="sc">$</span>gam, <span class="at">type =</span> <span class="st">"deviance"</span>), <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Диагностика случайных эффектов</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Случайные эффекты (CALL):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Случайные эффекты (CALL):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(<span class="fu">ranef</span>(gamm_fit<span class="sc">$</span>mer)<span class="sc">$</span>CALL))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept)      
+ Min.   :-2.92229  
+ 1st Qu.: 0.09295  
+ Median : 0.32996  
+ Mean   : 0.00306  
+ 3rd Qu.: 0.54065  
+ Max.   : 0.93271  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График случайных эффектов</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>random_effects <span class="ot">&lt;-</span> <span class="fu">ranef</span>(gamm_fit<span class="sc">$</span>mer)<span class="sc">$</span>CALL</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(random_effects[,<span class="dv">1</span>]), <span class="at">main =</span> <span class="st">"Распределение случайных эффектов"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Случайный эффект"</span>, <span class="at">ylab =</span> <span class="st">"Плотность"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Проверка гетероскедастичности</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Загрузка требуемого пакета: zoo</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Присоединяю пакет: 'zoo'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Следующие объекты скрыты от 'package:base':
+
+    as.Date, as.Date.numeric</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(gamm_fit<span class="sc">$</span>gam<span class="sc">$</span>y <span class="sc">~</span> <span class="fu">fitted</span>(gamm_fit<span class="sc">$</span>gam)) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  gamm_fit$gam$y ~ fitted(gamm_fit$gam)
+BP = 222.14, df = 1, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Сводка по модели</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Сводка GAMM модели:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Сводка GAMM модели:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gamm_fit<span class="sc">$</span>gam))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: Gamma 
+Link function: log 
+
+Formula:
+CPUE_POS ~ YEAR + MONTH + REGION
+
+Parametric coefficients:
+                                                  Estimate Std. Error t value
+(Intercept)                                        4.91649    0.17171  28.632
+YEAR2020                                          -0.23162    0.04580  -5.058
+YEAR2021                                          -0.22798    0.04552  -5.008
+YEAR2022                                          -0.64763    0.04338 -14.928
+YEAR2023                                          -0.77570    0.04641 -16.716
+YEAR2024                                          -1.13070    0.05152 -21.947
+MONTH10                                           -0.13620    0.02445  -5.571
+MONTH11                                           -0.13630    0.03542  -3.848
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                         0.16149    0.46710   0.346
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            -0.08013    0.15524  -0.516
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                       0.15971    0.08238   1.939
+REGIONKAHИHCKAЯ БAHKA                              0.05886    0.07877   0.747
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH)  0.20859    0.08522   2.448
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE              0.17834    0.07759   2.299
+REGIONMУPMAHCKOE MEЛKOBOДЬE                        0.07353    0.07755   0.948
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                          0.72926    0.46366   1.573
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                         0.12967    0.08419   1.540
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                      0.63836    0.11653   5.478
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                       0.68988    0.13078   5.275
+                                                  Pr(&gt;|t|)    
+(Intercept)                                        &lt; 2e-16 ***
+YEAR2020                                          4.44e-07 ***
+YEAR2021                                          5.74e-07 ***
+YEAR2022                                           &lt; 2e-16 ***
+YEAR2023                                           &lt; 2e-16 ***
+YEAR2024                                           &lt; 2e-16 ***
+MONTH10                                           2.70e-08 ***
+MONTH11                                           0.000121 ***
+REGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                        0.729566    
+REGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            0.605763    
+REGIONCEBEPO-KAHИHCKAЯ БAHKA                      0.052628 .  
+REGIONKAHИHCKAЯ БAHKA                             0.455013    
+REGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH) 0.014424 *  
+REGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE             0.021580 *  
+REGIONMУPMAHCKOE MEЛKOBOДЬE                       0.343099    
+REGIONЗAП.-ПPИБPEЖHЫЙ P-H                         0.115842    
+REGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                        0.123604    
+REGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                     4.57e-08 ***
+REGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                      1.40e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+R-sq.(adj) =  0.172   
+glmer.ML =   1786  Scale est. = 0.41793   n = 3891</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gamm_fit<span class="sc">$</span>mer))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: Gamma  ( log )
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+  42933.5   43065.1  -21445.7   42891.5      3870 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.5364 -0.6769 -0.1721  0.4716 11.0577 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ CALL     (Intercept) 0.4320   0.6573  
+ Residual             0.4179   0.6465  
+Number of obs: 3891, groups:  CALL, 19
+
+Fixed effects:
+                                                   Estimate Std. Error t value
+X(Intercept)                                        4.91649    0.23488  20.932
+XYEAR2020                                          -0.23162    0.02474  -9.363
+XYEAR2021                                          -0.22798    0.02513  -9.073
+XYEAR2022                                          -0.64763    0.02299 -28.167
+XYEAR2023                                          -0.77570    0.02376 -32.652
+XYEAR2024                                          -1.13070    0.02603 -43.443
+XMONTH10                                           -0.13620    0.01914  -7.116
+XMONTH11                                           -0.13630    0.02359  -5.777
+XREGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                         0.16149    0.46456   0.348
+XREGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ            -0.08013    0.03506  -2.285
+XREGIONCEBEPO-KAHИHCKAЯ БAHKA                       0.15971    0.02670   5.982
+XREGIONKAHИHCKAЯ БAHKA                              0.05886    0.02653   2.218
+XREGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH)  0.20859    0.02808   7.428
+XREGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE              0.17834    0.02200   8.108
+XREGIONMУPMAHCKOE MEЛKOBOДЬE                        0.07353    0.02318   3.172
+XREGIONЗAП.-ПPИБPEЖHЫЙ P-H                          0.72926    0.46533   1.567
+XREGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                         0.12967    0.02736   4.739
+XREGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                      0.63836    0.03291  19.400
+XREGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                       0.68988    0.03447  20.015
+                                                   Pr(&gt;|z|)    
+X(Intercept)                                        &lt; 2e-16 ***
+XYEAR2020                                           &lt; 2e-16 ***
+XYEAR2021                                           &lt; 2e-16 ***
+XYEAR2022                                           &lt; 2e-16 ***
+XYEAR2023                                           &lt; 2e-16 ***
+XYEAR2024                                           &lt; 2e-16 ***
+XMONTH10                                           1.11e-12 ***
+XMONTH11                                           7.60e-09 ***
+XREGIONCEB.-ЦEHTPAЛЬHЫЙ P-H                         0.72813    
+XREGIONCEB.CKЛOH MУPMAHCKOГO MEЛKOBOДЬЯ             0.02229 *  
+XREGIONCEBEPO-KAHИHCKAЯ БAHKA                      2.20e-09 ***
+XREGIONKAHИHCKAЯ БAHKA                              0.02654 *  
+XREGIONKAHИHCKO- KOЛГУEBCKOE MEЛKOBOДЬE(CEB.CKЛOH) 1.10e-13 ***
+XREGIONKAHИHCKO-KOЛГУEBCKOE MEЛKOBOДЬE             5.16e-16 ***
+XREGIONMУPMAHCKOE MEЛKOBOДЬE                        0.00151 ** 
+XREGIONЗAП.-ПPИБPEЖHЫЙ P-H                          0.11707    
+XREGIONЗAП.-ЦEHTPAЛЬHЫЙ P-H                        2.15e-06 ***
+XREGIONЗAП.CKЛOH ГУCИHOЙ БAHKИ                      &lt; 2e-16 ***
+XREGIONЮЖ.CKЛOH ГУCИHOЙ БAHKИ                       &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Correlation matrix not shown by default, as p = 19 &gt; 12.
+Use print(summary(gamm_fit$mer), correlation=TRUE)  or
+    vcov(summary(gamm_fit$mer))        if you need it</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание сетки для предсказания</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>newdata_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">YEAR =</span> <span class="fu">levels</span>(DATA<span class="sc">$</span>YEAR),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">MONTH =</span> <span class="fu">levels</span>(DATA<span class="sc">$</span>MONTH),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">REGION =</span> <span class="fu">levels</span>(DATA<span class="sc">$</span>REGION),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">CALL =</span> <span class="fu">levels</span>(DATA<span class="sc">$</span>CALL)[<span class="dv">1</span>]  <span class="co"># Фиксированное значение для случайного эффекта</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Предсказание на сетке</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>newdata_grid<span class="sc">$</span>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(gamm_fit<span class="sc">$</span>gam, </span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">newdata =</span> newdata_grid, </span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Усреднение предсказаний по годам</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>idx_gamm <span class="ot">&lt;-</span> newdata_grid <span class="sc">%&gt;%</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(YEAR) <span class="sc">%&gt;%</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">value =</span> <span class="fu">mean</span>(pred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"GAMM (mgcv)"</span>,</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">index_mean =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"mean"</span>),</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">index_first =</span> <span class="fu">scale_to_index</span>(value, <span class="st">"first"</span>)</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция расчета доверительных интервалов через бутстреп</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>compute_gamm_ci <span class="ot">&lt;-</span> <span class="cf">function</span>(model, newdata, <span class="at">n_boot =</span> <span class="dv">100</span>) {</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>  boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_boot, {</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>    boot_data <span class="ot">&lt;-</span> newdata[<span class="fu">sample</span>(<span class="fu">nrow</span>(newdata), <span class="at">replace =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>    preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> boot_data, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    boot_data <span class="sc">%&gt;%</span></span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">pred =</span> preds) <span class="sc">%&gt;%</span></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(YEAR) <span class="sc">%&gt;%</span></span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">mean_pred =</span> <span class="fu">mean</span>(pred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pull</span>(mean_pred)</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>  ci <span class="ot">&lt;-</span> <span class="fu">apply</span>(boot_means, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">rowMeans</span>(boot_means), <span class="at">lcl =</span> ci[<span class="dv">1</span>, ], <span class="at">ucl =</span> ci[<span class="dv">2</span>, ]))</span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет интервалов</span></span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a>gamm_ci <span class="ot">&lt;-</span> <span class="fu">compute_gamm_ci</span>(gamm_fit<span class="sc">$</span>gam, newdata_grid)</span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавление интервалов к индексам</span></span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>idx_gamm <span class="ot">&lt;-</span> idx_gamm <span class="sc">%&gt;%</span></span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">lcl =</span> gamm_ci<span class="sc">$</span>lcl,</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">ucl =</span> gamm_ci<span class="sc">$</span>ucl,</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">lcl_index_mean =</span> <span class="fu">scale_to_index</span>(lcl, <span class="st">"mean"</span>),</span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">ucl_index_mean =</span> <span class="fu">scale_to_index</span>(ucl, <span class="st">"mean"</span>)</span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация</span></span>
+<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a>idx_gamm <span class="sc">%&gt;%</span></span>
+<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> value, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb38-56"><a href="#cb38-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb38-57"><a href="#cb38-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lcl, <span class="at">ymax =</span> ucl), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb38-58"><a href="#cb38-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> actual_medians, </span>
+<span id="cb38-59"><a href="#cb38-59" aria-hidden="true" tabindex="-1"></a>           <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> median_cpue), </span>
+<span id="cb38-60"><a href="#cb38-60" aria-hidden="true" tabindex="-1"></a>           <span class="at">shape =</span> <span class="dv">4</span>,  <span class="co"># 4 соответствует крестику (x)</span></span>
+<span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">3</span>, </span>
+<span id="cb38-62"><a href="#cb38-62" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb38-63"><a href="#cb38-63" aria-hidden="true" tabindex="-1"></a>           <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb38-64"><a href="#cb38-64" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Индексы CPUE по GAMM модели (крестики - факт)"</span>, </span>
+<span id="cb38-65"><a href="#cb38-65" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb38-66"><a href="#cb38-66" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Стандартизированный индекс"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 7: СРАВНЕНИЕ МОДЕЛЕЙ И ФИНАЛЬНАЯ ВИЗУАЛИЗАЦИЯ</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Объединение результатов всех моделей</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>indices_all <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  idx_glm <span class="sc">%&gt;%</span> <span class="fu">select</span>(YEAR, value, lcl, ucl, model, index_mean, lcl_index_mean, ucl_index_mean),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  idx_gam <span class="sc">%&gt;%</span> <span class="fu">select</span>(YEAR, value, lcl, ucl, model, index_mean, lcl_index_mean, ucl_index_mean),</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  idx_gamm <span class="sc">%&gt;%</span> <span class="fu">select</span>(YEAR, value, lcl, ucl, model, index_mean, lcl_index_mean, ucl_index_mean)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">YEAR =</span> <span class="fu">factor</span>(YEAR, <span class="at">levels =</span> <span class="fu">levels</span>(DATA<span class="sc">$</span>YEAR)))</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Сводная таблица результатов</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>indices_all <span class="sc">%&gt;%</span> </span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Сравнение индексов CPUE по разным моделям"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Сравнение индексов CPUE по разным моделям</caption>
+<colgroup>
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">YEAR</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: right;">lcl</th>
+<th style="text-align: right;">ucl</th>
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">index_mean</th>
+<th style="text-align: right;">lcl_index_mean</th>
+<th style="text-align: right;">ucl_index_mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2019</td>
+<td style="text-align: right;">158.81216</td>
+<td style="text-align: right;">138.93290</td>
+<td style="text-align: right;">181.53585</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">1.5358638</td>
+<td style="text-align: right;">1.5299542</td>
+<td style="text-align: right;">1.5417869</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">126.54457</td>
+<td style="text-align: right;">111.15088</td>
+<td style="text-align: right;">144.07018</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">1.2238057</td>
+<td style="text-align: right;">1.2240136</td>
+<td style="text-align: right;">1.2235904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021</td>
+<td style="text-align: right;">126.89292</td>
+<td style="text-align: right;">111.57409</td>
+<td style="text-align: right;">144.31498</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">1.2271746</td>
+<td style="text-align: right;">1.2286741</td>
+<td style="text-align: right;">1.2256695</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022</td>
+<td style="text-align: right;">83.46580</td>
+<td style="text-align: right;">73.52525</td>
+<td style="text-align: right;">94.75032</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">0.8071933</td>
+<td style="text-align: right;">0.8096733</td>
+<td style="text-align: right;">0.8047160</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023</td>
+<td style="text-align: right;">73.30390</td>
+<td style="text-align: right;">64.40714</td>
+<td style="text-align: right;">83.42960</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">0.7089181</td>
+<td style="text-align: right;">0.7092631</td>
+<td style="text-align: right;">0.7085690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2024</td>
+<td style="text-align: right;">51.39565</td>
+<td style="text-align: right;">45.26094</td>
+<td style="text-align: right;">58.36186</td>
+<td style="text-align: left;">GLM_Gamma</td>
+<td style="text-align: right;">0.4970445</td>
+<td style="text-align: right;">0.4984216</td>
+<td style="text-align: right;">0.4956683</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2019</td>
+<td style="text-align: right;">158.81218</td>
+<td style="text-align: right;">138.93304</td>
+<td style="text-align: right;">181.53572</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">1.5358554</td>
+<td style="text-align: right;">1.5299458</td>
+<td style="text-align: right;">1.5417784</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">126.54503</td>
+<td style="text-align: right;">111.15138</td>
+<td style="text-align: right;">144.07058</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">1.2238033</td>
+<td style="text-align: right;">1.2240112</td>
+<td style="text-align: right;">1.2235880</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021</td>
+<td style="text-align: right;">126.89280</td>
+<td style="text-align: right;">111.57408</td>
+<td style="text-align: right;">144.31473</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">1.2271665</td>
+<td style="text-align: right;">1.2286660</td>
+<td style="text-align: right;">1.2256615</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022</td>
+<td style="text-align: right;">83.46561</td>
+<td style="text-align: right;">73.52514</td>
+<td style="text-align: right;">94.75002</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">0.8071869</td>
+<td style="text-align: right;">0.8096669</td>
+<td style="text-align: right;">0.8047096</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023</td>
+<td style="text-align: right;">73.30495</td>
+<td style="text-align: right;">64.40811</td>
+<td style="text-align: right;">83.43072</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">0.7089242</td>
+<td style="text-align: right;">0.7092692</td>
+<td style="text-align: right;">0.7085751</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2024</td>
+<td style="text-align: right;">51.39792</td>
+<td style="text-align: right;">45.26297</td>
+<td style="text-align: right;">58.36439</td>
+<td style="text-align: left;">GAM</td>
+<td style="text-align: right;">0.4970637</td>
+<td style="text-align: right;">0.4984408</td>
+<td style="text-align: right;">0.4956874</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2019</td>
+<td style="text-align: right;">165.88930</td>
+<td style="text-align: right;">153.27889</td>
+<td style="text-align: right;">186.43794</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">1.5400976</td>
+<td style="text-align: right;">1.5751123</td>
+<td style="text-align: right;">1.5695052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">131.59142</td>
+<td style="text-align: right;">116.54705</td>
+<td style="text-align: right;">144.02703</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">1.2216800</td>
+<td style="text-align: right;">1.1976514</td>
+<td style="text-align: right;">1.2124741</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021</td>
+<td style="text-align: right;">132.07110</td>
+<td style="text-align: right;">118.64017</td>
+<td style="text-align: right;">145.21926</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">1.2261333</td>
+<td style="text-align: right;">1.2191606</td>
+<td style="text-align: right;">1.2225107</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022</td>
+<td style="text-align: right;">86.80692</td>
+<td style="text-align: right;">79.26688</td>
+<td style="text-align: right;">96.71028</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">0.8059057</td>
+<td style="text-align: right;">0.8145559</td>
+<td style="text-align: right;">0.8141438</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023</td>
+<td style="text-align: right;">76.37202</td>
+<td style="text-align: right;">67.94329</td>
+<td style="text-align: right;">82.24327</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">0.7090292</td>
+<td style="text-align: right;">0.6981933</td>
+<td style="text-align: right;">0.6923550</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2024</td>
+<td style="text-align: right;">53.55022</td>
+<td style="text-align: right;">48.20170</td>
+<td style="text-align: right;">58.08852</td>
+<td style="text-align: left;">GAMM (mgcv)</td>
+<td style="text-align: right;">0.4971542</td>
+<td style="text-align: right;">0.4953264</td>
+<td style="text-align: right;">0.4890111</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>indices_all <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> value, <span class="at">color =</span> model, <span class="at">group =</span> model, <span class="at">fill =</span> model)) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lcl, <span class="at">ymax =</span> ucl), <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_point</span>(<span class="at">data =</span> actual_medians, </span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>           <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> median_cpue), </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">shape =</span> <span class="dv">4</span>,  <span class="co"># 4 соответствует крестику (x)</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">3</span>, </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>, </span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Сравнение стандартизированных индексов CPUE (крестики - факт)"</span>, </span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Индекс CPUE (кг/ловушку)"</span>, </span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Модель"</span>, </span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Модель"</span>) <span class="sc">+</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter-9_files/figure-html/unnamed-chunk-1-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># БЛОК 9: СРАВНЕНИЕ МОДЕЛЕЙ ПО ИНФОРМАЦИОННЫМ КРИТЕРИЯМ</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================================================</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== СРАВНИТЕЛЬНЫЙ АНАЛИЗ МОДЕЛЕЙ ПО ИНФОРМАЦИОННЫМ КРИТЕРИЯМ ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== СРАВНИТЕЛЬНЫЙ АНАЛИЗ МОДЕЛЕЙ ПО ИНФОРМАЦИОННЫМ КРИТЕРИЯМ ===</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Упрощенная функция для извлечения ключевых критериев из моделей</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>extract_model_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(model, model_name, <span class="at">model_type =</span> <span class="st">"glm"</span>) {</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model_type <span class="sc">==</span> <span class="st">"glm"</span>) {</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    aic_val <span class="ot">&lt;-</span> <span class="fu">AIC</span>(model)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    bic_val <span class="ot">&lt;-</span> <span class="fu">BIC</span>(model)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    loglik_val <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">logLik</span>(model))</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    df_val <span class="ot">&lt;-</span> model<span class="sc">$</span>rank</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    null_dev <span class="ot">&lt;-</span> model<span class="sc">$</span>null.deviance</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    dev <span class="ot">&lt;-</span> model<span class="sc">$</span>deviance</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model_type <span class="sc">==</span> <span class="st">"gam"</span>) {</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    aic_val <span class="ot">&lt;-</span> <span class="fu">AIC</span>(model)</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>    bic_val <span class="ot">&lt;-</span> <span class="fu">BIC</span>(model)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>    loglik_val <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">logLik</span>(model))</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    df_val <span class="ot">&lt;-</span> <span class="fu">sum</span>(model<span class="sc">$</span>edf)</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    null_dev <span class="ot">&lt;-</span> model<span class="sc">$</span>null.deviance</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    dev <span class="ot">&lt;-</span> model<span class="sc">$</span>deviance</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model_type <span class="sc">==</span> <span class="st">"gamm"</span>) {</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    aic_val <span class="ot">&lt;-</span> <span class="fu">AIC</span>(model<span class="sc">$</span>mer)</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    bic_val <span class="ot">&lt;-</span> <span class="fu">BIC</span>(model<span class="sc">$</span>mer)</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    loglik_val <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">logLik</span>(model<span class="sc">$</span>mer))</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    df_val <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">fixef</span>(model<span class="sc">$</span>mer)) <span class="sc">+</span> <span class="dv">1</span>  <span class="co"># +1 для случайного эффекта</span></span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>    null_dev <span class="ot">&lt;-</span> model<span class="sc">$</span>gam<span class="sc">$</span>null.deviance</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>    dev <span class="ot">&lt;-</span> model<span class="sc">$</span>gam<span class="sc">$</span>deviance</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Вычисляем долю объясненной девиации</span></span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>  deviance_explained <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.null</span>(null_dev) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(dev) <span class="sc">&amp;&amp;</span> null_dev <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>                              (null_dev <span class="sc">-</span> dev) <span class="sc">/</span> null_dev, <span class="cn">NA</span>)</span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-30"><a href="#cb43-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb43-31"><a href="#cb43-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> model_name,</span>
+<span id="cb43-32"><a href="#cb43-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">AIC =</span> <span class="fu">round</span>(aic_val, <span class="dv">2</span>),</span>
+<span id="cb43-33"><a href="#cb43-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">BIC =</span> <span class="fu">round</span>(bic_val, <span class="dv">2</span>),</span>
+<span id="cb43-34"><a href="#cb43-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogLik =</span> <span class="fu">round</span>(loglik_val, <span class="dv">2</span>),</span>
+<span id="cb43-35"><a href="#cb43-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">DF =</span> <span class="fu">round</span>(df_val, <span class="dv">2</span>),</span>
+<span id="cb43-36"><a href="#cb43-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">Deviance_Explained =</span> <span class="fu">round</span>(deviance_explained, <span class="dv">4</span>)</span>
+<span id="cb43-37"><a href="#cb43-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-38"><a href="#cb43-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-39"><a href="#cb43-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-40"><a href="#cb43-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Извлекаем метрики для всех моделей</span></span>
+<span id="cb43-41"><a href="#cb43-41" aria-hidden="true" tabindex="-1"></a>model_metrics <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb43-42"><a href="#cb43-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_model_metrics</span>(glm_gamma_fit, <span class="st">"GLM (Gamma)"</span>, <span class="st">"glm"</span>),</span>
+<span id="cb43-43"><a href="#cb43-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_model_metrics</span>(gam_fit, <span class="st">"GAM"</span>, <span class="st">"gam"</span>),</span>
+<span id="cb43-44"><a href="#cb43-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_model_metrics</span>(gamm_fit, <span class="st">"GAMM"</span>, <span class="st">"gamm"</span>)</span>
+<span id="cb43-45"><a href="#cb43-45" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-46"><a href="#cb43-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-47"><a href="#cb43-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавляем разницу в AIC относительно наилучшей модели</span></span>
+<span id="cb43-48"><a href="#cb43-48" aria-hidden="true" tabindex="-1"></a>min_aic <span class="ot">&lt;-</span> <span class="fu">min</span>(model_metrics<span class="sc">$</span>AIC)</span>
+<span id="cb43-49"><a href="#cb43-49" aria-hidden="true" tabindex="-1"></a>model_metrics <span class="ot">&lt;-</span> model_metrics <span class="sc">%&gt;%</span></span>
+<span id="cb43-50"><a href="#cb43-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Delta_AIC =</span> AIC <span class="sc">-</span> min_aic,</span>
+<span id="cb43-51"><a href="#cb43-51" aria-hidden="true" tabindex="-1"></a>         <span class="at">AIC_Weight =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> Delta_AIC) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> Delta_AIC)))</span>
+<span id="cb43-52"><a href="#cb43-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-53"><a href="#cb43-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Форматируем таблицу для вывода</span></span>
+<span id="cb43-54"><a href="#cb43-54" aria-hidden="true" tabindex="-1"></a>comparison_table <span class="ot">&lt;-</span> model_metrics <span class="sc">%&gt;%</span></span>
+<span id="cb43-55"><a href="#cb43-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb43-56"><a href="#cb43-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AIC)  <span class="co"># Сортируем по AIC (лучшая модель первая)</span></span>
+<span id="cb43-57"><a href="#cb43-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-58"><a href="#cb43-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Выводим таблицу сравнения</span></span>
+<span id="cb43-59"><a href="#cb43-59" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">ТАБЛИЦА СРАВНЕНИЯ МОДЕЛЕЙ:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ТАБЛИЦА СРАВНЕНИЯ МОДЕЛЕЙ:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(comparison_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Model      AIC      BIC    LogLik DF Deviance_Explained Delta_AIC
+1         GAM 42840.91 43079.03 -21382.45 37              0.401      0.00
+2 GLM (Gamma) 42850.76 43088.88 -21387.38 37              0.401      9.85
+3        GAMM 42933.49 43065.09 -21445.75 20                 NA     92.58
+  AIC_Weight
+1      0.993
+2      0.007
+3      0.000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Выводим итоговые рекомендации</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== ИТОГОВЫЕ РЕКОМЕНДАЦИИ ПО ВЫБОРУ МОДЕЛИ ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== ИТОГОВЫЕ РЕКОМЕНДАЦИИ ПО ВЫБОРУ МОДЕЛИ ===</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> comparison_table<span class="sc">$</span>Model[<span class="dv">1</span>]</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Наилучшая модель по критерию AIC:"</span>, best_model, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Наилучшая модель по критерию AIC: GAM </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Вес AIC для наилучшей модели:"</span>, <span class="fu">round</span>(comparison_table<span class="sc">$</span>AIC_Weight[<span class="dv">1</span>], <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Вес AIC для наилучшей модели: 0.993 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(comparison_table) <span class="sc">&gt;</span> <span class="dv">1</span> <span class="sc">&amp;&amp;</span> comparison_table<span class="sc">$</span>Delta_AIC[<span class="dv">2</span>] <span class="sc">&gt;</span> <span class="dv">2</span>) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Наилучшая модель существенно лучше остальных (?AIC &gt; 2).</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">nrow</span>(comparison_table) <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Несколько моделей имеют сходное качество (?AIC &lt; 2).</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Наилучшая модель существенно лучше остальных (?AIC &gt; 2).</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Доля объясненной девиации наилучшей модели:"</span>, </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(comparison_table<span class="sc">$</span>Deviance_Explained[<span class="dv">1</span>], <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Доля объясненной девиации наилучшей модели: 0.401 </code></pre>
+</div>
+</div>
 </section>
-<section id="описательная-статистика-и-визуализация" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="описательная-статистика-и-визуализация"><span class="header-section-number">10.3</span> Описательная статистика и визуализация</h2>
-<p>Текст. Текст. Текст. Текст.</p>
+<section id="анализ-glm-модели-с-гамма-распределением-и-лог-ссылкой" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="анализ-glm-модели-с-гамма-распределением-и-лог-ссылкой"><span class="header-section-number">10.3</span> Анализ GLM модели с гамма-распределением и лог-ссылкой</h2>
+<p>Подобранная обобщенная линейная модель (GLM) использует гамма-распределение для ошибок и логарифмическую функцию связи. Данное распределение выбрано, поскольку CPUE представляет собой непрерывную положительную величину, а гамма-распределение хорошо описывает такие данные. Логарифмическая связь обеспечивает мультипликативность эффектов факторов, что интерпретируется как относительное изменение CPUE при изменении фактора. Модель включает четыре факторные переменные: год (YEAR), месяц (MONTH), позывной судна (CALL) и район промысла (REGION). Все переменные представлены как факторы, что означает, что для каждого уровня фактора оценивается свой коэффициент, интерпретируемый как отклонение от базового уровня. Базовыми уровнями являются: 2019 год для YEAR, сентябрь (MONTH9) для MONTH, первое судно в алфавитном порядке для CALL и первый район для REGION. Из сводки модели видно, что многие коэффициенты статистически значимы. Все годовые коэффициенты отрицательны и значимы, что указывает на снижение CPUE относительно базового 2019 года. Наибольшее снижение наблюдается в 2024 году (коэффициент -1.128). Месячные коэффициенты также отрицательны и значимы, что говорит о снижении CPUE в октябре и ноябре по сравнению с сентябрем. Большинство коэффициентов для судов значимы и отрицательны, что указывает на то, что уловы на усилие у этих судов в среднем ниже, чем у базового судна. Однако некоторые суда имеют положительные коэффициенты, что означает более высокую производительность. Для районов значимыми оказались лишь некоторые коэффициенты, в основном положительные, что говорит о более высоких уловах в этих районах по сравнению с базовым. Дисперсионный параметр для гамма-семейства равен 0.417, что указывает на умеренную дисперсию. Null deviance составляет 2980.2 при 3890 степенях свободы, а остаточная deviance — 1785.6 при 3854 степенях свободы. Снижение девиации указывает на то, что модель объясняет существенную часть вариации данных. AIC модели равен 42851. Диагностические графики стандартных остатков GLM включают график остатков против предсказанных значений, Q-Q plot, график масштаба-местоположения и график остатков против влияния. Эти графики позволяют оценить гомоскедастичность, нормальность остатков и наличие выбросов. Дополнительная диагностика с помощью пакета DHARMa показывает, что распределение остатков соответствует ожидаемому, что подтверждает адекватность выбранного семейства распределений. Расчет стандартизированных индексов с помощью функции emmeans показывает, что индекс CPUE постепенно снижается с 2019 по 2024 год, что согласуется с отрицательными годовыми коэффициентами. В 2019 году индекс составляет 159, а к 2024 падает до 51.4. Доверительные интервалы не перекрываются между крайними годами, что указывает на статистически значимое снижение. Сравнение с медианными значениями CPUE по годам из исходных данных показывает, что модель несколько сглаживает исходные данные, но общая тенденция снижения сохраняется. Например, в 2019 году медианное значение CPUE было 200, а стандартизированный индекс — 159, что может быть связано с учетом влияния других факторов. Преимущества GLM подхода включают простоту интерпретации коэффициентов, вычислительную эффективность и широкую распространенность. Недостатки заключаются в том, что GLM предполагает линейность влияния факторов на логарифм отклика, что может не всегда выполняться. Кроме того, модель с фиксированными эффектами может не учитывать некоторые источники вариации, такие как пространственно-временная автокорреляция или случайные эффекты судов. В целом, модель адекватно описывает данные и может быть использована для стандартизации CPUE, но для более сложных данных могут потребоваться более гибкие модели, такие как GAM или GAMM.</p>
+</section>
+<section id="анализ-gam-модели-с-гамма-распределением-и-логарифмической-связью" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="анализ-gam-модели-с-гамма-распределением-и-логарифмической-связью"><span class="header-section-number">10.4</span> Анализ GAM модели с гамма-распределением и логарифмической связью</h2>
+<p>Анализ подобранной обобщенной аддитивной модели (GAM) с гамма-распределением и логарифмической связью показывает результаты, практически идентичные полученным ранее для GLM модели, что ожидаемо, поскольку в данной реализации GAM использовалась полностью параметрическая формула без сглаживающих функций. Модель была построена с теми же предикторами - годом, месяцем, идентификатором судна и районом промысла.</p>
+<p>Сводка модели демонстрирует параметрические коэффициенты, которые практически не отличаются от оценок GLM модели. Все годовые коэффициенты остаются отрицательными и статистически значимыми, подтверждая устойчивую тенденцию снижения стандартизированного индекса CPUE с 2019 по 2024 год. Месячные коэффициенты также значимы и отрицательны, указывая на сезонное снижение уловов в октябре и ноябре по сравнению с сентябрем. Оценки для различных судов и районов промысла практически идентичны полученным в GLM, с сохранением статистической значимости для тех же уровней факторов.</p>
+<p>Модель объясняет 40.1% девиации данных, что полностью соответствует показателю GLM. Значение REML составляет 21455, а оценка дисперсии равна 0.41722, что также практически совпадает с соответствующими показателями GLM модели.</p>
+<p>Проверка адекватности модели с помощью функции gam.check показывает успешную сходимость алгоритма оптимизации после 5 итераций. Градиент близок к нулю, а гессиан положительно определен, что свидетельствует о достижении устойчивого решения. Поскольку в модели отсутствуют сглаживающие компоненты, диагностика не выявляет проблем, связанных с выбором базовой размерности или неадекватностью сглаживания.</p>
+<p>Диагностика остатков с использованием пакета DHARMa показывает равномерное распределение без систематических паттернов, что указывает на соответствие остатков теоретическому гамма-распределению. Графики остатков демонстрируют отсутствие гетероскедастичности и значимых выбросов, что подтверждает адекватность модели.</p>
+<p>Расчет стандартизированных индексов методом маргинальных средних дает значения, практически идентичные полученным из GLM модели. Индекс снижается с 159 в 2019 году до 51.4 в 2024 году, с доверительными интервалами, не перекрывающимися между крайними годами. Нормированные индексы относительно среднего и первого года также полностью совпадают с GLM результатами.</p>
+<p>Основное преимущество использования GAM в данном случае заключается в методологическом подходе - использовании метода REML для оптимизации, который может обеспечивать более стабильные оценки параметров по сравнению с методом максимального правдоподобия, используемым в GLM. Хотя в данной конкретной реализации с полностью параметрической формулой это преимущество не реализуется в полной мере, GAM предоставляет основу для легкого включения нелинейных эффектов через сглаживающие функции, если такая необходимость возникнет в дальнейшем.</p>
+<p>К недостаткам данного подхода можно отнести избыточную сложность GAM для полностью параметрической модели, поскольку вычислительные затраты выше, чем для GLM, без существенного улучшения качества подгонки. Фактически, в данном случае GAM работает как GLM, но с более сложным алгоритмом оптимизации. Кроме того, диагностика GAM требует дополнительных проверок, связанных со сходимостью алгоритма и адекватностью сглаживания, которые не актуальны для параметрических моделей.</p>
+<p>В целом, данная реализация GAM не демонстрирует преимуществ перед GLM моделью, но предоставляет основу для будущего расширения модели за счет включения нелинейных эффектов, если анализ данных покажет такую необходимость. Результаты стандартизации CPUE полностью согласуются с полученными ранее средствами GLM.</p>
+</section>
+<section id="анализ-gamm-модели" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="анализ-gamm-модели"><span class="header-section-number">10.5</span> Анализ GAMM модели</h2>
+<p><strong>Особенности смешанных моделей и случайные эффекты</strong></p>
+<p>Смешанные модели, включая GAMM, расширяют возможности стандартных моделей за счет введения случайных эффектов. В то время как фиксированные эффекты оценивают среднее влияние факторов на всю популяцию, случайные эффекты позволяют учесть вариацию, связанную с отдельными группами наблюдений. В ихтиологических исследованиях случайные эффекты часто применяются для учета индивидуальных особенностей судов, различий между районами промысла, или временной автокорреляции.</p>
+<p>Случайные эффекты особенно полезны, когда:</p>
+<ul>
+<li><p>Данные имеют иерархическую структуру (например, уловы по нескольким судам)</p></li>
+<li><p>Наблюдения внутри групп коррелированы</p></li>
+<li><p>Количество уровней фактора велико, и мы хотим обобщить выводы на всю популяцию групп</p></li>
+<li><p>Нас интересует вариация между группами, а не конкретные сравнения между отдельными уровнями</p></li>
+</ul>
+<p>В данном случае случайный эффект для судна (CALL) позволяет учесть, что разные суда могут иметь систематические различия в эффективности промысла, не объясняемые другими переменными модели.</p>
+<p><strong>Анализ результатов GAMM модели</strong></p>
+<p>Анализ обобщенной аддитивной смешанной модели показывает несколько важных особенностей. Модель включает фиксированные эффекты года, месяца и района, а также случайный эффект для судна, что позволяет учесть индивидуальные различия между судами в уровне уловов.</p>
+<p>График остатков от предсказанных значений показывает распределение девиансных остатков вокруг нулевой линии. Наблюдается некоторая гетероскедастичность - разброс остатков увеличивается с ростом предсказанных значений, что характерно для данных по уловам. QQ-plot демонстрирует отклонение распределения остатков от нормального в крайних значениях, что ожидаемо для данных с гамма-распределением.</p>
+<p>Анализ случайных эффектов для судов показывает существенную вариацию между разными судами. Значения случайных эффектов варьируют от -2.92 до 0.93, что указывает на значительные различия в эффективности промысла между судами после учета влияния года, месяца и района. Распределение случайных эффектов близко к нормальному с центром около нуля.</p>
+<p>Тест Бреуша-Пагана подтверждает наличие гетероскедастичности в модели, что является общей проблемой для моделей с данными по уловам.</p>
+<p>Сводка параметрических коэффициентов показывает, что все годовые эффекты статистически значимы и отрицательны, подтверждая общую тенденцию снижения уловов с течением времени. Месячные эффекты также значимы и отрицательны, указывая на сезонное снижение уловов в октябре и ноябре по сравнению с сентябрем. Среди районов промысла несколько показали статистически значимые отличия от базового уровня.</p>
+<p>Модель объясняет 17.2% дисперсии данных, что меньше, чем в предыдущих моделях, что может быть связано с учетом части вариации через случайные эффекты. Информационные критерии AIC (42933.5) и BIC (43065.1) выше, чем у GLM и GAM моделей, что указывает на худшее соответствие данных этой модели с учетом ее сложности.</p>
+<p><strong><em>График случайных эффектов</em></strong> с тремя модами на значениях 0.5, -1.5 и -3 демонстрирует выраженную стратификацию судов по их промысловой эффективности. Такое распределение указывает на наличие трех различных групп в промысловом флоте, каждая со своими характеристиками. Группа с модой на 0.5 представляет суда с повышенной эффективностью, чьи уловы примерно на 65% (exp(0.5) ≈ 0.65) превышают средний уровень. Эти суда, вероятно, оснащены современным оборудованием, укомплектованы опытными экипажами и работают на наиболее продуктивных участках.</p>
+<p>Вторая группа с модой на -1.5 соответствует судам со значительно сниженной эффективностью, показывающим уловы примерно на 78% ниже среднего показателя. Такие результаты могут быть связаны с устаревшим техническим оснащением, менее оптимальными методами лова или работой в менее продуктивных районах. Третья группа с модой на -3 представляет суда с крайне низкой эффективностью, демонстрирующие уловы на 95% ниже среднего уровня. Столь значительное отставание может объясняться серьезными техническими проблемами, отсутствием современного оборудования, неопытностью экипажей или систематическими организационными трудностями.А возможно работой не на мороженном крабе, а живом - требующим другой технологической работы.</p>
+<p>Наличие трех четких мод в распределении случайных эффектов свидетельствует о существенной неоднородности промыслового флота. Это указывает на то, что предположение о нормальном распределении случайных эффектов не выполняется, а данные имеют выраженную групповую структуру. Модель успешно выявляет эту скрытую стратификацию, что подтверждает важность учета случайных эффектов при анализе промысловых данных. Полученные результаты подчеркивают необходимость дифференцированного подхода к анализу эффективности судов и разработки управленческих решений с учетом выявленной группировки. Различные моды могут отражать не только технические различия между судами, но и различные стратегии промысла, доступ к ресурсам или уровень организации работы.</p>
+<p><strong>Преимущества и недостатки подхода GAMM</strong></p>
+<p>Основное преимущество GAMM подхода заключается в возможности учета групповой структуры данных через случайные эффекты. Это позволяет более адекватно оценить неопределенность предсказаний и избежать завышения значимости эффектов из-за псевдорепликации. Модель обеспечивает более реалистичную оценку вариации в данных, учитывая как фиксированные эффекты, так и случайную вариацию между группами.</p>
+<p>К недостаткам можно отнести повышенную вычислительную сложность и потенциальные проблемы со сходимостью алгоритмов оптимизации. Интерпретация результатов становится сложнее, особенно при наличии взаимодействий между фиксированными и случайными эффектами. В данном случае модель показала худшие показатели качества подгонки по сравнению с более простыми GLM и GAM моделями, что может свидетельствовать о избыточной сложности модели для данного набора данных.</p>
+<p>В целом, GAMM представляет собой мощный инструмент для анализа данных с иерархической структурой, но его применение должно быть обосновано теоретически и подтверждено улучшением качества модели по сравнению с более простыми альтернативами.</p>
+</section>
+<section id="сравнительный-анализ-моделей-по-информационным-критериям" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="сравнительный-анализ-моделей-по-информационным-критериям"><span class="header-section-number">10.6</span> Сравнительный анализ моделей по информационным критериям</h2>
+<p>В данном разделе проводится систематическое сравнение трех альтернативных моделей - GLM, GAM и GAMM - с использованием информационных критериев и других метрик качества. Для унификации процесса сравнения создана специализированная функция extract_model_metrics, которая адаптирована для извлечения сопоставимых показателей из моделей разной структуры.</p>
+<p>Для GLM и GAM моделей используются стандартные методы расчета критериев, включая AIC, BIC, логарифмическое правдоподобие и долю объясненной девиации. Для GAMM модели, имеющей более сложную смешанную структуру, метрики извлекаются из компонентов mer и gam объекта, с дополнительным учетом случайных эффектов при расчете сложности модели.</p>
+<p>Результаты сравнения представлены в виде структурированной таблицы, где модели упорядочены по возрастанию AIC - информационного критерия Акаике, который балансирует качество подгонки и сложность модели. Дополнительно вычисляются дельта-AIC (разница относительно наилучшей модели) и веса AIC, которые интерпретируются как вероятности того, что данная модель является наилучшей среди рассматриваемых.</p>
+<p>Анализ результатов показывает четкое разделение моделей по качеству. Модель GAM демонстрирует наилучшие показатели с AIC = 42840.91 и весом AIC 0.993, что означает 99.3% вероятность того, что эта модель является наилучшей среди сравниваемых. Модель GLM показывает очень близкие результаты по объясненной дисперсии (0.401), но несколько худшие значения AIC (42850.76) и минимальный вес (0.007). Модель GAMM значительно уступает по всем критериям с AIC = 42933.49 и нулевым весом в рамках данного сравнения.</p>
+<p>Разница в AIC между GAM и GLM составляет 9.85 единиц, что превышает пороговое значение 2, принятое для утверждения о существенном преимуществе одной модели над другой. Еще более значительная разница в 92.58 единиц между GAM и GAMM подтверждает статистически значимое превосходство GAM модели.</p>
+<p>На основе проведенного анализа формулируются итоговые рекомендации по выбору модели. Модель GAM идентифицируется как наилучшая с очень высокой степенью уверенности (вес AIC 0.993). Объясняющая способность модели составляет 40.1%, что указывает на хорошее соответствие модели данным.</p>
+<p>Данный сравнительный подход обеспечивает объективную основу для выбора окончательной модели, позволяя учесть как качество подгонки, так и сложность модели, избегая таким образом как избыточного усложнения, так и излишнего упрощения.</p>
 
 
 </section>
