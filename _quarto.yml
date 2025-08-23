@@ -19,6 +19,7 @@ book:
     - chapter 7.qmd
     - chapter 8.qmd
     - chapter 9.qmd
+    - chapter 10.qmd
     - references.qmd
 
 bibliography: references.bib
