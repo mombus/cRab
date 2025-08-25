@@ -1,5 +1,5 @@
 ---
-title: "Стандартизация CPUE"
+title: "Стандартизация CPUE: GLM, GAM, GAMM"
 format: html
 ---
 
