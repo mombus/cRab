@@ -231,14 +231,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">12.1</span> Введение</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -262,8 +256,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="введение" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">12.1</span> Введение</h2>
 <p>В практике работы с пространственными данными часто встречается ситуация, когда исходная сетка измерений имеет недостаточно высокое разрешение для визуализации или анализа. Например, данные из океанографической базы EN4 могут быть представлены в виде редкой сетки, что приводит к “ступенчатым” или изрезанным картам при построении контуров. Для решения этой задачи применяется ресэмплинг (передискретизация) — процесс изменения пространственного разрешения растра путем интерполяции значений. Это позволяет получить более плавное и непрерывное представление данных, что особенно полезно для картографирования и последующего анализа. Полный скрипт можно скачать по <a href="https://mombus.github.io/cRab/data/RESAMPLE.R">ссылке</a>.</p>
 <p><strong>Для работы скрипта:</strong></p>
 <ol type="1">
@@ -526,7 +518,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
