@@ -1,0 +1,264 @@
+---
+title: "Стандартизация CPUE: GLM, GAM, GAMM"
+description: "Учебный пример стандартизации CPUE по YEAR c учетом MONTH, CALL, REGION"
+lang: ru
+format:
+  html:
+    toc: true
+    code-fold: false
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Постановка задачи
+
+В этом разделе мы стандартизируем показатели уловистости (CPUE) по годам (`YEAR`), контролируя влияния календарного месяца (`MONTH`), типа вызова/операции (`CALL`) и региона (`REGION`).
+
+Мы сравним три подхода:
+- GLM с распределением Гамма и лог-лингком
+- GAM с теми же предикторами (без сглаживающих термов — модель эквивалентна GLM по структуре эффектов)
+- GAMM с добавлением случайного эффекта по судну (`VESSELNUMBER`)
+
+Данные читаются из Excel-файла `data/KARTOGRAPHIC.xlsx` (лист `FISHERY`). Для сопоставимости берём осенние месяцы (сентябрь–ноябрь): `MONTH > 8 & MONTH < 12`.
+
+## Подготовка окружения и загрузка данных
+
+```{r}
+suppressPackageStartupMessages({
+	library(tidyverse)   # удобная обработка данных и графики
+	library(readxl)      # чтение Excel-файлов
+	library(mgcv)        # GAM-модели
+	library(gamm4)       # GAMM-модели (GAM + случайные эффекты)
+	library(emmeans)     # маргинальные средние (для индексов по YEAR)
+	library(broom)       # tidy-таблицы результатов
+	library(broom.mixed) # tidy для смешанных моделей
+	library(DHARMa)      # диагностика остатков для GLMM/GAMM
+	library(knitr)       # печать табличек через kable
+})
+
+set.seed(42)
+```
+
+```{r}
+# Путь к данным внутри проекта книги
+DATA_PATH <- "data/KARTOGRAPHIC.xlsx"
+
+# Читаем и фильтруем только осенние месяцы (сентябрь–ноябрь)
+DATA <- read_excel(DATA_PATH, sheet = "FISHERY") %>%
+	as_tibble() %>%
+	filter(MONTH > 8 & MONTH < 12)
+
+# Приводим типы переменных.
+# Важно: факторы для категориальных предикторов и числовой CPUE
+DATA <- DATA %>%
+	mutate(
+		YEAR = as.factor(YEAR),
+		MONTH = as.factor(MONTH),
+		CALL = as.factor(CALL),
+		REGION = as.factor(REGION),
+		VESSELNUMBER = as.factor(VESSELNUMBER),
+		CPUE = as.numeric(CPUE)
+	) %>%
+	filter(!is.na(CPUE))
+
+# Если встречаются нули, добавим небольшой сдвиг для лог-ссылки (Гамма)
+if (any(DATA$CPUE <= 0, na.rm = TRUE)) {
+	min_pos <- min(DATA$CPUE[DATA$CPUE > 0], na.rm = TRUE)
+	offset <- min_pos / 2
+	DATA <- DATA %>% mutate(CPUE_POS = if_else(CPUE <= 0, CPUE + offset, CPUE))
+} else {
+	DATA <- DATA %>% mutate(CPUE_POS = CPUE)
+}
+
+# Быстрый обзор: распределение CPUE по годам
+DATA %>%
+	ggplot(aes(x = YEAR, y = CPUE)) +
+	geom_boxplot(outlier.alpha = 0.2) +
+	labs(title = "CPUE по годам", x = "Год", y = "CPUE")
+```
+
+## Вспомогательные функции
+
+```{r}
+# Масштабирование годовых индексов к удобной шкале
+# method = "mean" -> среднее по годам = 1; method = "first" -> первый год = 1
+scale_to_index <- function(values, method = c("mean", "first")) {
+	method <- match.arg(method)
+	if (method == "mean") return(as.numeric(values) / mean(as.numeric(values), na.rm = TRUE))
+	if (method == "first") return(as.numeric(values) / as.numeric(values[1]))
+}
+
+# Индексы на основе emmeans (GLM/GAM): маргинальные средние по YEAR на откликовом масштабе
+emmeans_standardized_index <- function(model, variable = "YEAR") {
+	out <- suppressWarnings(emmeans(model, specs = as.formula(paste0("~ ", variable)), type = "response"))
+	df <- as_tibble(out) %>% select(!!sym(variable), response = response, lower.CL, upper.CL)
+	colnames(df) <- c("YEAR", "value", "lcl", "ucl")
+	df
+}
+
+# Индексы для GAMM (смешанная модель): усредняем предсказания по эмпирическому
+# распределению ковариат; случайные эффекты маргинализуем (re.form = NA)
+compute_standardized_index <- function(model, base_data, year_levels, predict_fun,
+                                      response_transform = identity, n_boot = 200L, seed = 7L) {
+	set.seed(seed)
+	acc <- vector("list", length(year_levels))
+	for (i in seq_along(year_levels)) {
+		newdata <- base_data
+		newdata$YEAR <- factor(year_levels[i], levels = levels(base_data$YEAR))
+		preds <- suppressWarnings(predict_fun(model, newdata))
+		mu <- mean(response_transform(preds), na.rm = TRUE)
+		# Оценим доверительный интервал бутстрэпом по строкам базовых данных
+		boot_vals <- replicate(n_boot, {
+			idx <- sample.int(nrow(base_data), nrow(base_data), replace = TRUE)
+			bd <- newdata[idx, , drop = FALSE]
+			p <- suppressWarnings(predict_fun(model, bd))
+			mean(response_transform(p), na.rm = TRUE)
+		})
+		ci <- quantile(boot_vals, c(0.025, 0.975), na.rm = TRUE)
+		acc[[i]] <- tibble(YEAR = year_levels[i], value = mu, lcl = ci[[1]], ucl = ci[[2]])
+	}
+	bind_rows(acc)
+}
+```
+
+## GLM: Гамма с лог-ссылкой
+
+```{r}
+glm_gamma_fit <- glm(
+	CPUE_POS ~ YEAR + MONTH + CALL + REGION,
+	family = Gamma(link = "log"),
+	data = DATA
+)
+
+# Краткая сводка и tidy-таблица коэффициентов
+summary(glm_gamma_fit)
+
+broom::tidy(glm_gamma_fit) %>%
+	mutate(across(estimate:statistic, ~round(.x, 4))) %>%
+	kable(caption = "GLM (Gamma, log) — коэффициенты", align = "lrrrr")
+
+# Базовые диагностические графики GLM
+par(mfrow = c(2, 2))
+plot(glm_gamma_fit)
+par(mfrow = c(1, 1))
+
+# Диагностика остатков через DHARMa для GLM зачастую избыточна,
+# но покажем распределение симулированных остатков
+sim_glm <- simulateResiduals(glm_gamma_fit, n = 1000)
+plot(sim_glm)
+
+# Индексы по годам (на откликовом масштабе) и нормировка к среднему=1/первому году=1
+idx_glm <- emmeans_standardized_index(glm_gamma_fit) %>%
+	mutate(model = "GLM_Gamma",
+		index_mean = scale_to_index(value, "mean"),
+		index_first = scale_to_index(value, "first"))
+
+idx_glm %>% kable(caption = "GLM: стандартизованные индексы CPUE по годам")
+
+# Визуализация индексов GLM
+idx_glm %>%
+	ggplot(aes(x = YEAR, y = index_mean, group = 1)) +
+	geom_line() + geom_point() +
+	geom_hline(yintercept = 1, linetype = "dashed", color = "grey50") +
+	labs(title = "GLM: индекс CPUE (среднее по годам = 1)", x = "Год", y = "Индекс")
+```
+
+## GAM: без сглаживающих термов (как факторные эффекты)
+
+```{r}
+gam_fit <- gam(
+	CPUE_POS ~ YEAR + MONTH + CALL + REGION,
+	family = Gamma(link = "log"),
+	method = "REML",
+	data = DATA
+)
+
+summary(gam_fit)
+
+# Если бы в модели были s(·), мы бы построили plot(gam_fit)
+# Здесь гладких термов нет — пропускаем график эффектов
+mgcv::gam.check(gam_fit)
+
+idx_gam <- emmeans_standardized_index(gam_fit) %>%
+	mutate(model = "GAM",
+		index_mean = scale_to_index(value, "mean"),
+		index_first = scale_to_index(value, "first"))
+
+idx_gam %>% kable(caption = "GAM: стандартизованные индексы CPUE по годам")
+
+idx_gam %>%
+	ggplot(aes(x = YEAR, y = index_mean, group = 1)) +
+	geom_line() + geom_point() +
+	geom_hline(yintercept = 1, linetype = "dashed", color = "grey50") +
+	labs(title = "GAM: индекс CPUE (среднее по годам = 1)", x = "Год", y = "Индекс")
+```
+
+## GAMM: добавляем случайный эффект судна
+
+```{r}
+gamm_fit <- gamm4(
+	CPUE_POS ~ YEAR + MONTH + CALL + REGION,
+	random = ~(1 | VESSELNUMBER),
+	family = Gamma(link = "log"),
+	data = DATA
+)
+
+# Компонент смешанной модели из gamm4 (merMod)
+gamm_mer <- gamm_fit$mer
+summary(gamm_mer)
+
+# Диагностика остатков для смешанной модели через DHARMa
+sim_gamm <- simulateResiduals(gamm_mer, n = 1000)
+plot(sim_gamm)
+
+# Функция предсказания без случайных эффектов (маргинализация) для индексов
+gamm_predict_response <- function(m, newdata) predict(m, newdata = newdata, type = "response", re.form = NA)
+
+idx_gamm <- compute_standardized_index(
+	model = gamm_mer,
+	base_data = DATA,
+	year_levels = levels(DATA$YEAR),
+	predict_fun = gamm_predict_response,
+	response_transform = identity,
+	n_boot = 200,
+	seed = 7
+) %>% mutate(
+	model = "GAMM",
+	index_mean = scale_to_index(value, "mean"),
+	index_first = scale_to_index(value, "first")
+)
+
+idx_gamm %>% kable(caption = "GAMM: стандартизованные индексы CPUE по годам")
+
+idx_gamm %>%
+	ggplot(aes(x = YEAR, y = index_mean, group = 1)) +
+	geom_line() + geom_point() +
+	geom_hline(yintercept = 1, linetype = "dashed", color = "grey50") +
+	labs(title = "GAMM: индекс CPUE (среднее по годам = 1)", x = "Год", y = "Индекс")
+```
+
+## Сравнение индексов между моделями
+
+```{r}
+indices_all <- bind_rows(idx_glm, idx_gam, idx_gamm) %>%
+	mutate(YEAR = factor(YEAR, levels = levels(DATA$YEAR)))
+
+indices_all %>% kable(caption = "Сводная таблица индексов по моделям")
+
+indices_all %>%
+	ggplot(aes(x = YEAR, y = index_mean, color = model, group = model)) +
+	geom_line() + geom_point() +
+	geom_hline(yintercept = 1, linetype = "dashed", color = "grey50") +
+	labs(title = "Стандартизованный индекс CPUE (среднее по годам = 1)", x = "Год", y = "Индекс", color = "Модель") +
+	theme(legend.position = "bottom")
+```
+
+## Интерпретация
+
+- Индексы отражают межгодовую динамику CPUE при прочих равных (усреднение по эмпирическому распределению MONTH, CALL, REGION).
+- GLM и GAM без сглаживающих термов дают идентичные тренды (различия лишь в методе оценки — ML/REML и т. п.).
+- GAMM учитывает неоднородность по судам (случайные сдвиги). Если вариация между судами существенна, индексы GAMM могут отличаться и быть более устойчивыми.
+
+> Рекомендация: для официальной стандартизации имеет смысл докладывать индексы сразу по нескольким методам (GLM и GAMM) и обсуждать их согласованность.
