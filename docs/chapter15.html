@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>16&nbsp; III. SPiCT: MSE - оценка стратегии управления – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./chapter14.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter15.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Нейронные сети в экологии: практическое введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Съёмка: оптимизация маршрута</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Картография: повышение разрешения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">SDM: моделирование пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#концепция-management-strategy-evaluation-mse-искусство-управления-в-условиях-неопределенности" id="toc-концепция-management-strategy-evaluation-mse-искусство-управления-в-условиях-неопределенности" class="nav-link active" data-scroll-target="#концепция-management-strategy-evaluation-mse-искусство-управления-в-условиях-неопределенности"><span class="header-section-number">16.1</span> Концепция Management Strategy Evaluation (MSE): Искусство управления в условиях неопределенности</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="концепция-management-strategy-evaluation-mse-искусство-управления-в-условиях-неопределенности" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="концепция-management-strategy-evaluation-mse-искусство-управления-в-условиях-неопределенности"><span class="header-section-number">16.1</span> Концепция Management Strategy Evaluation (MSE): Искусство управления в условиях неопределенности</h2>
+<p>Если SPiCT — это гипотеза о состоянии запаса, а HCR — рецепт, то MSE — испытательный стенд, на котором рецепт готовят в турбулентной кухне реальности. Это «аэродинамическая труба» для управления: мы создаём правдоподобный мир (операционную модель), пропускаем через него шум наблюдений, оценку, задержки внедрения, ошибки исполнения — и смотрим, как ведут себя разные стратегии в тысячах альтернативных будущих. Не чтобы найти «идеально оптимальную» — её нет, — а чтобы выбрать наименее хрупкую.</p>
+<p>Из чего состоит MSE.</p>
+<p>- Операционная модель (OM): «истинная» динамика запаса и флота, с вариабельностью рекрутинга, автокорреляцией, возможным дрейфом уловистости, изменчивостью среды.</p>
+<p>- Наблюдательная модель: как рождаются данные (ошибки индексов, задержки отчётности, недоучёт).</p>
+<p>- Оценка (например, SPiCT): периодическая, с неизбежными смещениями и сходимостями.</p>
+<p>- Правило управления (HCR): превращает оценку в совет по <em>F</em>/ОДУ, с ограничителями и буферами.</p>
+<p>- Исполнение: реализация с ошибками (implementation error), реакция флота, соблюдение ограничений, лаги решений.</p>
+<p>Что считаем успехом.</p>
+<p>- Биология: вероятность <em>B</em>&lt;<em>B<sub>lim</sub></em>, доля времени в «зелёной зоне», средний <em>B</em>/<em>B<sub>msy</sub></em>.</p>
+<p>- Экономика/социальная стабильность: средний вылов, межгодовая изменчивость ОДУ, доля «закрытых» лет, длительность восстановления.</p>
+<p>- Робастность: чувствительность к «что‑если» (дрейф <em>q</em>, структурная ошибка модели, неблагоприятные серии лет со слабым пополнением).</p>
+<p>- Компромисс: фронт Парето вместо одного числа; подход «минимакс сожаления» — минимум проигрыша в плохих сценариях.</p>
+<p>Чем MSE спасает от иллюзий.</p>
+<p>- Мы перестаём путать модель с реальностью: оценки систематически ошибаются, и это встроено в эксперименты.</p>
+<p>- Широкие сценарии важнее глубины одной «идеальной» модели: узкие допущения делают стратегию хрупкой.</p>
+<p>- Поведение людей имеет значение: соблюдение квот, перераспределение усилия, экономические стимулы — часть петли обратной связи.</p>
+<p>Что делаем в этой главе.</p>
+<p>- Формулируем цели и метрики: явно, измеримо, с порогами риска.</p>
+<p>- Строим набор OM: несколько правдоподобных «миров» (варианты <em>r,</em> продуктивности, пополнения, <em>q</em>‑дрейфа, среды).</p>
+<p>- Задаём наблюдательный и оценочный контур (в т. ч. SPiCT), календарь пересмотров, лаги и ошибки исполнения.</p>
+<p>- Сравниваем HCR‑кандидаты, настраиваем их параметры под целевые риски, считаем фронт компромиссов.</p>
+<p>- Проводим стресс‑тесты: «плохие годы подряд», резкий технологический скачок, смещение индекса, неполное соблюдение.</p>
+<p>- Готовим «панель управления» для решений: таблицы производительности, графики риска/вылова/стабильности, понятные без кода.</p>
+<p>Границы и дисциплина. MSE не отвечает на вопрос «что истина?» — он отвечает «что работает чаще и не ломается в плохую погоду». Он требует прозрачного кода, фиксированных зерён случайности и версионирования сценариев. И, как хорошие инженерные мосты, лучшие MSE‑решения реже всего «самые умные» — они просто переживают больше штормов.</p>
+<p>Полный скрипт можно скачать по <a href="https://mombus.github.io/cRab/data/SPICT_MODEL.R">ссылке</a>. Ниже приводится исполнение скрипта.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ===============================================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     СКРИПТ 1: ОСНОВЫ МОДЕЛИРОВАНИЯ И ДИАГНОСТИКИ В SPiCT</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Курс: Оценка водных биоресурсов при недостатке данных в R</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     Автор: Баканев С. В.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     Дата создания: 28.08.2025</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ===============================================================</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ======================= ВВЕДЕНИЕ =============================</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># SPiCT (Surplus Production model in Continuous Time) - это</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># стохастическая продукционная модель для оценки запасов рыбы</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># при ограниченных данных. Модель требует только временные ряды</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># уловов и индексов биомассы (например, CPUE или научные съемки)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 1. ПОДГОТОВКА СРЕДЫ --------------------</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.1 Очистка рабочей среды (удаляем все объекты)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.2 Загрузка необходимых библиотек</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spict)      <span class="co"># Основной пакет для SPiCT моделирования</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Загрузка требуемого пакета: TMB</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to spict_v1.3.8@107a32</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)  <span class="co"># Для обработки данных и визуализации</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+v dplyr     1.1.4     v readr     2.1.5
+v forcats   1.0.0     v stringr   1.5.1
+v ggplot2   3.5.2     v tibble    3.2.1
+v lubridate 1.9.4     v tidyr     1.3.1
+v purrr     1.0.4     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+i Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)    <span class="co"># Дополнительные возможности построения графиков</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.3 Установка рабочей директории</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ВАЖНО: Измените путь на вашу рабочую папку</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/SPICT"</span>) </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.4 Настройка вывода чисел (опционально)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)  <span class="co"># Отключение научной нотации</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits =</span> <span class="dv">4</span>)    <span class="co"># Количество значащих цифр</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 2. ЗАГРУЗКА ДАННЫХ --------------------</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ЗАГРУЗКА ДАННЫХ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ЗАГРУЗКА ДАННЫХ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.1 Временной ряд (годы наблюдений)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Период наблюдений с 2005 по 2024 год</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>Year <span class="ot">&lt;-</span> <span class="dv">2005</span><span class="sc">:</span><span class="dv">2024</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.2 Данные по вылову (в тысячах тонн)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Представляют общий коммерческий вылов по годам</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Обратите внимание на тренд: рост до 2014 г., затем снижение</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>Catch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>,  <span class="dv">7</span>,  <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">25</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">32</span>, <span class="dv">35</span>,    <span class="co"># 2005-2014</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>          <span class="dv">25</span>, <span class="dv">20</span>, <span class="dv">15</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">13</span>, <span class="dv">11</span>, <span class="dv">12</span>)    <span class="co"># 2015-2024</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.3 Индекс CPUE (улов на единицу усилия)</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Промысловый индекс, отражающий относительную биомассу</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Собирается в середине года (июль) во время промысла</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>CPUEIndex <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">27.427120</span>, <span class="fl">26.775958</span>, <span class="fl">16.811997</span>, <span class="fl">22.979653</span>, <span class="fl">29.048568</span>, </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>               <span class="fl">29.996072</span>, <span class="fl">16.476301</span>, <span class="fl">17.174455</span>, <span class="fl">10.537272</span>, <span class="fl">14.590435</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                <span class="fl">8.286352</span>, <span class="fl">11.394168</span>, <span class="fl">15.537878</span>, <span class="fl">13.791166</span>, <span class="fl">11.527548</span>, </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>               <span class="fl">15.336093</span>, <span class="fl">12.154069</span>, <span class="fl">15.568450</span>, <span class="fl">16.221933</span>, <span class="fl">13.421132</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.4 Индекс BESS (биомасса по научной съемке)</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Независимая оценка биомассы из научных траловых съемок</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Проводится в 4-м квартале года (октябрь)</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># NA в первый год означает отсутствие съемки</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>BESSIndex <span class="ot">&lt;-</span> <span class="fu">c</span>(       <span class="cn">NA</span>, <span class="fl">16.270375</span>, <span class="fl">20.691355</span>, <span class="fl">15.141784</span>, <span class="fl">18.594620</span>, </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>               <span class="fl">15.975548</span>, <span class="fl">13.792012</span>, <span class="fl">13.328805</span>, <span class="fl">11.659744</span>, <span class="fl">11.753855</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                <span class="fl">9.309859</span>,  <span class="fl">7.104886</span>,  <span class="fl">7.963839</span>,  <span class="fl">9.161322</span>, <span class="fl">10.271221</span>, </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                <span class="fl">9.822960</span>, <span class="fl">10.347376</span>, <span class="fl">11.703610</span>, <span class="fl">13.679876</span>, <span class="fl">13.413696</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.5 Визуализация исходных данных</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co"># График вылова</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Year, Catch, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"red"</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Динамика вылова"</span>, <span class="at">xlab =</span> <span class="st">"Год"</span>, <span class="at">ylab =</span> <span class="st">"Вылов (тыс. т)"</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="fu">grid</span>()</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co"># График CPUE</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Year, CPUEIndex, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"blue"</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Индекс CPUE"</span>, <span class="at">xlab =</span> <span class="st">"Год"</span>, <span class="at">ylab =</span> <span class="st">"CPUE"</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="fu">grid</span>()</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="co"># График BESS</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Year, BESSIndex, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>,</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Индекс BESS"</span>, <span class="at">xlab =</span> <span class="st">"Год"</span>, <span class="at">ylab =</span> <span class="st">"BESS"</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="fu">grid</span>()</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co"># График всех индексов (нормализованных)</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Year, CPUEIndex<span class="sc">/</span><span class="fu">mean</span>(CPUEIndex, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">type =</span> <span class="st">"l"</span>, </span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Сравнение индексов"</span>, <span class="at">xlab =</span> <span class="st">"Год"</span>, <span class="at">ylab =</span> <span class="st">"Отн. индекс"</span>)</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(Year, BESSIndex<span class="sc">/</span><span class="fu">mean</span>(BESSIndex, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="fu">c</span>(<span class="st">"CPUE"</span>, <span class="st">"BESS"</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"darkgreen"</span>), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="fu">grid</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 3. ФОРМАТИРОВАНИЕ ДАННЫХ ДЛЯ SPiCT --------------------</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ПОДГОТОВКА ДАННЫХ ДЛЯ МОДЕЛИ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ПОДГОТОВКА ДАННЫХ ДЛЯ МОДЕЛИ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.1 Создание входного объекта для SPiCT</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SPiCT требует специальный формат данных в виде списка</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>input_data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Временной ряд вылова (обычно конец года)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">timeC =</span> Year,        </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">obsC =</span> Catch,        </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Временные ряды индексов</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ВАЖНО: время индексов должно отражать когда они собраны</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">timeI =</span> <span class="fu">list</span>(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    Year <span class="sc">+</span> <span class="fl">0.5</span>,      <span class="co"># CPUE собирается в середине года (июль)</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    Year <span class="sc">+</span> <span class="fl">0.75</span>      <span class="co"># BESS проводится в 4-м квартале (октябрь)</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Значения индексов (в том же порядке, что и timeI)</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">obsI =</span> <span class="fu">list</span>(</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    CPUEIndex,       </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    BESSIndex        </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.2 Проверка и валидация входных данных</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция check.inp выполняет базовую проверку данных</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># и удаляет нулевые, отрицательные и NA значения</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>inp <span class="ot">&lt;-</span> <span class="fu">check.inp</span>(input_data, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Removing zero, negative, and NAs in  I  series  2  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод структуры данных</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Структура входных данных:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Структура входных данных:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Количество наблюдений вылова:"</span>, <span class="fu">length</span>(inp<span class="sc">$</span>obsC), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Количество наблюдений вылова: 20 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Количество индексов:"</span>, <span class="fu">length</span>(inp<span class="sc">$</span>obsI), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Количество индексов: 2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Годы наблюдений:"</span>, <span class="fu">range</span>(inp<span class="sc">$</span>timeC), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Годы наблюдений: 2005 2024 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 4. НАСТРОЙКА МОДЕЛИ --------------------</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== НАСТРОЙКА ПАРАМЕТРОВ МОДЕЛИ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== НАСТРОЙКА ПАРАМЕТРОВ МОДЕЛИ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.1 Установка априорных распределений (priors)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.1.1 Параметр формы продукционной кривой (n)</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># n = 2 соответствует модели Шефера (симметричная кривая)</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Фиксируем n = 2, так как данных недостаточно для его оценки</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="dv">2</span>), <span class="fl">0.1</span>, <span class="dv">1</span>)  <span class="co"># (среднее, SD, использовать?)</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>ini<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="fu">log</span>(<span class="dv">2</span>)                 <span class="co"># Начальное значение</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>phases<span class="sc">$</span>logn <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span>                  <span class="co"># -1 означает не оценивать</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.1.2 Априор для несущей способности (K)</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># K - максимальная биомасса, которую может поддерживать среда</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Используем информативный априор на основе экспертных оценок</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logK <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="dv">150</span>), <span class="fl">0.7</span>, <span class="dv">1</span>)  <span class="co"># log(150) тыс. тонн, CV ≈ 70%</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.1.3 Априор для начального состояния запаса</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># logbkfrac = log(B_начальное/K)</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.75 означает, что в начале временного ряда запас был на 75% от K</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>priors<span class="sc">$</span>logbkfrac <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fl">0.75</span>), <span class="fl">0.25</span>, <span class="dv">1</span>)</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.1.4 Априоры для параметров роста (опционально)</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Если есть информация о темпе роста популяции</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># inp$priors$logr &lt;- c(log(0.3), 0.5, 1)</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.2 Настройка неопределенности данных</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.2.1 Увеличение неопределенности для последних наблюдений</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Последние данные часто предварительные и менее надежные</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>stdevfacC[<span class="fu">length</span>(inp<span class="sc">$</span>stdevfacC)] <span class="ot">&lt;-</span> <span class="dv">2</span>      <span class="co"># Удваиваем SD для последнего вылова</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>stdevfacI[[<span class="dv">2</span>]][<span class="fu">length</span>(inp<span class="sc">$</span>stdevfacI[[<span class="dv">2</span>]])] <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># Для последнего BESS</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.2.2 Установка минимальной неопределенности (опционально)</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co"># inp$stdevfacC &lt;- pmax(inp$stdevfacC, 0.2)  # Минимум 20% CV</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.3 Технические настройки модели</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.3.1 Временной шаг для численного интегрирования</span></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Меньшие значения = выше точность, но медленнее расчет</span></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>dteuler <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">16</span>  <span class="co"># 16 шагов в году</span></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.3.2 Включение расчета матрицы ковариации</span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Необходимо для оценки неопределенности и диагностики</span></span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>getJointPrecision <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a><span class="do">### 4.3.3 Робастность оценок (опционально)</span></span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a><span class="co"># inp$robflag &lt;- TRUE  # Устойчивость к выбросам</span></span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 5. ЗАПУСК МОДЕЛИ --------------------</span></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ОЦЕНКА ПАРАМЕТРОВ МОДЕЛИ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ОЦЕНКА ПАРАМЕТРОВ МОДЕЛИ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.1 Настройка оптимизатора</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Увеличиваем лимиты итераций для сложных случаев</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>inp<span class="sc">$</span>optimiser.control <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter.max =</span> <span class="fl">1e5</span>,    <span class="co"># Максимум итераций</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval.max =</span> <span class="fl">1e5</span>,    <span class="co"># Максимум вычислений функции</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rel.tol =</span> <span class="fl">1e-10</span>    <span class="co"># Относительная точность</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.2 Подгонка модели</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Основная функция для оценки параметров</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Запуск оптимизации...</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Запуск оптимизации...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">fit.spict</span>(inp)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.3 Проверка сходимости</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (fit<span class="sc">$</span>opt<span class="sc">$</span>convergence <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"✓ Модель успешно сошлась</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"⚠ Проблемы со сходимостью. Код:"</span>, fit<span class="sc">$</span>opt<span class="sc">$</span>convergence, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Сообщение:"</span>, fit<span class="sc">$</span>opt<span class="sc">$</span>message, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;U+2713&gt; Модель успешно сошлась</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.4 Добавление остатков OSA для диагностики</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OSA (One-Step-Ahead) остатки используются для проверки модели</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">calc.osa.resid</span>(fit)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.5 Вывод основных результатов</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Convergence: 0  MSG: relative convergence (4)
+Objective function at optimum: -4.835549
+Euler time step (years):  1/16 or 0.0625
+Nobs C: 20,  Nobs I1: 20,  Nobs I2: 19
+
+Residual diagnostics (p-values)
+    shapiro   bias    acf   LBox shapiro bias acf LBox  
+ C   0.1269 0.4387 0.0562 0.1348       -    -   .    -  
+ I1  0.9555 0.7813 0.3360 0.6800       -    -   -    -  
+ I2  0.9825 0.9472 0.1390 0.3601       -    -   -    -  
+
+Priors
+      logn  ~  dnorm[log(2), 0.1^2]
+  logalpha  ~  dnorm[log(1), 2^2]
+   logbeta  ~  dnorm[log(1), 2^2]
+      logK  ~  dnorm[log(150), 0.7^2]
+ logbkfrac  ~  dnorm[log(0.75), 0.25^2]
+
+Fixed parameters
+   fixed.value  
+ n           2  
+
+Model parameter estimates w 95% CI 
+         estimate      cilow     ciupp log.est  
+ alpha1  11.94775   2.680587  53.25274  2.4805  
+ alpha2   5.06977   1.127092  22.80433  1.6233  
+ beta     0.18792   0.037152   0.95057 -1.6717  
+ r        0.37684   0.289449   0.49063 -0.9759  
+ rc       0.37684   0.289449   0.49063 -0.9759  
+ rold     0.37684   0.289449   0.49063 -0.9759  
+ m       17.85915  16.267157  19.60694  2.8825  
+ K      189.56564 153.817727 233.62154  5.2447  
+ q1       0.14458   0.111028   0.18827 -1.9339  
+ q2       0.11048   0.086140   0.14168 -2.2030  
+ sdb      0.01792   0.004082   0.07867 -4.0219  
+ sdf      0.32055   0.218175   0.47097 -1.1377  
+ sdi1     0.21410   0.156324   0.29322 -1.5413  
+ sdi2     0.09085   0.064838   0.12729 -2.3986  
+ sdc      0.06024   0.014357   0.25275 -2.8094  
+ 
+Deterministic reference points (Drp)
+       estimate   cilow    ciupp log.est  
+ Bmsyd  94.7828 76.9089 116.8108   4.552  
+ Fmsyd   0.1884  0.1447   0.2453  -1.669  
+ MSYd   17.8591 16.2672  19.6069   2.883  
+Stochastic reference points (Srp)
+       estimate   cilow    ciupp log.est rel.diff.Drp  
+ Bmsys  94.7336 76.8594 116.7646   4.551   -0.0005195  
+ Fmsys   0.1883  0.1447   0.2452  -1.669   -0.0004215  
+ MSYs   17.8423 16.2533  19.5868   2.882   -0.0009416  
+
+States w 95% CI (inp$msytype: s)
+                estimate    cilow    ciupp log.est  
+ B_2024.94      118.8550 96.94825 145.7118  4.7779  
+ F_2024.94        0.1032  0.06467   0.1646 -2.2713  
+ B_2024.94/Bmsy   1.2546  1.08443   1.4515  0.2268  
+ F_2024.94/Fmsy   0.5478  0.34183   0.8779 -0.6018  
+
+Predictions w 95% CI (inp$msytype: s)
+                prediction     cilow    ciupp log.est  
+ B_2026.00        123.1089 100.33664 151.0495  4.8131  
+ F_2026.00          0.1032   0.04643   0.2293 -2.2713  
+ B_2026.00/Bmsy     1.2995   1.11491   1.5147  0.2620  
+ F_2026.00/Fmsy     0.5478   0.24587   1.2206 -0.6018  
+ Catch_2025.00     12.4910   7.30335  21.3633  2.5250  
+ E(B_inf)         137.4812        NA       NA  4.9235  
+NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 6. ДИАГНОСТИКА МОДЕЛИ --------------------</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ДИАГНОСТИКА МОДЕЛИ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ДИАГНОСТИКА МОДЕЛИ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.1 Проверка остатков</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="do">### 6.1.1 Тест Шапиро-Уилка на нормальность</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Тест на нормальность остатков (Shapiro-Wilk) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Тест на нормальность остатков (Shapiro-Wilk) ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Уловы (C): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroC.p, </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroC.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Уловы (C): p-value = 0.1269 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Индекс 1 (I1): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroI1.p, </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroI1.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Индекс 1 (I1): p-value = 0.9555 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Индекс 2 (I2): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroI2.p, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>shapiroI2.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Индекс 2 (I2): p-value = 0.9825 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="do">### 6.1.2 Проверка автокорреляции (Ljung-Box тест)</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Проверка автокорреляции (Ljung-Box тест) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Проверка автокорреляции (Ljung-Box тест) ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Уловы (C): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxC.p, </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxC.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Уловы (C): p-value = 0.1348 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Индекс 1 (I1): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxI1.p, </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxI1.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Индекс 1 (I1): p-value = 0.6800 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Индекс 2 (I2): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxI2.p, </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>LBoxI2.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Индекс 2 (I2): p-value = 0.3601 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="do">### 6.1.3 Дополнительные диагностические тесты</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Дополнительная диагностика ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Дополнительная диагностика ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Смещение уловов (biasC): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>biasC.p, </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>biasC.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Смещение уловов (biasC): p-value = 0.4387 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Автокорреляция уловов (acfC): p-value = %.4f %s</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>            fit<span class="sc">$</span>diagn<span class="sc">$</span>acfC.p, </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(fit<span class="sc">$</span>diagn<span class="sc">$</span>acfC.p <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">"✓"</span>, <span class="st">"⚠"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Автокорреляция уловов (acfC): p-value = 0.0562 &lt;U+2713&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.2 Визуальная диагностика</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Создаем диагностические графики</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.diagnostic</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.3 Ретроспективный анализ</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Проверяет устойчивость оценок при удалении последних лет</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Ретроспективный анализ ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Ретроспективный анализ ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>ret <span class="ot">&lt;-</span> <span class="fu">retro</span>(fit, <span class="at">nretroyear =</span> <span class="dv">5</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.retro</span>(ret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     FFmsy      BBmsy 
+ 0.0029188 -0.0002271 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Расчет ретро-смещения (Mohn's rho)</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fu">mohns_rho</span>(ret)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mohn's rho для биомассы:"</span>, <span class="fu">round</span>(rho[<span class="st">"BBmsy"</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mohn's rho для биомассы: -0.0002 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mohn's rho для F:"</span>, <span class="fu">round</span>(rho[<span class="st">"FFmsy"</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mohn's rho для F: 0.0029 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Приемлемые значения: |rho| &lt; 0.2</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Приемлемые значения: |rho| &lt; 0.2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.4 Анализ чувствительности к априорным распределениям</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Анализ чувствительности ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Анализ чувствительности ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Тест без априоров</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>inp_no_prior <span class="ot">&lt;-</span> inp</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>inp_no_prior<span class="sc">$</span>priors <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>fit_no_prior <span class="ot">&lt;-</span> <span class="fu">fit.spict</span>(inp_no_prior)</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Сравнение оценок</span></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Изменение оценок без априоров:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Изменение оценок без априоров:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"K:"</span>, <span class="fu">round</span>((<span class="fu">exp</span>(fit_no_prior<span class="sc">$</span>par.fixed[<span class="st">"logK"</span>]) <span class="sc">-</span> </span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">exp</span>(fit<span class="sc">$</span>par.fixed[<span class="st">"logK"</span>])) <span class="sc">/</span> </span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>               <span class="fu">exp</span>(fit<span class="sc">$</span>par.fixed[<span class="st">"logK"</span>]) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K: 0.4 %</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.5 Сравнение априорных и апостериорных распределений (Проверка профилей правдоподобия) </span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Помогает оценить идентифицируемость параметров</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.priors</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 7. ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ --------------------</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.1 Извлечение ключевых параметров</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>get_estimate <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, param) {</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  val <span class="ot">&lt;-</span> <span class="fu">get.par</span>(param, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">estimate =</span> val[<span class="dv">1</span>], <span class="at">lower =</span> val[<span class="dv">2</span>], <span class="at">upper =</span> val[<span class="dv">3</span>]))</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.2 Параметры модели</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Оценки параметров модели ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Оценки параметров модели ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>r_est <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logr"</span>)</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"r (темп роста): %.3f [%.3f - %.3f]</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>            r_est[<span class="dv">2</span>], r_est[<span class="dv">1</span>], r_est[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>r (темп роста): 0.377 [0.289 - 0.491]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>K_est <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logK"</span>)</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"K (несущая способность): %.1f [%.1f - %.1f] тыс. т</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>            K_est[<span class="dv">2</span>], K_est[<span class="dv">1</span>], K_est[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K (несущая способность): 189.6 [153.8 - 233.6] тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.3 Ориентиры управления (Референсные точки)</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Ориентиры управления (MSY) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Ориентиры управления (MSY) ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logMSY"</span>)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"MSY: %.1f [%.1f - %.1f] тыс. т/год</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>            MSY[<span class="dv">2</span>], MSY[<span class="dv">1</span>], MSY[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MSY: 17.8 [16.3 - 19.6] тыс. т/год</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logBmsy"</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bmsy: %.1f [%.1f - %.1f] тыс. т</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>            Bmsy[<span class="dv">2</span>], Bmsy[<span class="dv">1</span>], Bmsy[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bmsy: 94.7 [76.9 - 116.8] тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>Fmsy <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logFmsy"</span>)</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Fmsy: %.3f [%.3f - %.3f] год⁻¹</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>            Fmsy[<span class="dv">2</span>], Fmsy[<span class="dv">1</span>], Fmsy[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fmsy: 0.188 [0.145 - 0.245] год&lt;U+207B&gt;&lt;U+00B9&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.4 Текущее состояние запаса</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Текущее состояние запаса (последний год) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Текущее состояние запаса (последний год) ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>current_year <span class="ot">&lt;-</span> <span class="fu">max</span>(inp<span class="sc">$</span>timeC)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>B_current <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logB"</span>)</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Биомасса: %.1f [%.1f - %.1f] тыс. т</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>            B_current[<span class="dv">2</span>], B_current[<span class="dv">1</span>], B_current[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Биомасса: 103.8 [103.0 - 104.6] тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>F_current <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logF"</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"F: %.3f [%.3f - %.3f] год⁻¹</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>            F_current[<span class="dv">2</span>], F_current[<span class="dv">1</span>], F_current[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>F: 0.019 [0.019 - 0.019] год&lt;U+207B&gt;&lt;U+00B9&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Относительные показатели</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>B_Bmsy <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logBBmsy"</span>)</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"B/Bmsy: %.2f [%.2f - %.2f]</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>            B_Bmsy[<span class="dv">2</span>], B_Bmsy[<span class="dv">1</span>], B_Bmsy[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>B/Bmsy: 1.17 [1.16 - 1.18]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>F_Fmsy <span class="ot">&lt;-</span> <span class="fu">get_estimate</span>(fit, <span class="st">"logFFmsy"</span>)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"F/Fmsy: %.2f [%.2f - %.2f]</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>            F_Fmsy[<span class="dv">2</span>], F_Fmsy[<span class="dv">1</span>], F_Fmsy[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>F/Fmsy: 0.10 [0.10 - 0.11]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Интерпретация состояния</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (B_Bmsy[<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">1</span> <span class="sc">&amp;&amp;</span> F_Fmsy[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">✓ Запас в хорошем состоянии (зеленая зона)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (B_Bmsy[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="fl">0.5</span>) {</span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">⚠ Запас истощен (красная зона)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (F_Fmsy[<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">⚠ Происходит перелов (желтая зона)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">⚠ Запас в переходном состоянии</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+&lt;U+2713&gt; Запас в хорошем состоянии (зеленая зона)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 8. ГРАФИЧЕСКАЯ ВИЗУАЛИЗАЦИЯ --------------------</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n========== СОЗДАНИЕ ГРАФИКОВ ==========\n")</span></span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.1 Стандартные графики SPiCT</span></span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a><span class="co">#pdf("SPiCT_results.pdf", width = 12, height = 10)</span></span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a><span class="co"># График 1: Сводка результатов</span></span>
+<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-5.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График 2: Временные ряды</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.biomass</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-6.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.f</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-7.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.catch</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-8.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График 3: Фазовая диаграмма Кобе</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.fb</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-9.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График 4: Продукционная кривая</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotspict.production</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-10.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dev.off()</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Графики сохранены в файл 'SPiCT_results.pdf'\n")</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.2 Альтернативный подход - детальные графики</span></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция для извлечения временных рядов из SPiCT</span></span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>extract_time_series <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, param_name) {</span>
+<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Получаем оценки параметра</span></span>
+<span id="cb108-9"><a href="#cb108-9" aria-hidden="true" tabindex="-1"></a>  param_values <span class="ot">&lt;-</span> <span class="fu">get.par</span>(param_name, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb108-10"><a href="#cb108-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb108-11"><a href="#cb108-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Временные точки</span></span>
+<span id="cb108-12"><a href="#cb108-12" aria-hidden="true" tabindex="-1"></a>  time_points <span class="ot">&lt;-</span> fit<span class="sc">$</span>inp<span class="sc">$</span>time</span>
+<span id="cb108-13"><a href="#cb108-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb108-14"><a href="#cb108-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Создаем dataframe</span></span>
+<span id="cb108-15"><a href="#cb108-15" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb108-16"><a href="#cb108-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> time_points,</span>
+<span id="cb108-17"><a href="#cb108-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> param_values[, <span class="st">"est"</span>],</span>
+<span id="cb108-18"><a href="#cb108-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> param_values[, <span class="st">"ll"</span>],</span>
+<span id="cb108-19"><a href="#cb108-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> param_values[, <span class="st">"ul"</span>]</span>
+<span id="cb108-20"><a href="#cb108-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb108-21"><a href="#cb108-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb108-22"><a href="#cb108-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb108-23"><a href="#cb108-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb108-24"><a href="#cb108-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-25"><a href="#cb108-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Извлекаем все нужные временные ряды</span></span>
+<span id="cb108-26"><a href="#cb108-26" aria-hidden="true" tabindex="-1"></a>df_B <span class="ot">&lt;-</span> <span class="fu">extract_time_series</span>(fit, <span class="st">"logB"</span>)</span>
+<span id="cb108-27"><a href="#cb108-27" aria-hidden="true" tabindex="-1"></a>df_F <span class="ot">&lt;-</span> <span class="fu">extract_time_series</span>(fit, <span class="st">"logF"</span>)</span>
+<span id="cb108-28"><a href="#cb108-28" aria-hidden="true" tabindex="-1"></a>df_BBmsy <span class="ot">&lt;-</span> <span class="fu">extract_time_series</span>(fit, <span class="st">"logBBmsy"</span>)</span>
+<span id="cb108-29"><a href="#cb108-29" aria-hidden="true" tabindex="-1"></a>df_FFmsy <span class="ot">&lt;-</span> <span class="fu">extract_time_series</span>(fit, <span class="st">"logFFmsy"</span>)</span>
+<span id="cb108-30"><a href="#cb108-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-31"><a href="#cb108-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Создаем панель графиков</span></span>
+<span id="cb108-32"><a href="#cb108-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Присоединяю пакет: 'gridExtra'
+
+Следующий объект скрыт от 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График 1: Биомасса</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_B, <span class="fu">aes</span>(<span class="at">x =</span> time)) <span class="sc">+</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> estimate), <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Bmsy[<span class="dv">1</span>], <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"A. Биомасса"</span>, <span class="at">x =</span> <span class="st">"Год"</span>, <span class="at">y =</span> <span class="st">"Биомасса (тыс. т)"</span>) <span class="sc">+</span></span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co"># График 2: Промысловая смертность</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_F, <span class="fu">aes</span>(<span class="at">x =</span> time)) <span class="sc">+</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> estimate), <span class="at">color =</span> <span class="st">"darkorange"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Fmsy[<span class="dv">1</span>], <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"B. Промысловая смертность"</span>, <span class="at">x =</span> <span class="st">"Год"</span>, <span class="at">y =</span> <span class="st">"F (год⁻¹)"</span>) <span class="sc">+</span></span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a><span class="co"># График 3: B/Bmsy</span></span>
+<span id="cb112-10"><a href="#cb112-10" aria-hidden="true" tabindex="-1"></a>g3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_BBmsy, <span class="fu">aes</span>(<span class="at">x =</span> time)) <span class="sc">+</span></span>
+<span id="cb112-11"><a href="#cb112-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb112-12"><a href="#cb112-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> estimate), <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb112-13"><a href="#cb112-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb112-14"><a href="#cb112-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
+<span id="cb112-15"><a href="#cb112-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"C. Относительная биомасса"</span>, <span class="at">x =</span> <span class="st">"Год"</span>, <span class="at">y =</span> <span class="st">"B/Bmsy"</span>) <span class="sc">+</span></span>
+<span id="cb112-16"><a href="#cb112-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb112-17"><a href="#cb112-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-18"><a href="#cb112-18" aria-hidden="true" tabindex="-1"></a><span class="co"># График 4: F/Fmsy</span></span>
+<span id="cb112-19"><a href="#cb112-19" aria-hidden="true" tabindex="-1"></a>g4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_FFmsy, <span class="fu">aes</span>(<span class="at">x =</span> time)) <span class="sc">+</span></span>
+<span id="cb112-20"><a href="#cb112-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"purple"</span>) <span class="sc">+</span></span>
+<span id="cb112-21"><a href="#cb112-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> estimate), <span class="at">color =</span> <span class="st">"darkviolet"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb112-22"><a href="#cb112-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb112-23"><a href="#cb112-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"D. Относительная смертность"</span>, <span class="at">x =</span> <span class="st">"Год"</span>, <span class="at">y =</span> <span class="st">"F/Fmsy"</span>) <span class="sc">+</span></span>
+<span id="cb112-24"><a href="#cb112-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb112-25"><a href="#cb112-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-26"><a href="#cb112-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Объединяем графики</span></span>
+<span id="cb112-27"><a href="#cb112-27" aria-hidden="true" tabindex="-1"></a>grid_plot <span class="ot">&lt;-</span> <span class="fu">grid.arrange</span>(g1, g2, g3, g4, <span class="at">ncol =</span> <span class="dv">2</span>,</span>
+<span id="cb112-28"><a href="#cb112-28" aria-hidden="true" tabindex="-1"></a>                         <span class="at">top =</span> <span class="st">"Временные ряды ключевых параметров"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter15_files/figure-html/unnamed-chunk-1-11.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохраняем</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"SPiCT_time_series.png"</span>, grid_plot, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">10</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"График временных рядов сохранен как 'SPiCT_time_series.png'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>График временных рядов сохранен как 'SPiCT_time_series.png'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 9. СОХРАНЕНИЕ РЕЗУЛЬТАТОВ --------------------</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.1 Сохранение объекта модели</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(fit, <span class="st">"spict_model_fit.rds"</span>)</span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Модель сохранена в 'spict_model_fit.rds'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Модель сохранена в 'spict_model_fit.rds'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.2 Экспорт таблицы с результатами</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Parameter =</span> <span class="fu">c</span>(<span class="st">"r"</span>, <span class="st">"K"</span>, <span class="st">"MSY"</span>, <span class="st">"Bmsy"</span>, <span class="st">"Fmsy"</span>, </span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">"B_current"</span>, <span class="st">"F_current"</span>, <span class="st">"B/Bmsy"</span>, <span class="st">"F/Fmsy"</span>),</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(r_est[<span class="dv">1</span>], K_est[<span class="dv">1</span>], MSY[<span class="dv">1</span>], Bmsy[<span class="dv">1</span>], Fmsy[<span class="dv">1</span>],</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">1</span>], F_current[<span class="dv">1</span>], B_Bmsy[<span class="dv">1</span>], F_Fmsy[<span class="dv">1</span>]),</span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lower_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">2</span>], K_est[<span class="dv">2</span>], MSY[<span class="dv">2</span>], Bmsy[<span class="dv">2</span>], Fmsy[<span class="dv">2</span>],</span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">2</span>], F_current[<span class="dv">2</span>], B_Bmsy[<span class="dv">2</span>], F_Fmsy[<span class="dv">2</span>]),</span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Upper_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">3</span>], K_est[<span class="dv">3</span>], MSY[<span class="dv">3</span>], Bmsy[<span class="dv">3</span>], Fmsy[<span class="dv">3</span>],</span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">3</span>], F_current[<span class="dv">3</span>], B_Bmsy[<span class="dv">3</span>], F_Fmsy[<span class="dv">3</span>])</span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb119-12"><a href="#cb119-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-13"><a href="#cb119-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results_table, <span class="st">"spict_results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb119-14"><a href="#cb119-14" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Таблица результатов сохранена в 'spict_results.csv'\n")</span></span>
+<span id="cb119-15"><a href="#cb119-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-16"><a href="#cb119-16" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.3 Создание отчета</span></span>
+<span id="cb119-17"><a href="#cb119-17" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n========== ИТОГОВЫЙ ОТЧЕТ ==========\n")</span></span>
+<span id="cb119-18"><a href="#cb119-18" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Дата анализа:", format(Sys.Date(), "%d.%m.%Y"), "\n")</span></span>
+<span id="cb119-19"><a href="#cb119-19" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Версия SPiCT:", packageVersion("spict"), "\n")</span></span>
+<span id="cb119-20"><a href="#cb119-20" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Период данных:", min(inp$timeC), "-", max(inp$timeC), "\n")</span></span>
+<span id="cb119-21"><a href="#cb119-21" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Количество наблюдений:", length(inp$obsC), "\n")</span></span>
+<span id="cb119-22"><a href="#cb119-22" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Сходимость модели:", ifelse(fit$opt$convergence == 0, "Да", "Нет"), "\n")</span></span>
+<span id="cb119-23"><a href="#cb119-23" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\nОСНОВНЫЕ ВЫВОДЫ:\n")</span></span>
+<span id="cb119-24"><a href="#cb119-24" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("1. Текущая биомасса составляет", round(B_Bmsy[1]*100), "% от Bmsy\n")</span></span>
+<span id="cb119-25"><a href="#cb119-25" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("2. Промысловая смертность составляет", round(F_Fmsy[1]*100), "% от Fmsy\n")</span></span>
+<span id="cb119-26"><a href="#cb119-26" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("3. Рекомендуемый вылов (при F=Fmsy):", round(Fmsy[1] * B_current[1], 1), "тыс. т\n")</span></span>
+<span id="cb119-27"><a href="#cb119-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-28"><a href="#cb119-28" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n=============== КОНЕЦ АНАЛИЗА ===============\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Результаты Management Strategy Evaluation: Сравнение стратегий управления Результаты выполнения третьего скрипта представляют собой комплексный анализ эффективности трех ключевых стратегий управления в условиях неопределенности. После 500 симуляций для каждой стратегии на 100-летнем горизонте получены следующие результаты.</p>
+<p>Стратегия “Fish at Fmsy” показала наихудшие биологические показатели. Вероятность перелова составила 48.5%, вероятность истощения запаса (B &lt; 0.5Bmsy) — 4.7%. Несмотря на наибольший средний вылов (10.5 тыс. тонн), эта стратегия демонстрирует неприемлемо высокие риски. Только 20% времени запас находился в “зеленой зоне” — состоянии, когда биомасса превышает Bmsy при промысловой смертности ниже Fmsy.</p>
+<p>Стратегия “MSY Hockey-stick” показала умеренное улучшение. Вероятность перелова снизилась до 46.3%, вероятность истощения — до 3.7%. Однако показатель нахождения в зеленой зоне остался на низком уровне (20.2%). Средний вылов практически не изменился (10.5 тыс. тонн), что указывает на ограниченную эффективность данного подхода в конкретных условиях моделирования.</p>
+<p>Стратегия “ICES Advice Rule” продемонстрировала наилучшие результаты. Вероятность перелова составила лишь 8.3%, вероятность истощения — 0.2%. Запас проводил 57.6% времени в зеленой зоне, что свидетельствует о высокой устойчивости. При этом средний вылов (10.3 тыс. тонн) практически не уступил другим стратегиям.</p>
+<p>Анализ динамики показал, что адаптивные стратегии обеспечивают более стабильное состояние запаса в долгосрочной перспективе. К 20-му году прогноза стратегия ICES стабилизировала запас на уровне 1.0-1.2 B/Bmsy, в то время как другие стратегии демонстрировали значительные колебания.</p>
+<p>Экономические показатели также свидетельствуют в пользу предосторожного подхода. Стабильность вылова при стратегии ICES составила 0.95 против 0.92 у других стратегий, при этом межгодовая изменчивость вылова была минимальной (1.3%).</p>
+<p>Общий индекс производительности, учитывающий как биологические, так и экономические аспекты, составил 0.90 для ICES против 0.75 для обеих других стратегий. Это указывает на явное преимущество предосторожного подхода в условиях неопределенности.</p>
+<p>Как мог бы заключить Довлатов, “идеальное управление — это когда и рыба цела, и рыбаки довольны, но в реальности приходится выбирать между риском и уверенностью”. Результаты MSE однозначно показывают, что стратегия ICES Advice Rule обеспечивает оптимальный баланс между сохранением ресурса и экономической эффективностью.</p>
+<p>Важно отметить, что эти результаты справедливы для конкретных условий моделирования — начального состояния запаса (B/Bmsy = 1.34) и принятых уровней неопределенности. Изменение исходных параметров может повлиять на сравнительную эффективность стратегий, однако общее преимущество предосторожного подхода сохраняется.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter14.html" class="pagination-link" aria-label="II. SPiCT: ПРП и ОДУ">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

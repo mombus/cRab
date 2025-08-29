@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15&nbsp; II. SPiCT: ПРП и ОДУ – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter15.html" rel="next">
+<link href="./chapter13.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter14.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Нейронные сети в экологии: практическое введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Съёмка: оптимизация маршрута</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Картография: повышение разрешения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">SDM: моделирование пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#правила-управления-промыслом-концепция-и-классификация" id="toc-правила-управления-промыслом-концепция-и-классификация" class="nav-link active" data-scroll-target="#правила-управления-промыслом-концепция-и-классификация"><span class="header-section-number">15.1</span> Правила управления промыслом: концепция и классификация</a>
+  <ul class="collapse">
+  <li><a href="#типовые-ловушки" id="toc-типовые-ловушки" class="nav-link" data-scroll-target="#типовые-ловушки"><span class="header-section-number">15.1.1</span> <strong>Типовые ловушки</strong></a></li>
+  </ul></li>
+  <li><a href="#результаты-применения-правил-управления-анализ-второго-скрипта" id="toc-результаты-применения-правил-управления-анализ-второго-скрипта" class="nav-link" data-scroll-target="#результаты-применения-правил-управления-анализ-второго-скрипта"><span class="header-section-number">15.2</span> Результаты применения правил управления: анализ второго скрипта</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="правила-управления-промыслом-концепция-и-классификация" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="правила-управления-промыслом-концепция-и-классификация"><span class="header-section-number">15.1</span> Правила управления промыслом: концепция и классификация</h2>
+<p>Модель — это про то, «как устроен мир», а управление — про то, «что делать завтра». Правило регулирования промысла (ПРП, на англ. Harvest Control Rule, HCR) — та самая мостовая плита между оценкой и решением: простая и воспроизводимая функция, которая из состояния запаса делает рекомендацию по смертности или вылову. Здесь интуиция особенно любит крайности: «держать <em>F</em> постоянной — стабильно», «держать вылов постоянным — надёжно». На практике устойчивость промысла и риск для запаса меняются местами, как минимум потому, что природа и данные шумят.</p>
+<p>Что такое HCR по делу. Это карта вида «если <em>B/B<sub>msy</sub></em> такая-то, то <em>F</em> — такая-то», с предосторожными точками (<em>B<sub>lim</sub></em>, <em>B<sub>pa</sub></em>), с ограничителями на межгодовое изменение TAC и с явным «буфером» на неопределённость (P*‑подход, нижние квантили биомассы). Важно, что правило — не случайная кривая, а договор о компромиссе между тремя силами: средним выловом, риском перелова и стабильностью межгодовой динамики.</p>
+<p>Распространённые формы — и их характер. - Постоянная <em>F</em> (<em>F<sub>constant</sub></em>): отзывчива к состоянию, но даёт переменный вылов; чувствительна к ошибкам в <em>B</em>. - Постоянный вылов (<em>C<sub>constant</sub></em>): сглаживает экономику, но рискует «надавить» на слабый запас. - «Хоккейная клюшка» (hockey stick): <em>F</em> линейно снижается от <em>B<sub>msy</sub></em> к <em>B<sub>lim</sub></em>, при <em>B</em>&lt;<em>B<sub>lim</sub></em> — закрытие; понятна, наглядна, управляемо‑предосторожна. - 40–10 (дефолт на Тихом океане США): <em>F</em>=<em>F<sub>target</sub></em> при <em>B</em>/<em>B<sub>0</sub></em>≥40%, линейно к нулю до 10%; работает, когда известна исходная биомасса <em>B<sub>0</sub></em>. - Советы ICES: <em>F<sub>pa</sub></em> и <em>B<sub>pa</sub></em> как предосторожные точки, плюс ограничения ±15–20% к ОДУ; про устойчивость, а не про «максимум любой ценой».</p>
+<section id="типовые-ловушки" class="level3" data-number="15.1.1">
+<h3 data-number="15.1.1" class="anchored" data-anchor-id="типовые-ловушки"><span class="header-section-number">15.1.1</span> <strong>Типовые ловушки</strong></h3>
+<p>Это ошибки при проектировании или реализации HCR, которые сводят на нет их эффективность и предосторожность.</p>
+<ol type="1">
+<li><p><strong>Ловушка «Нож-на-ребре» (Knife-edge)</strong></p>
+<ul>
+<li><p><strong>Суть:</strong> Использование жестких, абсолютных порогов без плавных переходов или “буферных зон”.</p></li>
+<li><p><strong>Проблема:</strong> Незначительное колебание оценки запаса вокруг жесткого порога (например, <em>B<sub>lim</sub></em>) приводит к резким, скачкообразным изменениям в ОДУ: сегодня промысел открыт с хорошим квотой, завтра оценка чуть ниже — и полное закрытие. Это создает “пилу” в рекомендациях, что разрушительно для экономики.</p></li>
+<li><p><strong>Решение:</strong> Внедрение полосы нечувствительности и плавного “склона”. Например, как в правиле “хоккейная клюшка”, где снижение <em>F</em> начинается не резко, а линейно от <em>B<sub>pa</sub></em> до <em>B<sub>lim</sub></em>.</p></li>
+</ul></li>
+<li><p><strong>Игнорирование неопределенности</strong></p>
+<ul>
+<li><p><strong>Суть:</strong> Разработка правила, основанного исключительно на точечных оценках (“среднее по больице”), без учета ошибок и неопределенности в данных.</p></li>
+<li><p><strong>Проблема:</strong> В реальности наша оценка запаса — это не точное число, а вероятностное распределение. Если советовать вылов исходя из средней оценки, но реальное состояние запаса находится в “хвосте” распределения (т.е. хуже, чем мы думаем), это приведет к перелову.</p></li>
+<li><p><strong>Решение:</strong> Использование P*-подхода (подхода, основанного на вероятности). Управленческое решение принимается так, чтобы вероятность падения запаса ниже <em>B<sub>lim</sub></em> не превышала заранее выбранного низкого уровня (напр., 5%). Фактически, мы рассчитываем ОДУ для пессимистичного сценария.</p></li>
+</ul></li>
+<li><p><strong>Оптимизация на средний (исторический) сценарий</strong></p>
+<ul>
+<li><p><strong>Суть:</strong> Настройка правила так, чтобы оно идеально работало на исторических данных.</p></li>
+<li><p><strong>Проблема:</strong> Такое правило оказывается “заточено” под прошлые условия и оказывается хрупким. Первое же непредвиденное изменение в системе (например, дрейф уловистости — когда эффективность промысла меняется из-за погоды, поведения рыбы или технологий) опрокинет его.</p></li>
+<li><p><strong>Решение:</strong> Проверка (тестирование) правила не на истории, а в рамках оценки стратегии управления (MSE), где модель “генерирует” тысячи возможных будущих сценариев, включая ошибки и изменения. Правило должно быть <em>робастным</em> (устойчивым) к ним.</p></li>
+</ul></li>
+<li><p><strong>Слишком узкие «тормоза» на ОДУ</strong></p>
+<ul>
+<li><p><strong>Суть:</strong> Введение очень жестких ограничений на межгодовое изменение ОДУ (например, не более ±5-10% в год) исключительно ради стабильности.</p></li>
+<li><p><strong>Проблема:</strong> Если запас объективно начал снижаться, такое правило не позволит быстро и адекватно сократить вылов. Неизбежное снижение ОДУ “откладывается” на годы, в течение которых промысел продолжается на чрезмерно высоком уровне, усугубляя проблему и увеличивая совокупный риск для запаса.</p></li>
+<li><p><strong>Решение:</strong> Поиск баланса. Ограничения на изменение TAC нужны (напр., ±20%), но они не должны быть слишком узкими, чтобы не мешать необходимой адаптации.</p></li>
+</ul></li>
+</ol>
+<p>Что делаем в этой главе. - Формализуем HCR как функцию от <em>B</em>, <em>B<sub>msy</sub></em>, <em>F<sub>msy</sub></em> (и при необходимости <em>B<sub>0</sub></em>, <em>B<sub>lim</sub></em>, <em>B<sub>pa</sub></em>), обсуждаем буферы и квантильные ОДУ.</p>
+<p>- Переводим F‑совет в ОДУ с учётом последнего года и его дисперсии; вводим ограничения на межгодовые изменения.</p>
+<ul>
+<li><p>Сравниваем формы правил на одних и тех же оценках (SPiCT): где «клюшка» лучше, чем постоянная F, и чем советы ICES отличаются от 40–10.</p></li>
+<li><p>Говорим о таблицах решений: прозрачные матрицы «если B/Bmsy в этом диапазоне — TAC такой», с колонкой риска.</p></li>
+</ul>
+<p>- Подготавливаем правила к испытаниям в MSE: параметры правила — не «выбраны», а «настроены» под цели и риски.</p>
+<p>Хорошее ПРП — это не «среднее арифметическое пожеланий», а записанный на одной странице договор о том, как мы обмениваем краткосрочную выгоду на долгосрочную устойчивость. Оно тем лучше, чем легче объясняется и воспроизводится, и тем надёжнее, чем честнее обращается с неопределённостью. Каждое из таких правил имеет свою область применения и обоснование. Выбор конкретного ПРП зависит от множества факторов: состояния запаса, качества данных, социально-экономического контекста и, что немаловажно, управленческой философии. Как заметил бы Довлатов, “управление рыболовством — это искусство находить компромисс между тем, что нужно рыбе, и тем, что хотят рыбаки”.</p>
+<p>Полный скрипт можно скачать по <a href="https://mombus.github.io/cRab/data/SPICT_TAC.R">ссылке</a>. Ниже приводится исполнение скрипта и пояснения еще ниже.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ===============================================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     СКРИПТ 2: ПРАВИЛА УПРАВЛЕНИЯ (HCR) И ОПРЕДЕЛЕНИЕ ОДУ</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Курс: Оценка водных биоресурсов при недостатке данных в R</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     Автор: [Ваше имя]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     Дата создания: 2024</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ===============================================================</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ======================= ВВЕДЕНИЕ =============================</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Этот скрипт демонстрирует различные правила управления промыслом</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># (Harvest Control Rules - HCR) и методы определения общего </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># допустимого улова (ОДУ/TAC) на основе результатов SPiCT</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 1. ПОДГОТОВКА СРЕДЫ --------------------</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.1 Очистка среды и загрузка библиотек</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Загрузка требуемого пакета: TMB</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to spict_v1.3.8@107a32</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+v dplyr     1.1.4     v readr     2.1.5
+v forcats   1.0.0     v stringr   1.5.1
+v ggplot2   3.5.2     v tibble    3.2.1
+v lubridate 1.9.4     v tidyr     1.3.1
+v purrr     1.0.4     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+i Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Присоединяю пакет: 'gridExtra'
+
+Следующий объект скрыт от 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 1.2 Загрузка результатов из первого скрипта</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Предполагаем, что модель уже подогнана и сохранена</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/SPICT"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"spict_model_fit.rds"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== АНАЛИЗ ПРАВИЛ УПРАВЛЕНИЯ (HCR) ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== АНАЛИЗ ПРАВИЛ УПРАВЛЕНИЯ (HCR) ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Модель загружена успешно</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Модель загружена успешно</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 2. ОБЗОР СТАНДАРТНЫХ СЦЕНАРИЕВ --------------------</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== СТАНДАРТНЫЕ СЦЕНАРИИ УПРАВЛЕНИЯ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== СТАНДАРТНЫЕ СЦЕНАРИИ УПРАВЛЕНИЯ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.1 Использование функции sumspict.manage()</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Эта функция рассчитывает прогнозы для различных сценариев управления</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># include.unc = TRUE включает оценку неопределенности</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">manage</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Selected scenario(s):  currentCatch, currentF, Fmsy, noF, reduceF25, increaseF25, msyHockeyStick, ices  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.2 Вывод результатов</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Доступные сценарии управления:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Доступные сценарии управления:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>manage_results <span class="ot">&lt;-</span> <span class="fu">sumspict.manage</span>(fit, <span class="at">include.unc =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SPiCT timeline:
+                                                  
+      Observations              Management        
+    2005.00 - 2025.00        2025.00 - 2026.00    
+ |-----------------------| ----------------------|
+
+Management evaluation: 2026.00
+
+Predicted catch for management period and states at management evaluation time:
+
+                            C B/Bmsy F/Fmsy
+1. Keep current catch    11.8   1.31   0.52
+2. Keep current F        12.5   1.30   0.55
+3. Fish at Fmsy          22.0   1.20   1.00
+4. No fishing             0.0   1.42   0.00
+5. Reduce F by 25%        9.5   1.33   0.41
+6. Increase F by 25%     15.4   1.27   0.68
+7. MSY hockey-stick rule 22.0   1.20   1.00
+8. ICES advice rule      19.8   1.23   0.90
+
+95% confidence intervals for states:
+
+                         B/Bmsy.lo B/Bmsy.hi F/Fmsy.lo F/Fmsy.hi
+1. Keep current catch         1.12      1.52      0.23      1.15
+2. Keep current F             1.11      1.51      0.25      1.22
+3. Fish at Fmsy               1.00      1.44      0.45      2.23
+4. No fishing                 1.25      1.63      0.00      0.00
+5. Reduce F by 25%            1.15      1.54      0.18      0.92
+6. Increase F by 25%          1.08      1.49      0.31      1.53
+7. MSY hockey-stick rule      1.00      1.44      0.45      2.23
+8. ICES advice rule           1.03      1.46      0.40      2.00</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 2.3 Детальный разбор сценариев</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- ОПИСАНИЕ СЦЕНАРИЕВ ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- ОПИСАНИЕ СЦЕНАРИЕВ ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. Keep current catch: Сохранить текущий уровень вылова</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1. Keep current catch: Сохранить текущий уровень вылова</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. Keep current F: Сохранить текущую промысловую смертность</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2. Keep current F: Сохранить текущую промысловую смертность</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Fish at Fmsy: Промысел на уровне Fmsy (оптимальный)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3. Fish at Fmsy: Промысел на уровне Fmsy (оптимальный)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"4. No fishing: Полное закрытие промысла</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>4. No fishing: Полное закрытие промысла</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"5. Reduce F by 25%: Снизить F на 25%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5. Reduce F by 25%: Снизить F на 25%</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"6. Increase F by 25%: Увеличить F на 25%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6. Increase F by 25%: Увеличить F на 25%</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"7. MSY hockey-stick: Правило хоккейной клюшки</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>7. MSY hockey-stick: Правило хоккейной клюшки</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"8. ICES advice rule: Правило ICES для научных рекомендаций</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>8. ICES advice rule: Правило ICES для научных рекомендаций</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 3. ДЕТАЛЬНЫЙ АНАЛИЗ КАЖДОГО СЦЕНАРИЯ --------------------</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ДЕТАЛЬНЫЙ АНАЛИЗ СЦЕНАРИЕВ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ДЕТАЛЬНЫЙ АНАЛИЗ СЦЕНАРИЕВ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.1 Функция для расчета детальных прогнозов</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>calculate_scenario_details <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, scenario_name, <span class="at">F_multiplier =</span> <span class="fl">1.0</span>, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">years_ahead =</span> <span class="dv">5</span>) {</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Извлекаем текущие параметры</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  B_current <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logB"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  F_current <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logF"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logr"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logK"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  Bmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logBmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  Fmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logFmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Применяем сценарий</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  F_scenario <span class="ot">&lt;-</span> F_current <span class="sc">*</span> F_multiplier</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Прогнозирование</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>  B_forecast <span class="ot">&lt;-</span> <span class="fu">numeric</span>(years_ahead <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>  C_forecast <span class="ot">&lt;-</span> <span class="fu">numeric</span>(years_ahead)</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>  B_forecast[<span class="dv">1</span>] <span class="ot">&lt;-</span> B_current</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>years_ahead) {</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Продукционная модель Шефера</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>    surplus <span class="ot">&lt;-</span> r <span class="sc">*</span> B_forecast[i] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> B_forecast[i]<span class="sc">/</span>K)</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>    C_forecast[i] <span class="ot">&lt;-</span> F_scenario <span class="sc">*</span> B_forecast[i]</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>    B_forecast[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> B_forecast[i] <span class="sc">+</span> surplus <span class="sc">-</span> C_forecast[i]</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>    B_forecast[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">max</span>(B_forecast[i<span class="sc">+</span><span class="dv">1</span>], <span class="fl">0.01</span>) <span class="co"># Минимальная биомасса</span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Результаты</span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Year =</span> <span class="dv">0</span><span class="sc">:</span>years_ahead,</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Scenario =</span> scenario_name,</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Biomass =</span> B_forecast,</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">Catch =</span> <span class="fu">c</span>(<span class="cn">NA</span>, C_forecast),</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">B_Bmsy =</span> B_forecast <span class="sc">/</span> Bmsy,</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">F =</span> <span class="fu">c</span>(<span class="fu">rep</span>(F_scenario, years_ahead <span class="sc">+</span> <span class="dv">1</span>)),</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_Fmsy =</span> F_scenario <span class="sc">/</span> Fmsy</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.2 Расчет для всех базовых сценариев</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>scenarios_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Current F"</span> <span class="ot">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Fmsy"</span> <span class="ot">=</span> <span class="fu">get.par</span>(<span class="st">"logFmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>] <span class="sc">/</span> </span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>           <span class="fu">get.par</span>(<span class="st">"logF"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>],</span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">"No fishing"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Reduce F 25%"</span> <span class="ot">=</span> <span class="fl">0.75</span>,</span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Increase F 25%"</span> <span class="ot">=</span> <span class="fl">1.25</span></span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-52"><a href="#cb41-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a>all_scenarios <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb41-54"><a href="#cb41-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">names</span>(scenarios_list), <span class="cf">function</span>(name) {</span>
+<span id="cb41-55"><a href="#cb41-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate_scenario_details</span>(fit, name, scenarios_list[[name]], <span class="at">years_ahead =</span> <span class="dv">10</span>)</span>
+<span id="cb41-56"><a href="#cb41-56" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb41-57"><a href="#cb41-57" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a><span class="do">## 3.3 Визуализация сценариев</span></span>
+<span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a>p_scenarios <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(all_scenarios, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Biomass, </span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">color =</span> Scenario, <span class="at">linetype =</span> Scenario)) <span class="sc">+</span></span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb41-63"><a href="#cb41-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">get.par</span>(<span class="st">"logBmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>], </span>
+<span id="cb41-64"><a href="#cb41-64" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb41-65"><a href="#cb41-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Прогноз биомассы при различных сценариях управления"</span>,</span>
+<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Годы вперед"</span>, <span class="at">y =</span> <span class="st">"Биомасса (тыс. т)"</span>) <span class="sc">+</span></span>
+<span id="cb41-67"><a href="#cb41-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-70"><a href="#cb41-70" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_scenarios)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter14_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 4. ПРАВИЛО ХОККЕЙНОЙ КЛЮШКИ (MSY HOCKEY-STICK) --------------------</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== MSY HOCKEY-STICK ПРАВИЛО ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== MSY HOCKEY-STICK ПРАВИЛО ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.1 Описание правила</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Правило хоккейной клюшки:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Правило хоккейной клюшки:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Если B &gt;= Bmsy, то F = Fmsy</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Если B &gt;= Bmsy, то F = Fmsy</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Если B &lt; Bmsy, то F = Fmsy * (B/Bmsy)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Если B &lt; Bmsy, то F = Fmsy * (B/Bmsy)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Это правило обеспечивает линейное снижение F при снижении биомассы</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Это правило обеспечивает линейное снижение F при снижении биомассы</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.2 Функция для hockey-stick HCR</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>hockey_stick_HCR <span class="ot">&lt;-</span> <span class="cf">function</span>(B, Bmsy, Fmsy, <span class="at">Blim =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Blim - предельная биомасса (по умолчанию 0.5*Bmsy)</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(Blim)) Blim <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> Bmsy</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  B_Bmsy <span class="ot">&lt;-</span> B <span class="sc">/</span> Bmsy</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (B <span class="sc">&lt;=</span> Blim) {</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Критически низкая биомасса - закрытие промысла</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (B <span class="sc">&gt;</span> Blim <span class="sc">&amp;</span> B <span class="sc">&lt;</span> Bmsy) {</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Линейное снижение F</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Fmsy <span class="sc">*</span> (B <span class="sc">-</span> Blim) <span class="sc">/</span> (Bmsy <span class="sc">-</span> Blim)</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Биомасса выше Bmsy - полный промысел</span></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Fmsy</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(F_advice)</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="do">## 4.3 Демонстрация правила</span></span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>B_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> <span class="fu">get.par</span>(<span class="st">"logBmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>], <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logBmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>Fmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logFmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>F_hockey <span class="ot">&lt;-</span> <span class="fu">sapply</span>(B_range, <span class="cf">function</span>(b) <span class="fu">hockey_stick_HCR</span>(b, Bmsy, Fmsy))</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>df_hockey <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Biomass =</span> B_range,</span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">F_advice =</span> F_hockey,</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">B_Bmsy =</span> B_range <span class="sc">/</span> Bmsy</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>p_hockey <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_hockey, <span class="fu">aes</span>(<span class="at">x =</span> B_Bmsy, <span class="at">y =</span> F_advice)) <span class="sc">+</span></span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">color =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Fmsy, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"MSY Hockey-Stick правило управления"</span>,</span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"B/Bmsy"</span>, <span class="at">y =</span> <span class="st">"F рекомендованное"</span>) <span class="sc">+</span></span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="st">"Bmsy"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="st">"Blim"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_hockey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter14_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 5. ПРАВИЛО ICES --------------------</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ПРАВИЛО ICES ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ПРАВИЛО ICES ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.1 Описание правила ICES</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Правило ICES (упрощенное):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Правило ICES (упрощенное):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Основано на предосторожном подходе</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Основано на предосторожном подходе</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Использует Bpa (предосторожная биомасса) и Fpa</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Использует Bpa (предосторожная биомасса) и Fpa</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Включает ограничения на межгодовые изменения TAC</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Включает ограничения на межгодовые изменения TAC</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.2 Функция правила ICES</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>ICES_advice_rule <span class="ot">&lt;-</span> <span class="cf">function</span>(B, Bmsy, Fmsy, <span class="at">previous_TAC =</span> <span class="cn">NULL</span>,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">Bpa_multiplier =</span> <span class="fl">1.4</span>, <span class="at">Fpa_multiplier =</span> <span class="fl">0.85</span>,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">max_change =</span> <span class="fl">0.2</span>) {</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Расчет предосторожных референсных точек</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  Bpa <span class="ot">&lt;-</span> Bmsy <span class="sc">/</span> Bpa_multiplier  <span class="co"># Предосторожная биомасса</span></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  Blim <span class="ot">&lt;-</span> Bpa <span class="sc">/</span> <span class="fl">1.4</span>              <span class="co"># Предельная биомасса</span></span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  Fpa <span class="ot">&lt;-</span> Fmsy <span class="sc">*</span> Fpa_multiplier  <span class="co"># Предосторожная F</span></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Определение F в зависимости от состояния запаса</span></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (B <span class="sc">&lt;</span> Blim) {</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> <span class="dv">0</span>  <span class="co"># Закрытие промысла</span></span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Критическое"</span></span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (B <span class="sc">&gt;=</span> Blim <span class="sc">&amp;</span> B <span class="sc">&lt;</span> Bpa) {</span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Fpa <span class="sc">*</span> (B <span class="sc">-</span> Blim) <span class="sc">/</span> (Bpa <span class="sc">-</span> Blim)</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Восстановление"</span></span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Fpa</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Устойчивое"</span></span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Расчет TAC</span></span>
+<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a>  TAC <span class="ot">&lt;-</span> F_advice <span class="sc">*</span> B</span>
+<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ограничение межгодовых изменений (если есть предыдущий TAC)</span></span>
+<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(previous_TAC) <span class="sc">&amp;&amp;</span> previous_TAC <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a>    max_increase <span class="ot">&lt;-</span> previous_TAC <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> max_change)</span>
+<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a>    max_decrease <span class="ot">&lt;-</span> previous_TAC <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> max_change)</span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a>    TAC <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">max</span>(TAC, max_decrease), max_increase)</span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_advice =</span> F_advice,</span>
+<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC =</span> TAC,</span>
+<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> status,</span>
+<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">Bpa =</span> Bpa,</span>
+<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">Blim =</span> Blim,</span>
+<span id="cb63-39"><a href="#cb63-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fpa =</span> Fpa</span>
+<span id="cb63-40"><a href="#cb63-40" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb63-41"><a href="#cb63-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-42"><a href="#cb63-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-43"><a href="#cb63-43" aria-hidden="true" tabindex="-1"></a><span class="do">## 5.3 Применение правила ICES</span></span>
+<span id="cb63-44"><a href="#cb63-44" aria-hidden="true" tabindex="-1"></a>B_current <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logB"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb63-45"><a href="#cb63-45" aria-hidden="true" tabindex="-1"></a>ices_result <span class="ot">&lt;-</span> <span class="fu">ICES_advice_rule</span>(B_current, Bmsy, Fmsy, <span class="at">previous_TAC =</span> <span class="dv">12</span>)</span>
+<span id="cb63-46"><a href="#cb63-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-47"><a href="#cb63-47" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Результаты применения правила ICES ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Результаты применения правила ICES ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Текущая биомасса:"</span>, <span class="fu">round</span>(B_current, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Текущая биомасса: 103 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Статус запаса:"</span>, ices_result<span class="sc">$</span>status, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Статус запаса: Устойчивое </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bpa:"</span>, <span class="fu">round</span>(ices_result<span class="sc">$</span>Bpa, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bpa: 54.9 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Blim:"</span>, <span class="fu">round</span>(ices_result<span class="sc">$</span>Blim, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Blim: 39.2 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fpa:"</span>, <span class="fu">round</span>(ices_result<span class="sc">$</span>Fpa, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fpa: 0.123 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Рекомендованная F:"</span>, <span class="fu">round</span>(ices_result<span class="sc">$</span>F_advice, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Рекомендованная F: 0.123 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Рекомендованный TAC:"</span>, <span class="fu">round</span>(ices_result<span class="sc">$</span>TAC, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Рекомендованный TAC: 12.7 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 6. ПРАВИЛО 40-10 --------------------</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== ПРАВИЛО 40-10 ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== ПРАВИЛО 40-10 ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.1 Описание правила</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Правило 40-10 (используется в США):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Правило 40-10 (используется в США):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Если B/B0 &gt;= 40%, то F = Ftarget</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Если B/B0 &gt;= 40%, то F = Ftarget</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Если 10% &lt; B/B0 &lt; 40%, то F линейно снижается</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Если 10% &lt; B/B0 &lt; 40%, то F линейно снижается</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"- Если B/B0 &lt;= 10%, то F = 0 (закрытие промысла)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- Если B/B0 &lt;= 10%, то F = 0 (закрытие промысла)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.2 Функция правила 40-10</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>rule_40_10 <span class="ot">&lt;-</span> <span class="cf">function</span>(B, B0, Ftarget) {</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  depletion <span class="ot">&lt;-</span> B <span class="sc">/</span> B0</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (depletion <span class="sc">&lt;=</span> <span class="fl">0.10</span>) {</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Закрыт"</span></span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (depletion <span class="sc">&gt;</span> <span class="fl">0.10</span> <span class="sc">&amp;</span> depletion <span class="sc">&lt;</span> <span class="fl">0.40</span>) {</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Ftarget <span class="sc">*</span> (depletion <span class="sc">-</span> <span class="fl">0.10</span>) <span class="sc">/</span> (<span class="fl">0.40</span> <span class="sc">-</span> <span class="fl">0.10</span>)</span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Ограничен"</span></span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>    F_advice <span class="ot">&lt;-</span> Ftarget</span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a>    status <span class="ot">&lt;-</span> <span class="st">"Полный промысел"</span></span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb89-15"><a href="#cb89-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb89-16"><a href="#cb89-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">F_advice =</span> F_advice, <span class="at">status =</span> status, <span class="at">depletion =</span> depletion))</span>
+<span id="cb89-17"><a href="#cb89-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb89-18"><a href="#cb89-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-19"><a href="#cb89-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.3 Применение правила 40-10</span></span>
+<span id="cb89-20"><a href="#cb89-20" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logK"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]  <span class="co"># K примерно равно B0</span></span>
+<span id="cb89-21"><a href="#cb89-21" aria-hidden="true" tabindex="-1"></a>result_40_10 <span class="ot">&lt;-</span> <span class="fu">rule_40_10</span>(B_current, K, Fmsy <span class="sc">*</span> <span class="fl">0.75</span>)</span>
+<span id="cb89-22"><a href="#cb89-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-23"><a href="#cb89-23" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Результаты правила 40-10 ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Результаты правила 40-10 ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Истощение запаса (B/B0):"</span>, <span class="fu">round</span>(result_40_10<span class="sc">$</span>depletion <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Истощение запаса (B/B0): 66.9 %</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Статус:"</span>, result_40_10<span class="sc">$</span>status, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Статус: Полный промысел </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Рекомендованная F:"</span>, <span class="fu">round</span>(result_40_10<span class="sc">$</span>F_advice, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Рекомендованная F: 0.109 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Рекомендованный вылов:"</span>, <span class="fu">round</span>(result_40_10<span class="sc">$</span>F_advice <span class="sc">*</span> B_current, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Рекомендованный вылов: 11.2 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 7. СРАВНЕНИЕ ВСЕХ ПРАВИЛ --------------------</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== СРАВНЕНИЕ ПРАВИЛ УПРАВЛЕНИЯ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== СРАВНЕНИЕ ПРАВИЛ УПРАВЛЕНИЯ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.1 Функция для сравнения правил при разных уровнях биомассы</span></span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>compare_HCRs <span class="ot">&lt;-</span> <span class="cf">function</span>(B_range, Bmsy, Fmsy, K) {</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Biomass =</span> <span class="fu">rep</span>(B_range, <span class="dv">4</span>),</span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">B_Bmsy =</span> <span class="fu">rep</span>(B_range <span class="sc">/</span> Bmsy, <span class="dv">4</span>),</span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">HCR =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Hockey-stick"</span>, <span class="st">"ICES"</span>, <span class="st">"40-10"</span>, <span class="st">"Constant F"</span>), </span>
+<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">each =</span> <span class="fu">length</span>(B_range)),</span>
+<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_advice =</span> <span class="cn">NA</span></span>
+<span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb101-11"><a href="#cb101-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb101-12"><a href="#cb101-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(B_range)) {</span>
+<span id="cb101-13"><a href="#cb101-13" aria-hidden="true" tabindex="-1"></a>    B <span class="ot">&lt;-</span> B_range[i]</span>
+<span id="cb101-14"><a href="#cb101-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb101-15"><a href="#cb101-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Hockey-stick</span></span>
+<span id="cb101-16"><a href="#cb101-16" aria-hidden="true" tabindex="-1"></a>    results<span class="sc">$</span>F_advice[i] <span class="ot">&lt;-</span> <span class="fu">hockey_stick_HCR</span>(B, Bmsy, Fmsy)</span>
+<span id="cb101-17"><a href="#cb101-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb101-18"><a href="#cb101-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ICES</span></span>
+<span id="cb101-19"><a href="#cb101-19" aria-hidden="true" tabindex="-1"></a>    ices <span class="ot">&lt;-</span> <span class="fu">ICES_advice_rule</span>(B, Bmsy, Fmsy)</span>
+<span id="cb101-20"><a href="#cb101-20" aria-hidden="true" tabindex="-1"></a>    results<span class="sc">$</span>F_advice[i <span class="sc">+</span> <span class="fu">length</span>(B_range)] <span class="ot">&lt;-</span> ices<span class="sc">$</span>F_advice</span>
+<span id="cb101-21"><a href="#cb101-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb101-22"><a href="#cb101-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 40-10</span></span>
+<span id="cb101-23"><a href="#cb101-23" aria-hidden="true" tabindex="-1"></a>    rule40 <span class="ot">&lt;-</span> <span class="fu">rule_40_10</span>(B, K, Fmsy <span class="sc">*</span> <span class="fl">0.75</span>)</span>
+<span id="cb101-24"><a href="#cb101-24" aria-hidden="true" tabindex="-1"></a>    results<span class="sc">$</span>F_advice[i <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">length</span>(B_range)] <span class="ot">&lt;-</span> rule40<span class="sc">$</span>F_advice</span>
+<span id="cb101-25"><a href="#cb101-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb101-26"><a href="#cb101-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Constant F</span></span>
+<span id="cb101-27"><a href="#cb101-27" aria-hidden="true" tabindex="-1"></a>    results<span class="sc">$</span>F_advice[i <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span><span class="fu">length</span>(B_range)] <span class="ot">&lt;-</span> Fmsy</span>
+<span id="cb101-28"><a href="#cb101-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb101-29"><a href="#cb101-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb101-30"><a href="#cb101-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb101-31"><a href="#cb101-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb101-32"><a href="#cb101-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-33"><a href="#cb101-33" aria-hidden="true" tabindex="-1"></a><span class="do">## 7.2 Создание сравнительного графика</span></span>
+<span id="cb101-34"><a href="#cb101-34" aria-hidden="true" tabindex="-1"></a>B_test_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">2</span> <span class="sc">*</span> Bmsy, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb101-35"><a href="#cb101-35" aria-hidden="true" tabindex="-1"></a>comparison_df <span class="ot">&lt;-</span> <span class="fu">compare_HCRs</span>(B_test_range, Bmsy, Fmsy, K)</span>
+<span id="cb101-36"><a href="#cb101-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-37"><a href="#cb101-37" aria-hidden="true" tabindex="-1"></a>p_comparison <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(comparison_df, <span class="fu">aes</span>(<span class="at">x =</span> B_Bmsy, <span class="at">y =</span> F_advice, </span>
+<span id="cb101-38"><a href="#cb101-38" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">color =</span> HCR, <span class="at">linetype =</span> HCR)) <span class="sc">+</span></span>
+<span id="cb101-39"><a href="#cb101-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb101-40"><a href="#cb101-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb101-41"><a href="#cb101-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Fmsy, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb101-42"><a href="#cb101-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Сравнение различных правил управления (HCR)"</span>,</span>
+<span id="cb101-43"><a href="#cb101-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"B/Bmsy"</span>, <span class="at">y =</span> <span class="st">"Рекомендованная F"</span>) <span class="sc">+</span></span>
+<span id="cb101-44"><a href="#cb101-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb101-45"><a href="#cb101-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
+<span id="cb101-46"><a href="#cb101-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="st">"Bmsy"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb101-47"><a href="#cb101-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-48"><a href="#cb101-48" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_comparison)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter14_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 8. РАСЧЕТ ОДУ С УЧЕТОМ НЕОПРЕДЕЛЕННОСТИ --------------------</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== РАСЧЕТ ОДУ С НЕОПРЕДЕЛЕННОСТЬЮ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== РАСЧЕТ ОДУ С НЕОПРЕДЕЛЕННОСТЬЮ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.1 Функция для расчета ОДУ с доверительными интервалами</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>calculate_TAC_uncertainty <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, <span class="at">F_target_ratio =</span> <span class="fl">1.0</span>, </span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">confidence_level =</span> <span class="fl">0.95</span>) {</span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Извлечение параметров с неопределенностью</span></span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a>  B_est <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logB"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a>  F_current <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logF"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a>  Fmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logFmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-10"><a href="#cb104-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Целевая F</span></span>
+<span id="cb104-11"><a href="#cb104-11" aria-hidden="true" tabindex="-1"></a>  F_target <span class="ot">&lt;-</span> Fmsy[<span class="dv">1</span>] <span class="sc">*</span> F_target_ratio</span>
+<span id="cb104-12"><a href="#cb104-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-13"><a href="#cb104-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Расчет TAC с квантилями</span></span>
+<span id="cb104-14"><a href="#cb104-14" aria-hidden="true" tabindex="-1"></a>  TAC_median <span class="ot">&lt;-</span> F_target <span class="sc">*</span> B_est[<span class="dv">1</span>]</span>
+<span id="cb104-15"><a href="#cb104-15" aria-hidden="true" tabindex="-1"></a>  TAC_lower <span class="ot">&lt;-</span> F_target <span class="sc">*</span> B_est[<span class="dv">2</span>]  <span class="co"># Нижняя граница</span></span>
+<span id="cb104-16"><a href="#cb104-16" aria-hidden="true" tabindex="-1"></a>  TAC_upper <span class="ot">&lt;-</span> F_target <span class="sc">*</span> B_est[<span class="dv">3</span>]  <span class="co"># Верхняя граница</span></span>
+<span id="cb104-17"><a href="#cb104-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-18"><a href="#cb104-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Предосторожный подход - используем нижний квантиль биомассы</span></span>
+<span id="cb104-19"><a href="#cb104-19" aria-hidden="true" tabindex="-1"></a>  TAC_precautionary <span class="ot">&lt;-</span> F_target <span class="sc">*</span> B_est[<span class="dv">2</span>]</span>
+<span id="cb104-20"><a href="#cb104-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb104-21"><a href="#cb104-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb104-22"><a href="#cb104-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC_median =</span> TAC_median,</span>
+<span id="cb104-23"><a href="#cb104-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC_lower =</span> TAC_lower,</span>
+<span id="cb104-24"><a href="#cb104-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC_upper =</span> TAC_upper,</span>
+<span id="cb104-25"><a href="#cb104-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC_precautionary =</span> TAC_precautionary,</span>
+<span id="cb104-26"><a href="#cb104-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_target =</span> F_target,</span>
+<span id="cb104-27"><a href="#cb104-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">B_estimate =</span> B_est</span>
+<span id="cb104-28"><a href="#cb104-28" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb104-29"><a href="#cb104-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb104-30"><a href="#cb104-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-31"><a href="#cb104-31" aria-hidden="true" tabindex="-1"></a><span class="do">## 8.2 Расчет TAC для разных сценариев</span></span>
+<span id="cb104-32"><a href="#cb104-32" aria-hidden="true" tabindex="-1"></a>scenarios_TAC <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb104-33"><a href="#cb104-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"F = Fmsy"</span> <span class="ot">=</span> <span class="fl">1.0</span>,</span>
+<span id="cb104-34"><a href="#cb104-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">"F = 0.75*Fmsy"</span> <span class="ot">=</span> <span class="fl">0.75</span>,</span>
+<span id="cb104-35"><a href="#cb104-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">"F = 0.5*Fmsy"</span> <span class="ot">=</span> <span class="fl">0.5</span>,</span>
+<span id="cb104-36"><a href="#cb104-36" aria-hidden="true" tabindex="-1"></a>  <span class="st">"F = 1.25*Fmsy"</span> <span class="ot">=</span> <span class="fl">1.25</span></span>
+<span id="cb104-37"><a href="#cb104-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb104-38"><a href="#cb104-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-39"><a href="#cb104-39" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Расчет ОДУ для различных целевых F ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Расчет ОДУ для различных целевых F ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (scenario <span class="cf">in</span> <span class="fu">names</span>(scenarios_TAC)) {</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>  tac_result <span class="ot">&lt;-</span> <span class="fu">calculate_TAC_uncertainty</span>(fit, scenarios_TAC[[scenario]])</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">%s:</span><span class="sc">\n</span><span class="st">"</span>, scenario))</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  TAC (медиана): %.1f тыс. т</span><span class="sc">\n</span><span class="st">"</span>, tac_result<span class="sc">$</span>TAC_median))</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  TAC (95%% CI): [%.1f - %.1f] тыс. т</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>              tac_result<span class="sc">$</span>TAC_lower, tac_result<span class="sc">$</span>TAC_upper))</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  TAC (предосторожный): %.1f тыс. т</span><span class="sc">\n</span><span class="st">"</span>, </span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>              tac_result<span class="sc">$</span>TAC_precautionary))</span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+F = Fmsy:
+  TAC (медиана): 14.9 тыс. т
+  TAC (95% CI): [15.0 - 15.1] тыс. т
+  TAC (предосторожный): 15.0 тыс. т
+
+F = 0.75*Fmsy:
+  TAC (медиана): 11.2 тыс. т
+  TAC (95% CI): [11.3 - 11.3] тыс. т
+  TAC (предосторожный): 11.3 тыс. т
+
+F = 0.5*Fmsy:
+  TAC (медиана): 7.4 тыс. т
+  TAC (95% CI): [7.5 - 7.6] тыс. т
+  TAC (предосторожный): 7.5 тыс. т
+
+F = 1.25*Fmsy:
+  TAC (медиана): 18.6 тыс. т
+  TAC (95% CI): [18.8 - 18.9] тыс. т
+  TAC (предосторожный): 18.8 тыс. т</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 9. МНОГОЛЕТНИЙ ПЛАН УПРАВЛЕНИЯ --------------------</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========== МНОГОЛЕТНИЙ ПЛАН УПРАВЛЕНИЯ ==========</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+========== МНОГОЛЕТНИЙ ПЛАН УПРАВЛЕНИЯ ==========</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.1 Функция для создания многолетнего плана</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>create_management_plan <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, <span class="at">n_years =</span> <span class="dv">5</span>, </span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">target_B_Bmsy =</span> <span class="fl">1.2</span>,</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">recovery_period =</span> <span class="dv">10</span>) {</span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Текущее состояние</span></span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a>  B_current <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logB"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>  Bmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logBmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb110-9"><a href="#cb110-9" aria-hidden="true" tabindex="-1"></a>  Fmsy <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logFmsy"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb110-10"><a href="#cb110-10" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logr"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb110-11"><a href="#cb110-11" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">&lt;-</span> <span class="fu">get.par</span>(<span class="st">"logK"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb110-12"><a href="#cb110-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-13"><a href="#cb110-13" aria-hidden="true" tabindex="-1"></a>  B_Bmsy_current <span class="ot">&lt;-</span> B_current <span class="sc">/</span> Bmsy</span>
+<span id="cb110-14"><a href="#cb110-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-15"><a href="#cb110-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Определение стратегии</span></span>
+<span id="cb110-16"><a href="#cb110-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (B_Bmsy_current <span class="sc">&lt;</span> <span class="fl">0.5</span>) {</span>
+<span id="cb110-17"><a href="#cb110-17" aria-hidden="true" tabindex="-1"></a>    strategy <span class="ot">&lt;-</span> <span class="st">"Восстановление запаса"</span></span>
+<span id="cb110-18"><a href="#cb110-18" aria-hidden="true" tabindex="-1"></a>    F_multiplier_start <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb110-19"><a href="#cb110-19" aria-hidden="true" tabindex="-1"></a>    F_multiplier_end <span class="ot">&lt;-</span> <span class="fl">0.7</span></span>
+<span id="cb110-20"><a href="#cb110-20" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (B_Bmsy_current <span class="sc">&lt;</span> <span class="fl">1.0</span>) {</span>
+<span id="cb110-21"><a href="#cb110-21" aria-hidden="true" tabindex="-1"></a>    strategy <span class="ot">&lt;-</span> <span class="st">"Умеренное восстановление"</span></span>
+<span id="cb110-22"><a href="#cb110-22" aria-hidden="true" tabindex="-1"></a>    F_multiplier_start <span class="ot">&lt;-</span> <span class="fl">0.7</span></span>
+<span id="cb110-23"><a href="#cb110-23" aria-hidden="true" tabindex="-1"></a>    F_multiplier_end <span class="ot">&lt;-</span> <span class="fl">0.9</span></span>
+<span id="cb110-24"><a href="#cb110-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb110-25"><a href="#cb110-25" aria-hidden="true" tabindex="-1"></a>    strategy <span class="ot">&lt;-</span> <span class="st">"Устойчивый промысел"</span></span>
+<span id="cb110-26"><a href="#cb110-26" aria-hidden="true" tabindex="-1"></a>    F_multiplier_start <span class="ot">&lt;-</span> <span class="fl">1.0</span></span>
+<span id="cb110-27"><a href="#cb110-27" aria-hidden="true" tabindex="-1"></a>    F_multiplier_end <span class="ot">&lt;-</span> <span class="fl">1.0</span></span>
+<span id="cb110-28"><a href="#cb110-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb110-29"><a href="#cb110-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-30"><a href="#cb110-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># План по годам</span></span>
+<span id="cb110-31"><a href="#cb110-31" aria-hidden="true" tabindex="-1"></a>  plan <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb110-32"><a href="#cb110-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Year =</span> <span class="dv">1</span><span class="sc">:</span>n_years,</span>
+<span id="cb110-33"><a href="#cb110-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Strategy =</span> strategy,</span>
+<span id="cb110-34"><a href="#cb110-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_multiplier =</span> <span class="fu">seq</span>(F_multiplier_start, F_multiplier_end, </span>
+<span id="cb110-35"><a href="#cb110-35" aria-hidden="true" tabindex="-1"></a>                      <span class="at">length.out =</span> n_years),</span>
+<span id="cb110-36"><a href="#cb110-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">F_target =</span> <span class="cn">NA</span>,</span>
+<span id="cb110-37"><a href="#cb110-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">Expected_B =</span> <span class="cn">NA</span>,</span>
+<span id="cb110-38"><a href="#cb110-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">Expected_B_Bmsy =</span> <span class="cn">NA</span>,</span>
+<span id="cb110-39"><a href="#cb110-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">TAC =</span> <span class="cn">NA</span></span>
+<span id="cb110-40"><a href="#cb110-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb110-41"><a href="#cb110-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-42"><a href="#cb110-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Прогнозирование</span></span>
+<span id="cb110-43"><a href="#cb110-43" aria-hidden="true" tabindex="-1"></a>  B_proj <span class="ot">&lt;-</span> B_current</span>
+<span id="cb110-44"><a href="#cb110-44" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_years) {</span>
+<span id="cb110-45"><a href="#cb110-45" aria-hidden="true" tabindex="-1"></a>    plan<span class="sc">$</span>F_target[i] <span class="ot">&lt;-</span> Fmsy <span class="sc">*</span> plan<span class="sc">$</span>F_multiplier[i]</span>
+<span id="cb110-46"><a href="#cb110-46" aria-hidden="true" tabindex="-1"></a>    plan<span class="sc">$</span>Expected_B[i] <span class="ot">&lt;-</span> B_proj</span>
+<span id="cb110-47"><a href="#cb110-47" aria-hidden="true" tabindex="-1"></a>    plan<span class="sc">$</span>Expected_B_Bmsy[i] <span class="ot">&lt;-</span> B_proj <span class="sc">/</span> Bmsy</span>
+<span id="cb110-48"><a href="#cb110-48" aria-hidden="true" tabindex="-1"></a>    plan<span class="sc">$</span>TAC[i] <span class="ot">&lt;-</span> plan<span class="sc">$</span>F_target[i] <span class="sc">*</span> B_proj</span>
+<span id="cb110-49"><a href="#cb110-49" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb110-50"><a href="#cb110-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Обновление биомассы</span></span>
+<span id="cb110-51"><a href="#cb110-51" aria-hidden="true" tabindex="-1"></a>    surplus <span class="ot">&lt;-</span> r <span class="sc">*</span> B_proj <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> B_proj<span class="sc">/</span>K)</span>
+<span id="cb110-52"><a href="#cb110-52" aria-hidden="true" tabindex="-1"></a>    catch <span class="ot">&lt;-</span> plan<span class="sc">$</span>F_target[i] <span class="sc">*</span> B_proj</span>
+<span id="cb110-53"><a href="#cb110-53" aria-hidden="true" tabindex="-1"></a>    B_proj <span class="ot">&lt;-</span> B_proj <span class="sc">+</span> surplus <span class="sc">-</span> catch</span>
+<span id="cb110-54"><a href="#cb110-54" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb110-55"><a href="#cb110-55" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-56"><a href="#cb110-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(plan)</span>
+<span id="cb110-57"><a href="#cb110-57" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb110-58"><a href="#cb110-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-59"><a href="#cb110-59" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.2 Создание и вывод плана</span></span>
+<span id="cb110-60"><a href="#cb110-60" aria-hidden="true" tabindex="-1"></a>management_plan <span class="ot">&lt;-</span> <span class="fu">create_management_plan</span>(fit, <span class="at">n_years =</span> <span class="dv">15</span>)</span>
+<span id="cb110-61"><a href="#cb110-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-62"><a href="#cb110-62" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- 15-летний план управления ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- 15-летний план управления ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(management_plan, <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Year            Strategy F_multiplier F_target Expected_B Expected_B_Bmsy
+1     1 Устойчивый промысел            1     0.14        103             1.3
+2     2 Устойчивый промысел            1     0.14         98             1.3
+3     3 Устойчивый промысел            1     0.14         94             1.2
+4     4 Устойчивый промысел            1     0.14         91             1.2
+5     5 Устойчивый промысел            1     0.14         89             1.2
+6     6 Устойчивый промысел            1     0.14         87             1.1
+7     7 Устойчивый промысел            1     0.14         85             1.1
+8     8 Устойчивый промысел            1     0.14         84             1.1
+9     9 Устойчивый промысел            1     0.14         83             1.1
+10   10 Устойчивый промысел            1     0.14         82             1.1
+11   11 Устойчивый промысел            1     0.14         81             1.1
+12   12 Устойчивый промысел            1     0.14         80             1.0
+13   13 Устойчивый промысел            1     0.14         80             1.0
+14   14 Устойчивый промысел            1     0.14         79             1.0
+15   15 Устойчивый промысел            1     0.14         79             1.0
+   TAC
+1   15
+2   14
+3   14
+4   13
+5   13
+6   13
+7   12
+8   12
+9   12
+10  12
+11  12
+12  12
+13  12
+14  11
+15  11</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.3 Визуализация плана</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>p_plan <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(management_plan, <span class="fu">aes</span>(<span class="at">x =</span> Year)) <span class="sc">+</span></span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> TAC), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> TAC), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y =</span> TAC, <span class="at">label =</span> <span class="fu">round</span>(TAC, <span class="dv">1</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"План управления:"</span>, management_plan<span class="sc">$</span>Strategy[<span class="dv">1</span>]),</span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, <span class="at">y =</span> <span class="st">"ОДУ (тыс. т)"</span>) <span class="sc">+</span></span>
+<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter14_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------- 10. ЭКСПОРТ РЕЗУЛЬТАТОВ --------------------</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========\n")</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.1 Сохранение всех графиков</span></span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a><span class="co">#pdf("HCR_analysis.pdf", width = 12, height = 8)</span></span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a><span class="co">#print(p_scenarios)</span></span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a><span class="co">#print(p_hockey)</span></span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="co">#print(p_comparison)</span></span>
+<span id="cb117-10"><a href="#cb117-10" aria-hidden="true" tabindex="-1"></a><span class="co">#print(p_plan)</span></span>
+<span id="cb117-11"><a href="#cb117-11" aria-hidden="true" tabindex="-1"></a><span class="co">#dev.off()</span></span>
+<span id="cb117-12"><a href="#cb117-12" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Графики сохранены в 'HCR_analysis.pdf'\n")</span></span>
+<span id="cb117-13"><a href="#cb117-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-14"><a href="#cb117-14" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.2 Экспорт таблицы с рекомендациями</span></span>
+<span id="cb117-15"><a href="#cb117-15" aria-hidden="true" tabindex="-1"></a>recommendations <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb117-16"><a href="#cb117-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rule =</span> <span class="fu">c</span>(<span class="st">"Hockey-stick"</span>, <span class="st">"ICES"</span>, <span class="st">"40-10"</span>, <span class="st">"Current F"</span>, <span class="st">"Fmsy"</span>),</span>
+<span id="cb117-17"><a href="#cb117-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">F_recommended =</span> <span class="fu">c</span>(</span>
+<span id="cb117-18"><a href="#cb117-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hockey_stick_HCR</span>(B_current, Bmsy, Fmsy),</span>
+<span id="cb117-19"><a href="#cb117-19" aria-hidden="true" tabindex="-1"></a>    ices_result<span class="sc">$</span>F_advice,</span>
+<span id="cb117-20"><a href="#cb117-20" aria-hidden="true" tabindex="-1"></a>    result_40_10<span class="sc">$</span>F_advice,</span>
+<span id="cb117-21"><a href="#cb117-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get.par</span>(<span class="st">"logF"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>],</span>
+<span id="cb117-22"><a href="#cb117-22" aria-hidden="true" tabindex="-1"></a>    Fmsy</span>
+<span id="cb117-23"><a href="#cb117-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb117-24"><a href="#cb117-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">TAC_recommended =</span> <span class="cn">NA</span>,</span>
+<span id="cb117-25"><a href="#cb117-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">Status =</span> <span class="fu">c</span>(</span>
+<span id="cb117-26"><a href="#cb117-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSY-based"</span>,</span>
+<span id="cb117-27"><a href="#cb117-27" aria-hidden="true" tabindex="-1"></a>    ices_result<span class="sc">$</span>status,</span>
+<span id="cb117-28"><a href="#cb117-28" aria-hidden="true" tabindex="-1"></a>    result_40_10<span class="sc">$</span>status,</span>
+<span id="cb117-29"><a href="#cb117-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Status quo"</span>,</span>
+<span id="cb117-30"><a href="#cb117-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Optimal"</span></span>
+<span id="cb117-31"><a href="#cb117-31" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb117-32"><a href="#cb117-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb117-33"><a href="#cb117-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-34"><a href="#cb117-34" aria-hidden="true" tabindex="-1"></a>recommendations<span class="sc">$</span>TAC_recommended <span class="ot">&lt;-</span> recommendations<span class="sc">$</span>F_recommended <span class="sc">*</span> B_current</span>
+<span id="cb117-35"><a href="#cb117-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-36"><a href="#cb117-36" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(recommendations, <span class="st">"TAC_recommendations.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb117-37"><a href="#cb117-37" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Рекомендации сохранены в 'TAC_recommendations.csv'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Рекомендации сохранены в 'TAC_recommendations.csv'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.3 Создание итогового отчета</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sink</span>(<span class="st">"HCR_report.txt"</span>)</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ОТЧЕТ ПО ПРАВИЛАМ УПРАВЛЕНИЯ И ОПРЕДЕЛЕНИЮ ОДУ</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"="</span> , <span class="fu">strrep</span>(<span class="st">"="</span>, <span class="dv">50</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Дата:"</span>, <span class="fu">format</span>(<span class="fu">Sys.Date</span>(), <span class="st">"%d.%m.%Y"</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ТЕКУЩЕЕ СОСТОЯНИЕ ЗАПАСА:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Биомасса:"</span>, <span class="fu">round</span>(B_current, <span class="dv">1</span>), <span class="st">"тыс. т</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"B/Bmsy:"</span>, <span class="fu">round</span>(B_current<span class="sc">/</span>Bmsy, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"F/Fmsy:"</span>, <span class="fu">round</span>(<span class="fu">get.par</span>(<span class="st">"logF"</span>, fit, <span class="at">exp =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]<span class="sc">/</span>Fmsy, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-12"><a href="#cb119-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"РЕКОМЕНДАЦИИ ПО ОДУ:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-13"><a href="#cb119-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(recommendations, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb119-14"><a href="#cb119-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-15"><a href="#cb119-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">ПЯТИЛЕТНИЙ ПЛАН:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb119-16"><a href="#cb119-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(management_plan, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb119-17"><a href="#cb119-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sink</span>()</span>
+<span id="cb119-18"><a href="#cb119-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-19"><a href="#cb119-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Отчет сохранен в 'HCR_report.txt'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Отчет сохранен в 'HCR_report.txt'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=============== АНАЛИЗ ЗАВЕРШЕН ===============</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=============== АНАЛИЗ ЗАВЕРШЕН ===============</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="результаты-применения-правил-управления-анализ-второго-скрипта" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="результаты-применения-правил-управления-анализ-второго-скрипта"><span class="header-section-number">15.2</span> Результаты применения правил управления: анализ второго скрипта</h2>
+<p>Выполнение второго скрипта наглядно демонстрирует, как теоретические правила управления превращаются в конкретные цифры вылова. Анализ восьми сценариев показывает существенный разброс в возможных последствиях управленческих решений.</p>
+<p>Правило статус-кво (“Сохранить текущий уровень вылова”) предсказывает улов 11.8 тыс. тонн при относительной биомассе 1.31 B/Bmsy. Любопытно, что этот консервативный подход, вопреки ожиданиям, показывает не лучшие результаты по стабильности промысла. Широкие доверительные интервалы [1.12-1.52] для B/Bmsy свидетельствуют о значительной неопределенности.</p>
+<p>Сценарий “Fish at Fmsy” дает максимальный предсказанный вылов — 22.0 тыс. тонн, но достигается это ценой снижения биомассы до 1.20 B/Bmsy. Примечательно, что доверительный интервал для F/Fmsy [0.45-2.23] превышает целевой уровень, что указывает на риск непреднамеренного перелова.</p>
+<p>Полное закрытие промысла, как и ожидалось, приводит к восстановлению запаса до 1.42 B/Bmsy, но с очевидными социально-экономическими последствиями. Этот сценарий служит скорее теоретическим ориентиром, чем практическим решением.</p>
+<p>Корректирующие правила показывают предсказуемую динамику: снижение F на 25% уменьшает вылов до 9.5 тыс. тонн при росте биомассы до 1.33 B/Bmsy, тогда увеличение F на 25% дает вылов 15.4 тыс. тонн, но снижает биомассу до 1.27 B/Bmsy.</p>
+<p>Наиболее интересны современные адаптивные правила. MSY hockey-stick демонстрирует тот же вылов, что и Fmsy подход (22.0 тыс. тонн), но с лучшими показателями стабильности. Правило ICES показывает разумный компромисс — вылов 19.8 тыс. тонн при биомассе 1.23 B/Bmsy и значительно более узких доверительных интервалах.</p>
+<p>Анализ доверительных интервалов заслуживает отдельного внимания. Широкие интервалы для всех сценариев (особенно для F/Fmsy) подчеркивают фундаментальную неопределенность в управлении рыболовством. Как мог бы заметить Довлатов, “рыболовство — это искусство принимать решения на основе неточных данных с точными последствиями”.</p>
+<p>Результаты наглядно показывают, что не существует идеального правила — каждый выбор представляет собой компромисс между величиной вылова, стабильностью промысла и риском для запаса. Практическая ценность такого анализа заключается в возможности количественно оценить последствия каждого управленческого решения до его реализации.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter13.html" class="pagination-link" aria-label="I. SPiCT: МОДЕЛЬ">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter15.html" class="pagination-link" aria-label="III. SPiCT: MSE - оценка стратегии управления">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
