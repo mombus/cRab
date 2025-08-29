@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Модель Catch-Survey Analysis (CSA) – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter9.html" rel="next">
+<link href="./chapter7.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter8.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Нейронные сети в экологии: практическое введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Съёмка: оптимизация маршрута</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Картография: повышение разрешения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">SDM: моделирование пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">9.1</span> Введение</a></li>
+  <li><a href="#реализация-модели" id="toc-реализация-модели" class="nav-link" data-scroll-target="#реализация-модели"><span class="header-section-number">9.2</span> Реализация модели</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="введение" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">9.1</span> Введение</h2>
+<p>Продолжим с честного предупреждения. Как только мы делим запас на осмысленные группы — пререкруты, рекруты, пострекруты — и прописываем переходы между ними, очень легко почувствовать, что мы «внутри механизма», а значит, управляем им. Это та самая иллюзия контроля: формула кажется ближе к биологии, чем функция продукции в продукционной модели, и мозг дорисовывает уверенность, которой в данных может не хватать. Дисциплина «медленного» режима анализа данных и работы мозга в том, чтобы отделить структуру от знания: CSA и правда даёт больше биологического смысла, но достоверность этого смысла определяется не изяществом уравнений, а качеством наблюдений, идентифицируемостью параметров и тем, как аккуратно мы проверяем альтернативы. У системы есть история, пороги, сдвиги и запаздывания; толстые хвосты и редкие годы «сюрпризов». Наша задача — встроить всё это в анализ, не потеряв прозрачности и воспроизводимости.</p>
+<p>Практическая ценность CSA в том, что она распаковывает общую динамику по «каналам»: пополнение, рост (переходы между категориями), естественная смертность и изъятие промыслом, а затем связывает скрытые состояния с наблюдаемыми индексами через улавливаемость. Это полезно для объектов с выборочным промыслом (например, только крупные самцы) и сильно неоднородной размерной структурой: давление смещается по группам, и агрегаты легко маскируют реальные сдвиги. Но вместе с детализацией приходит классическая ловушка идентифицируемости: <em>M</em> путается с <em>q</em>, переходные вероятности (<em>Gp</em>, <em>Gr</em>, <em>Mp</em>) — между собой, процессная дисперсия — с наблюдательной. Если не заякорить параметры априорами и не опереться на внешнюю информацию (калибровки тралов, биологию линьки, разумные диапазоны смертности), модель будет «объяснять» всё и сразу, но в каждом запуске по‑разному. Байесовская постановка — именно способ честно ввести эти якоря и сразу показать, где данные «передвинули» прайеры, а где — нет.</p>
+<p>Главные источники смещения здесь не банальны. Улавливаемость редко постоянна: меняются суда, орудия, глубины, сезонность; индексы могут отражать доступность, а не истинную численность. Выборочная природа съёмок порождает нули и неоднородную дисперсию; логнормальная модель наблюдений удобна, но не всегда робастна к выбросам. Переходы между группами зависят от роста и линьки, а значит — от среды; если эти зависимости «впитаны» в постоянные <em>Gp</em>/<em>Gr</em>/<em>Mp</em>, то часть динамики будет ложиться в ошибки. Поэтому мы заранее признаём: фиксированные прайеры — осознанный компромисс, а чувствительность к прайерам — обязательная проверка, а не факультатив.</p>
+<p>Диагностика — не приложение, а часть модели. Мы смотрим траектории цепей, эффективный размер выборки, MC‑ошибку, проверяем сходимость независимых цепей и, что не менее важно, сопоставляем прайеры и постериоры по ключевым параметрам: если плотности почти не разошлись, значит, данные нас мало чему научили; если разошлись «до хвостов» — возможно, мы зашли за границы биологически правдоподобного. Постериорные проверочные прогонки (posterior predictive) — простой и мощный тест: генерируем псевдо‑индексы из модели и убеждаемся, что реальная серия не выглядит «инородным телом». Бабл‑графики остатков по группам и годам помогают увидеть систематику: дрейф знака — сигнал к времени‑зависимому <em>q</em> или пропущенным ковариатам. А вероятность нарушить управленческий предел (<em>PR</em> &lt; <em>PR<sub>lim</sub></em>) должна выводиться прямо из постериора, а не прикидываться на глаз по одной траектории.</p>
+<p>Стабильность выводов проверяем во времени — ретроспективой. Отрезая по одному–несколько последних лет и переоценивая модель, мы видим, «дышит» ли оценка прошлых лет от добавления новой информации. Это сохраняет нас от соблазна «подогнать настоящее» и выдать его за прогнозную силу. Там же хорошо выявляются скрытые конфликты идентифицируемости: если при каждом «срезе» меняется баланс <em>M</em>–<em>q</em> или расползаются переходы из одной размерной категории в другую, значит, данных не хватает или прайеры слишком расплывчаты. Такой «проверенный на бордюре» консерватизм — это не скепсис, а инструмент против самоуверенности.</p>
+<p>Часть неопределённости мы принимаем как данность и переводим в язык решений. Менеджменту нужны не «числа», а вероятности: какова P(<em>PR</em>&lt;<em>PR<sub>lim</sub></em>) в текущем году, как меняется она при сценарии улова, каков шанс сохранить <em>PR</em> над порогом при консервативном и при агрессивном изъятии. Картина «веера» — медиана и 50/95% интервалы — честнее единственной жирной линии. И здесь полезна мысль: аккуратно собранные данные и прозрачные процедуры, повторённые из года в год, делают систему разумнее — даже если в каждом конкретном году интервал широк. Прогресс не в том, чтобы угадать до тонны, а в том, чтобы системно сокращать неопределённость и принимать решения, устойчивые к её остаткам.</p>
+<p>Практическая реализация в этом занятии выдержана в том же ключе. Мы задаём прайеры, учим модель в JAGS, сохраняем полные постериоры параметров и состояний, сравниваем прайеры с постериорами, строим диагностические графики остатков и динамики по группам, считаем вероятность пересечения порога <em>PR<sub>lim</sub></em> и даём интерпретацию в управленческих терминах. Там, где это уместно, тестируем чувствительность к диапазонам прайеров на <em>M</em> и <em>q</em>, а также к альтернативам в наблюдательной части (логнормальная дисперсия). И да, Excel‑симулятор на четыре группы — не игрушка, а хороший способ «почувствовать руками» идентифицируемость: как меняется постериор при фиксации <em>M</em>, при расширении дисперсий наблюдений, при «дрейфе» <em>q</em>. Интуиция, подкреплённая такими играми, экономит много времени в полноценной байесовской оценке.</p>
+<p>Наконец, важная оговорка: CSA — не конечная станция. В данных с явными климатическими сдвигами стоит рассмотреть время‑зависимую улавливаемость, ковариаты для переходов и смертности, иерархическую связку нескольких съёмок. Если в этом блоке мы делаем базовую, учебную версию, то следующий шаг — включать «регуляторы» сложности только после того, как базовая модель пройдёт диагностику. Это тот самый «мост» между ясностью и гибкостью: сперва минимально достаточная структура, затем — аккуратные расширения с прицельной проверкой альтернатив. Так вводится порядок в систему, где соблазнов «знать больше, чем знаем» всегда больше, чем данных.</p>
+<p>И так, модель “анализа уловов и съемок” - Catch-Survey Analysis (CSA) представляет собой инструмент для оценки состояния запасов, особенно тех видов, данные по индивидуальному возрасту которых труднодоступны или отсутствуют, что типично для многих беспозвоночных, таких как крабы, креветки, а также для некоторых рыб. В отличие от классических продукционных моделей, которые оперируют агрегированными показателями всей популяции и требуют строгих допущений о ее равновесном состоянии и постоянной емкости среды, когортные модели, подобные CSA, позволяют отслеживать судьбу отдельных функциональных категорий (например, пререкруты, рекруты, пострекруты). Они явным образом учитывают такие процессы, как рост, пополнение и естественная смертность, разделяя запас на дискретные размерные или возрастные группы. Это дает несомненное преимущество при анализе динамики популяций с выраженной цикличностью или тех, которые подвергаются интенсивному промысловому прессу, избирательно воздействующему на определенные размерные или возрастные категории (например, пререкруты не подвержены прямой прмысловой смертности в отличие от рекрутов и посрекрутов). Подробнее о модели и ее реализации можно почитать в статье <a href="https://mombus.github.io/cRab/data/CSA.pdf">“Результаты применения стохастической когортной модели CSA для оценки запаса камчатского краба Paralithodes camtschaticus в Баренцевом море”</a>. В статье описывается реализация модели в программе OpenBUGS, которая в упрощенном виде (без прогноза, риск-анализа и диагностики) и в учебных целях была переведена в среду R и представлена ниже, а полный срипт <a href="https://mombus.github.io/cRab/data/CSA.R">здесь</a>.Также доступна иммитационная CSA модель для 4 размерных групп, реализованная в MS Excel по <a href="https://mombus.github.io/cRab/data/CSA.xlsx">ссылке</a>.</p>
+<p>Данная реализация модели представляет собой байесовский подход к оценке запасов, который позволяет учитывать неопределенности как в процессе динамики популяции, так и в процессе наблюдений, что особенно важно при работе с данными, характеризующимися высокой вариабельностью и неполнотой. В основе модели лежит разделение популяции на три размерно-возрастные группы: пререкруты (P1), рекруты (R) и пострекруты (P), что соответствует биологическим особенностям многих видов крабов, включая камчатского краба. Модель включает два основных компонента: динамику процесса, описывающую естественные изменения численности популяции, и модель наблюдений, связывающую ненаблюдаемые “истинную” численность запаса с доступными данными съемок (индексами численности пререкрутов, рекрутов и пострекрутов). Уравнения процессной динамики для пострекрутов имеют вид:</p>
+<p>P[i] = [(P1[i-1]×Gp×Mp) + R[i-1] + P[i-1] - catch[i-1]] × exp(-M) + εP, где</p>
+<p>Gp обозначает вероятность перехода пререкрутов в пострекруты,</p>
+<p>Mp - вероятность линьки пререкрутов,</p>
+<p>M - коэффициент естественной смертности, а εP представляет собой процессную ошибку.</p>
+<p>Для рекрутов уравнение динамики выглядит как</p>
+<p>R[i] = (P1[i-1]×Gr×Mp) × exp(-M) + εR, где</p>
+<p>Gr - вероятность перехода пререкрутов в рекруты. Динамика пререкрутов моделируется как лог-случайное блуждание P1[i] = P1[i-1] + εP1. Модель наблюдений предполагает, что данные траловых съемок соответствуют логнормальному распределению относительно истинной численности, умноженной на коэффициент улавливаемости:</p>
+<p>bioindexP1[i] ~ lognormal(log(q1×P1[i]), precbioindexP1),</p>
+<p>аналогично для рекрутов и пострекрутов, где q1, q2, q3 - коэффициенты улавливаемости для каждой группы, а precbioindex - параметры точности. В байесовском подходе ключевую роль играют априорные распределения параметров, которые в данной реализации задаются как равномерные для коэффициентов улавливаемости (q1, q2, q3 ~ dunif(0.1,1)), нормальные для вероятностей перехода (Gr ~ dnorm(0.9,500), Gp ~ dnorm(0.075,500), Mp ~ dnorm(0.95,500)) и для коэффициента естественной смертности (M ~ dnorm(0.2,100)). Использование байесовского подхода позволяет не только получить точечные оценки параметров, но и оценить полные апостериорные распределения, что дает возможность проводить риск-анализ различных сценариев управления запасом. В данном занятии мы реализуем модель CSA в среде R с использованием пакетов rjags и coda, что позволяет эффективно работать с байесовскими иерархическими моделями через интерфейс с программой JAGS, которую также необходимо установить.</p>
+<p>Мы рассмотрим полный цикл работы с моделью: от подготовки данных и задания априорных распределений до обучения модели и анализа результатов, включая визуализацию априорных и апостериорных распределений параметров, анализ остатков и сравнение моделируемой и фактической динамики запаса. Особое внимание будет уделено интерпретации результатов в контексте управления водными биоресурсами, что является ключевой целью применения подобных моделей в практической деятельности гидробиологов и ихтиологов.</p>
+</section>
+<section id="реализация-модели" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="реализация-модели"><span class="header-section-number">9.2</span> Реализация модели</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛЬ Catch-Survey Analysis (CSA) - три категории (пререкруты (P1), рекруты (R), пострекруты (P)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Курс: "Оценка водных биоресурсов в среде R (для начинающих)"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Автор: Баканев С. В. Дата: 20.08.2025</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Структура:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Входные данные</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Модель</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Прайеры</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Обучение модели</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) Подготовка выходных данных </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) Анализ результатов (визуализация априорных и апостериорных параметров;бабл-плоты остатков;  динамика индексов) </span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Установка рабочей директории</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/CSA"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Подключение необходимых библиотек</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("rjags", "coda"))  # Раскомментировать для установки</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rjags)  <span class="co"># Для работы с JAGS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Загрузка требуемого пакета: coda</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linked to JAGS 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded modules: basemod,bugs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)   <span class="co"># Для анализа MCMC-выхода</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)<span class="co"># Рисунки</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Входные данные ---</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">N =</span> <span class="dv">16</span>,<span class="co"># Количество временных точек</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a> <span class="co"># Наблюдаемые данные (индексы запаса)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP1 =</span> <span class="fu">c</span>(<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>,<span class="dv">1500</span>,<span class="dv">1028</span>,<span class="dv">554</span>,<span class="dv">887</span>,<span class="dv">1345</span>,<span class="dv">1817</span>,<span class="dv">2291</span>,<span class="dv">1958</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexR  =</span> <span class="fu">c</span>(<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,   <span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>,<span class="dv">2531</span>,<span class="dv">1927</span>,<span class="dv">1305</span>,<span class="dv">764</span>,<span class="dv">1216</span>,<span class="dv">1820</span>,<span class="dv">2442</span>,<span class="dv">2983</span>),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bioindexP  =</span> <span class="fu">c</span>(<span class="dv">13741</span>,<span class="dv">13770</span>,<span class="dv">13060</span>,<span class="dv">11653</span>,<span class="dv">9782</span>,<span class="dv">8634</span>,<span class="dv">8321</span>,<span class="dv">8793</span>,<span class="dv">9809</span>,<span class="dv">10177</span>,<span class="dv">9776</span>,<span class="dv">9566</span>,<span class="dv">8789</span>,<span class="dv">8640</span>,<span class="dv">9240</span>,<span class="dv">10547</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">catch      =</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">15</span>,<span class="dv">21</span>,<span class="dv">37</span>,<span class="dv">37</span>,<span class="dv">315</span>,<span class="dv">945</span>,<span class="dv">890</span>,<span class="dv">991</span>,<span class="dv">1060</span>,<span class="dv">1000</span>,<span class="dv">1000</span>,<span class="dv">1600</span>,<span class="dv">1673</span>,<span class="dv">1250</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание вектора лет для подписей</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>YEAR <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>(data_list<span class="sc">$</span>N <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Генерация модели CSA --</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>model_string <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="st">   for (i in 1:N) {</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1med[i] &lt;- log(1.0E-6 + q1 * P1[i])</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP1[i] ~ dlnorm(bioindexP1med[i], precbioindexP1)</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexRmed[i]  &lt;- log(1.0E-6 + q2 * R[i])</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexR[i] ~ dlnorm(bioindexRmed[i],  precbioindexR)</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexPmed[i]  &lt;- log(1.0E-6 + q3 * P[i])</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="st">    bioindexP[i] ~ dlnorm(bioindexPmed[i],  precbioindexP)</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="st">  inv_surv &lt;- exp(-M)# Коэффициент естественной смертности</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 2:N) {</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="st">       tmpPraw[i] &lt;- (P1[i-1]*Gp*Mp + R[i-1] + P[i-1] - catch[i-1]) * inv_surv</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpPpos[i] &lt;- tmpPraw[i] * step(tmpPraw[i]) </span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="st">    Pmed[i] &lt;- log(1.0E-6 + tmpPpos[i])</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="st">    P[i] ~ dlnorm(Pmed[i], precP)</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRraw[i] &lt;- (P1[i-1]*Gr*Mp) * inv_surv</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="st">    tmpRpos[i] &lt;- tmpRraw[i] * step(tmpRraw[i])</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="st">    Rmed[i] &lt;- log(1.0E-6 + tmpRpos[i])</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="st">    R[i] ~ dlnorm(Rmed[i], precR)</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="st">    P1med[i] &lt;- log(1.0E-6 + P1[i-1])</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="st">    P1[i] ~ dlnorm(P1med[i], precP1)</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="st">  for (i in 1:N) {</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="st">    PR[i] &lt;- P[i] + R[i]</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="st">    p.PRlim[i] &lt;- step(PRlim - PR[i])</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="st">  PRlim &lt;- 4000</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="st">  P1[1] ~ dunif(200,4000)</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="st">  P[1]  ~ dunif(200,6000)</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="st">  R[1]  ~ dunif(200,25000)</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="st">  Gr ~ dnorm(0.9,  500)</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="st">  Gp ~ dnorm(0.075,500)</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="st">  Mp ~ dnorm(0.95, 500)</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="st">   precbioindexP1 ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexR  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a><span class="st">  precbioindexP  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="st">  q1 ~ dunif(0.1,1)</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="st">  q2 ~ dunif(0.1,1)</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a><span class="st">  q3 ~ dunif(0.1,1) </span></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a><span class="st">  precP1 ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="st">  precR  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a><span class="st">  precP  ~ dgamma(12.22, 1.1)</span></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="st">  M ~ dnorm(0.2, 100)</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Обучение модели ---</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)  <span class="co"># Для воспроизводимости</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Инициализация модели JAGS</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>jm <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(</span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textConnection</span>(model_string),  <span class="co"># Модель из строки</span></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_list,             <span class="co"># Данные</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.chains =</span> <span class="dv">3</span>,                 <span class="co"># Количество цепей</span></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.adapt =</span> <span class="dv">1500</span>                <span class="co"># Длина адаптационной фазы</span></span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 48
+   Unobserved stochastic nodes: 61
+   Total graph size: 576
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Обновление модели (burn-in)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">update</span>(jm, <span class="dv">4000</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Переменные для мониторинга</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>vars_to_monitor <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"M"</span>,<span class="st">"Gp"</span>,<span class="st">"Gr"</span>,<span class="st">"Mp"</span>,<span class="st">"q1"</span>,<span class="st">"q2"</span>,<span class="st">"q3"</span>,                    <span class="co"># Параметры</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"precP"</span>,<span class="st">"precP1"</span>,<span class="st">"precR"</span>,<span class="st">"precbioindexP"</span>,<span class="st">"precbioindexP1"</span>,<span class="st">"precbioindexR"</span>,  <span class="co"># Точности</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"P"</span>,<span class="st">"P1"</span>,<span class="st">"R"</span>,<span class="st">"PR"</span>,<span class="st">"p.PRlim"</span>                           <span class="co"># Состояния и производные</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Генерация MCMC-выборок</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>samps <span class="ot">&lt;-</span> <span class="fu">coda.samples</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  jm, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.names =</span> vars_to_monitor,  <span class="co"># Мониторируемые переменные</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.iter =</span> <span class="dv">6000</span>,                     <span class="co"># Длина выборки</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">thin =</span> <span class="dv">3</span>                           <span class="co"># Прореживание</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Анализ результатов ---</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Стандартная статистика по выборкам</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">summary</span>(samps)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> sm<span class="sc">$</span>statistics   <span class="co"># Средние, SD, стандартные ошибки</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>quants <span class="ot">&lt;-</span> sm<span class="sc">$</span>quantiles   <span class="co"># Квантили (2.5%, 25%, 50%, 75%, 97.5%)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Матрица всех сэмплов для ручных вычислений</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>draws_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(samps)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция для расчета MC ошибки через эффективный размер выборки</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>mcse_from_ess <span class="ot">&lt;-</span> <span class="cf">function</span>(vec) {</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  ess <span class="ot">&lt;-</span> <span class="fu">effectiveSize</span>(<span class="fu">as.mcmc</span>(vec))  <span class="co"># Эффективный размер выборки</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sd</span>(vec) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">as.numeric</span>(ess))     <span class="co"># MC ошибка</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция для создания строки результата</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>make_row <span class="ot">&lt;-</span> <span class="cf">function</span>(year, mapping, node, mean, sd, mcse, q2<span class="fl">.5</span>, q25, q50, q75, q97<span class="fl">.5</span>) {</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> year,</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">#Vectors to monitor</span><span class="st">`</span> <span class="ot">=</span> mapping,</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">node =</span> node,</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> mean,</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> sd,</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">MC error</span><span class="st">`</span> <span class="ot">=</span> mcse,</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">2.50%</span><span class="st">`</span> <span class="ot">=</span> q2<span class="fl">.5</span>,</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">25.00%</span><span class="st">`</span> <span class="ot">=</span> q25,</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> q50,</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">75.00%</span><span class="st">`</span> <span class="ot">=</span> q75,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">97.50%</span><span class="st">`</span> <span class="ot">=</span> q97<span class="fl">.5</span>,</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Список для накопления результатов</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>rows <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция добавления скалярных параметров</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>add_scalar <span class="ot">&lt;-</span> <span class="cf">function</span>(x_idx, vname) {</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (vname <span class="sc">%in%</span> <span class="fu">rownames</span>(stats)) {</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Если параметр есть в готовой статистике</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    m <span class="ot">&lt;-</span> stats[vname, <span class="st">"Mean"</span>]</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>    s <span class="ot">&lt;-</span> stats[vname, <span class="st">"SD"</span>]</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>    mcse <span class="ot">&lt;-</span> <span class="fu">mcse_from_ess</span>(draws_mat[, vname])</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>    q <span class="ot">&lt;-</span> quants[vname, <span class="fu">c</span>(<span class="st">"2.5%"</span>, <span class="st">"25%"</span>, <span class="st">"50%"</span>, <span class="st">"75%"</span>, <span class="st">"97.5%"</span>)]</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>    rows[[<span class="fu">length</span>(rows) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;&lt;-</span> <span class="fu">make_row</span>(<span class="cn">NA</span>, <span class="fu">paste0</span>(<span class="st">"x["</span>, x_idx, <span class="st">"]&lt;-"</span>, vname), <span class="fu">paste0</span>(<span class="st">"x["</span>, x_idx, <span class="st">"]"</span>),</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>                                          m, s, mcse, q[<span class="dv">1</span>], q[<span class="dv">2</span>], q[<span class="dv">3</span>], q[<span class="dv">4</span>], q[<span class="dv">5</span>])</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (vname <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"sigmaP1"</span>,<span class="st">"sigmaR"</span>,<span class="st">"sigmaP"</span>)) {</span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Для стандартных отклонений (преобразуем из точности)</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>    src <span class="ot">&lt;-</span> <span class="cf">switch</span>(vname,</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sigmaP1 =</span> <span class="st">"precP1"</span>,</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sigmaR  =</span> <span class="st">"precR"</span>,</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sigmaP  =</span> <span class="st">"precP"</span>)</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (src <span class="sc">%in%</span> <span class="fu">colnames</span>(draws_mat)) {</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>      vec <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">/</span> draws_mat[, src])  <span class="co"># Преобразование precision -&gt; sigma</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>      m <span class="ot">&lt;-</span> <span class="fu">mean</span>(vec); s <span class="ot">&lt;-</span> <span class="fu">sd</span>(vec); mcse <span class="ot">&lt;-</span> <span class="fu">mcse_from_ess</span>(vec)</span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>      q <span class="ot">&lt;-</span> <span class="fu">quantile</span>(vec, <span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>,<span class="fl">0.975</span>))</span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>      rows[[<span class="fu">length</span>(rows) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;&lt;-</span> <span class="fu">make_row</span>(<span class="cn">NA</span>, <span class="fu">paste0</span>(<span class="st">"x["</span>, x_idx, <span class="st">"]&lt;-"</span>, vname), <span class="fu">paste0</span>(<span class="st">"x["</span>, x_idx, <span class="st">"]"</span>),</span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>                                            m, s, mcse, q[<span class="dv">1</span>], q[<span class="dv">2</span>], q[<span class="dv">3</span>], q[<span class="dv">4</span>], q[<span class="dv">5</span>])</span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавление основных параметров</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">1</span>,  <span class="st">"M"</span>)</span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">2</span>,  <span class="st">"q1"</span>)</span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">3</span>,  <span class="st">"q2"</span>)</span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">4</span>,  <span class="st">"q3"</span>)</span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">5</span>,  <span class="st">"sigmaP1"</span>)</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">6</span>,  <span class="st">"sigmaR"</span>)</span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">7</span>,  <span class="st">"sigmaP"</span>)</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">8</span>,  <span class="st">"precbioindexP1"</span>)</span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">9</span>,  <span class="st">"precbioindexR"</span>)</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">10</span>, <span class="st">"precbioindexP"</span>)</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">11</span>, <span class="st">"Gr"</span>)</span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">12</span>, <span class="st">"Gp"</span>)</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="fu">add_scalar</span>(<span class="dv">13</span>, <span class="st">"Mp"</span>)</span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Функция добавления временных рядов</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>add_series <span class="ot">&lt;-</span> <span class="cf">function</span>(base_idx, varname, years) {</span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(years)) {</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>    rn <span class="ot">&lt;-</span> <span class="fu">paste0</span>(varname, <span class="st">"["</span>, i, <span class="st">"]"</span>)  <span class="co"># Имя переменной с индексом</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span>rn <span class="sc">%in%</span> <span class="fu">rownames</span>(stats)) <span class="cf">next</span>  <span class="co"># Пропуск если нет данных</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>    m <span class="ot">&lt;-</span> stats[rn, <span class="st">"Mean"</span>]</span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>    s <span class="ot">&lt;-</span> stats[rn, <span class="st">"SD"</span>]</span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>    mcse <span class="ot">&lt;-</span> <span class="fu">mcse_from_ess</span>(draws_mat[, rn])</span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>    q <span class="ot">&lt;-</span> quants[rn, <span class="fu">c</span>(<span class="st">"2.5%"</span>, <span class="st">"25%"</span>, <span class="st">"50%"</span>, <span class="st">"75%"</span>, <span class="st">"97.5%"</span>)]</span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>    xi <span class="ot">&lt;-</span> base_idx <span class="sc">+</span> (i <span class="sc">-</span> <span class="dv">1</span>)  <span class="co"># Вычисление индекса в выходной таблице</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>    rows[[<span class="fu">length</span>(rows) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;&lt;-</span> <span class="fu">make_row</span>(years[i], <span class="fu">paste0</span>(<span class="st">"x["</span>, xi, <span class="st">"]&lt;-"</span>, rn), <span class="fu">paste0</span>(<span class="st">"x["</span>, xi, <span class="st">"]"</span>),</span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>                                          m, s, mcse, q[<span class="dv">1</span>], q[<span class="dv">2</span>], q[<span class="dv">3</span>], q[<span class="dv">4</span>], q[<span class="dv">5</span>])</span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавление временных рядов</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="fu">add_series</span>(<span class="dv">100</span>, <span class="st">"P1"</span>, YEAR)</span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="fu">add_series</span>(<span class="dv">200</span>, <span class="st">"R"</span>,  YEAR)</span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a><span class="fu">add_series</span>(<span class="dv">300</span>, <span class="st">"P"</span>,  YEAR)</span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание итоговой таблицы</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a>out_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, rows)</span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Создание групп для сортировки</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>out_df<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(out_df<span class="sc">$</span>YEAR), <span class="st">"param"</span>,</span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>                <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"&lt;-P1</span><span class="sc">\\</span><span class="st">["</span>, out_df<span class="sc">$</span><span class="st">`</span><span class="at">#Vectors to monitor</span><span class="st">`</span>), <span class="st">"P1"</span>,</span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>                <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"&lt;-R</span><span class="sc">\\</span><span class="st">["</span>,  out_df<span class="sc">$</span><span class="st">`</span><span class="at">#Vectors to monitor</span><span class="st">`</span>), <span class="st">"R"</span>, <span class="st">"P"</span>)))</span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="co"># Сортировка параметров по индексу</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a>param_rows <span class="ot">&lt;-</span> out_df[out_df<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"param"</span>, ]</span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>param_idx  <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">".*</span><span class="sc">\\</span><span class="st">[(</span><span class="sc">\\</span><span class="st">d+)</span><span class="sc">\\</span><span class="st">].*"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, param_rows<span class="sc">$</span>node))</span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>param_rows <span class="ot">&lt;-</span> param_rows[<span class="fu">order</span>(param_idx), ]</span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="co"># Сортировка временных рядов по году</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>p1_rows <span class="ot">&lt;-</span> out_df[out_df<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"P1"</span>, ]</span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a>p1_rows <span class="ot">&lt;-</span> p1_rows[<span class="fu">order</span>(p1_rows<span class="sc">$</span>YEAR), ]</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>r_rows  <span class="ot">&lt;-</span> out_df[out_df<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"R"</span>, ]</span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>r_rows  <span class="ot">&lt;-</span> r_rows[<span class="fu">order</span>(r_rows<span class="sc">$</span>YEAR), ]</span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>p_rows  <span class="ot">&lt;-</span> out_df[out_df<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"P"</span>, ]</span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>p_rows  <span class="ot">&lt;-</span> p_rows[<span class="fu">order</span>(p_rows<span class="sc">$</span>YEAR), ]</span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a><span class="co"># Компоновка финальной таблицы</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>out_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(param_rows, p1_rows, r_rows, p_rows)</span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>out_df<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="cn">NULL</span>  <span class="co"># Удаление вспомогательной колонки</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Сохранение результатов</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(out_df, <span class="st">"monitor_summary.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Saved: monitor_summary.csv</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved: monitor_summary.csv</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Вывод структуры результатов</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(out_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   61 obs. of  11 variables:
+ $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ #Vectors to monitor: chr  "x[1]&lt;-M" "x[2]&lt;-q1" "x[3]&lt;-q2" "x[4]&lt;-q3" ...
+ $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
+ $ mean               : num  0.174 0.412 0.726 0.935 0.315 ...
+ $ sd                 : num  0.0651 0.097 0.1382 0.0602 0.0416 ...
+ $ MC error           : num  0.002189 0.006951 0.009459 0.001406 0.000577 ...
+ $ 2.50%              : num  0.0461 0.2571 0.4728 0.7732 0.2444 ...
+ $ 25.00%             : num  0.131 0.343 0.62 0.908 0.286 ...
+ $ median             : num  0.175 0.401 0.721 0.953 0.311 ...
+ $ 75.00%             : num  0.217 0.467 0.833 0.98 0.34 ...
+ $ 97.50%             : num  0.302 0.64 0.978 0.998 0.409 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализация априорных и апостериорных параметров</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Параметры: M, Gp, Gr, Mp, q1, q2, q3, precP1, precR, precP, precbioindexP1, precbioindexR, precbioindexP</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># И производные: sigmaP1, sigmaR, sigmaP</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Сэмплируем приоры прямо из той же JAGS-модели (без данных)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>sample_priors_from_model <span class="ot">&lt;-</span> <span class="cf">function</span>(model_string, <span class="at">n_iter =</span> <span class="dv">20000</span>, <span class="at">n_adapt =</span> <span class="dv">500</span>) {</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  jm_prior <span class="ot">&lt;-</span> <span class="fu">jags.model</span>(<span class="fu">textConnection</span>(model_string), <span class="at">data =</span> <span class="fu">list</span>(<span class="at">N =</span> <span class="dv">0</span>), <span class="at">n.chains =</span> <span class="dv">1</span>, <span class="at">n.adapt =</span> n_adapt)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>,<span class="st">"Gp"</span>,<span class="st">"Gr"</span>,<span class="st">"Mp"</span>,<span class="st">"q1"</span>,<span class="st">"q2"</span>,<span class="st">"q3"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"precP1"</span>,<span class="st">"precR"</span>,<span class="st">"precP"</span>,<span class="st">"precbioindexP1"</span>,<span class="st">"precbioindexR"</span>,<span class="st">"precbioindexP"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  priors <span class="ot">&lt;-</span> <span class="fu">coda.samples</span>(jm_prior, <span class="at">variable.names =</span> vars, <span class="at">n.iter =</span> n_iter)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(priors)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Получаем матрицы приоров и постериоров</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>prior_mat <span class="ot">&lt;-</span> <span class="fu">sample_priors_from_model</span>(model_string, <span class="at">n_iter =</span> <span class="dv">20000</span>, <span class="at">n_adapt =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 0
+   Unobserved stochastic nodes: 16
+   Total graph size: 33
+
+Initializing model</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>post_mat  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(samps)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавляем производные сигмы из прецизионов</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>add_sigmas <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  add <span class="ot">&lt;-</span> <span class="cf">function</span>(dst, src) {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(src <span class="sc">%in%</span> <span class="fu">colnames</span>(mat))) dst <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dst, <span class="fu">setNames</span>(<span class="fu">as.data.frame</span>(<span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span>mat[, src, <span class="at">drop=</span><span class="cn">FALSE</span>])), <span class="fu">gsub</span>(<span class="st">"^prec"</span>,<span class="st">"sigma"</span>, src)))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    dst</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> mat</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">add</span>(out, <span class="fu">c</span>(<span class="st">"precP1"</span>))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">add</span>(out, <span class="fu">c</span>(<span class="st">"precR"</span>))</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">add</span>(out, <span class="fu">c</span>(<span class="st">"precP"</span>))</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>prior_mat <span class="ot">&lt;-</span> <span class="fu">add_sigmas</span>(prior_mat)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>post_mat  <span class="ot">&lt;-</span> <span class="fu">add_sigmas</span>(post_mat)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Список параметров для визуализации</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"M"</span>,<span class="st">"Gp"</span>,<span class="st">"Gr"</span>,<span class="st">"Mp"</span>,<span class="st">"q1"</span>,<span class="st">"q2"</span>,<span class="st">"q3"</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sigmaP1"</span>,<span class="st">"sigmaR"</span>,<span class="st">"sigmaP"</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"precbioindexP1"</span>,<span class="st">"precbioindexR"</span>,<span class="st">"precbioindexP"</span>),</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">union</span>(<span class="fu">colnames</span>(prior_mat), <span class="fu">colnames</span>(post_mat))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co"># В long-формат</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>mk_df <span class="ot">&lt;-</span> <span class="cf">function</span>(mat, label) {</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(mat) <span class="sc">||</span> <span class="fu">nrow</span>(mat) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="fu">data.frame</span>())</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> mat[, <span class="fu">intersect</span>(<span class="fu">colnames</span>(mat), params), drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reshape</span>(</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">iter =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(mat)), mat, <span class="at">check.names =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"long"</span>, <span class="at">varying =</span> params, <span class="at">v.names =</span> <span class="st">"value"</span>, <span class="at">timevar =</span> <span class="st">"param"</span>, <span class="at">times =</span> params</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  )[, <span class="fu">c</span>(<span class="st">"param"</span>,<span class="st">"value"</span>)]</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>prior_df <span class="ot">&lt;-</span> <span class="fu">mk_df</span>(prior_mat, <span class="st">"Prior"</span>); prior_df<span class="sc">$</span>dist <span class="ot">&lt;-</span> <span class="st">"Prior"</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>post_df  <span class="ot">&lt;-</span> <span class="fu">mk_df</span>(post_mat,  <span class="st">"Posterior"</span>); post_df<span class="sc">$</span>dist <span class="ot">&lt;-</span> <span class="st">"Posterior"</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>plot_df  <span class="ot">&lt;-</span> <span class="fu">rbind</span>(prior_df, post_df)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Подписи</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>param_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">M=</span><span class="st">"M (mortality)"</span>, <span class="at">Gp=</span><span class="st">"Gp"</span>, <span class="at">Gr=</span><span class="st">"Gr"</span>, <span class="at">Mp=</span><span class="st">"Mp"</span>,</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">q1=</span><span class="st">"q1"</span>, <span class="at">q2=</span><span class="st">"q2"</span>, <span class="at">q3=</span><span class="st">"q3"</span>,</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigmaP1=</span><span class="st">"sigmaP1"</span>, <span class="at">sigmaR=</span><span class="st">"sigmaR"</span>, <span class="at">sigmaP=</span><span class="st">"sigmaP"</span>,</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">precbioindexP1=</span><span class="st">"precbioindexP1"</span>, <span class="at">precbioindexR=</span><span class="st">"precbioindexR"</span>, <span class="at">precbioindexP=</span><span class="st">"precbioindexP"</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>plot_df<span class="sc">$</span>param_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(plot_df<span class="sc">$</span>param, <span class="at">levels =</span> params, <span class="at">labels =</span> <span class="fu">unname</span>(param_labels[params]))</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co"># График prior vs posterior (берёт priors из модели!)</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_df, <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">color =</span> dist, <span class="at">fill =</span> dist)) <span class="sc">+</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> param_f, <span class="at">scales =</span> <span class="st">"free"</span>, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"#999999"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"#1b9e77"</span>)) <span class="sc">+</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values  =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"#bbbbbb"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"#1b9e77"</span>)) <span class="sc">+</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Априорные (из модели) vs апостериорные распределения"</span>,</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Значение"</span>, <span class="at">y =</span> <span class="st">"Плотность"</span>, <span class="at">color =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter8_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Бабл-плоты остатков P1, R, P по годам (2000–2015)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Требуется: объекты samps, data_list. Если YEAR не создан, создадим.</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">exists</span>(<span class="st">"YEAR"</span>)) YEAR <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>(data_list<span class="sc">$</span>N <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>draws_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(samps)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>eps <span class="ot">&lt;-</span> <span class="fl">1.0e-6</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>resid_bubble_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(series, obs_vec, q_name, state_name_prefix) {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(obs_vec)) {</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.na</span>(obs_vec[i])) <span class="cf">next</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    q_draws     <span class="ot">&lt;-</span> draws_mat[, q_name]</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    state_draws <span class="ot">&lt;-</span> draws_mat[, <span class="fu">paste0</span>(state_name_prefix, <span class="st">"["</span>, i, <span class="st">"]"</span>)]</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># residual per draw: log(observed) - log(expected)</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    res_draws <span class="ot">&lt;-</span> <span class="fu">log</span>(obs_vec[i]) <span class="sc">-</span> <span class="fu">log</span>(eps <span class="sc">+</span> q_draws <span class="sc">*</span> state_draws)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    r_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(res_draws, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    rows[[<span class="fu">length</span>(rows) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">YEAR =</span> YEAR[i],</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">series =</span> series,</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">resid =</span> r_mean,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">abs_resid =</span> <span class="fu">abs</span>(r_mean),</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">sign =</span> <span class="fu">ifelse</span>(r_mean <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="st">"pos"</span>, <span class="st">"neg"</span>)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, rows)</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">resid_bubble_summary</span>(<span class="st">"P1"</span>, data_list<span class="sc">$</span>bioindexP1, <span class="st">"q1"</span>, <span class="st">"P1"</span>)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="fu">resid_bubble_summary</span>(<span class="st">"R"</span>,  data_list<span class="sc">$</span>bioindexR,  <span class="st">"q2"</span>, <span class="st">"R"</span>)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>b3 <span class="ot">&lt;-</span> <span class="fu">resid_bubble_summary</span>(<span class="st">"P"</span>,  data_list<span class="sc">$</span>bioindexP,  <span class="st">"q3"</span>, <span class="st">"P"</span>)</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>bubbles <span class="ot">&lt;-</span> <span class="fu">rbind</span>(b1, b2, b3)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Порядок рядов сверху вниз: P1, R, P</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>bubbles<span class="sc">$</span>series <span class="ot">&lt;-</span> <span class="fu">factor</span>(bubbles<span class="sc">$</span>series, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"P1"</span>, <span class="st">"R"</span>, <span class="st">"P"</span>))</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Убираем пустое расстояние - используем минимальные интервалы</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>lvl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P1"</span>,<span class="st">"R"</span>,<span class="st">"P"</span>)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>y_map <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), lvl)  <span class="co"># Числовые позиции без больших промежутков</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>bubbles<span class="sc">$</span>y_pos <span class="ot">&lt;-</span> <span class="fu">unname</span>(y_map[<span class="fu">as.character</span>(bubbles<span class="sc">$</span>series)])</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Создаем вытянутый прямоугольный график</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bubbles, <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> y_pos)) <span class="sc">+</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> abs_resid, <span class="at">fill =</span> sign), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">neg =</span> <span class="st">"black"</span>, <span class="at">pos =</span> <span class="st">"white"</span>),</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"pos"</span>,<span class="st">"neg"</span>),</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"положительные"</span>,<span class="st">"отрицательные"</span>),</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>                    <span class="at">name =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">max_size =</span> <span class="dv">12</span>, <span class="at">name =</span> <span class="st">"Остатки"</span>) <span class="sc">+</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2000</span>, <span class="dv">2015</span>, <span class="at">by =</span> <span class="dv">2</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">unname</span>(y_map), </span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">names</span>(y_map),</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">3.5</span>),  <span class="co"># Убираем пустое пространство сверху и снизу</span></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>                     <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span>     <span class="co"># Убираем расширение осей</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Пузырьковая диаграмма остатков (лог-шкала): P1, R, P"</span>, </span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Год"</span>, </span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">aspect.ratio =</span> <span class="fl">0.3</span>,  <span class="co"># Делаем график вытянутым прямоугольником (ширина &gt; высоты)</span></span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="st">"pt"</span>)  <span class="co"># Убираем лишние отступы вокруг графика</span></span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter8_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ДИНАМИКА ИНДЕКСОВ (ПРЕРЕКРУТЫ, РЕКРУТЫ, ПОСТРЕКРУТЫ) МОДЕЛЬНЫХ И ФАКТИЧЕСКИХ (ТОЧКИ)</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Три графика динамики P1, R, P: медиана (линия), 95% ДИ (лента), точки — наблюдения,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># приведённые к единому масштабу  делением на медиану q (Posterior median).</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ========================================================================================================================</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">exists</span>(<span class="st">"YEAR"</span>)) YEAR <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>(data_list<span class="sc">$</span>N <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>draws_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(samps)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>series_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(varname, obs_vec, qname, series_label) {</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  med_q <span class="ot">&lt;-</span> <span class="fu">median</span>(draws_mat[, qname], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">length</span>(obs_vec))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(obs_vec)) {</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    rn <span class="ot">&lt;-</span> <span class="fu">paste0</span>(varname, <span class="st">"["</span>, i, <span class="st">"]"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span>rn <span class="sc">%in%</span> <span class="fu">colnames</span>(draws_mat)) <span class="cf">next</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    v <span class="ot">&lt;-</span> draws_mat[, rn]</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    qs <span class="ot">&lt;-</span> <span class="fu">quantile</span>(v, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    obs_state <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(obs_vec[i])) obs_vec[i] <span class="sc">/</span> med_q <span class="cf">else</span> <span class="cn">NA_real_</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    rows[[i]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">YEAR =</span> YEAR[i],</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">series =</span> series_label,</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">median =</span> qs[<span class="dv">2</span>],</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">lo =</span> qs[<span class="dv">1</span>],</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">hi =</span> qs[<span class="dv">3</span>],</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">obs =</span> obs_state</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, rows)</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>df_p1 <span class="ot">&lt;-</span> <span class="fu">series_summary</span>(<span class="st">"P1"</span>, data_list<span class="sc">$</span>bioindexP1, <span class="st">"q1"</span>, <span class="st">"P1"</span>)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>df_r  <span class="ot">&lt;-</span> <span class="fu">series_summary</span>(<span class="st">"R"</span>,  data_list<span class="sc">$</span>bioindexR,  <span class="st">"q2"</span>, <span class="st">"R"</span>)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>df_p  <span class="ot">&lt;-</span> <span class="fu">series_summary</span>(<span class="st">"P"</span>,  data_list<span class="sc">$</span>bioindexP,  <span class="st">"q3"</span>, <span class="st">"P"</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>p_P1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_p1, <span class="fu">aes</span>(<span class="at">x =</span> YEAR)) <span class="sc">+</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi), <span class="at">fill =</span> <span class="st">"#1f77b4"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> median), <span class="at">color =</span> <span class="st">"#1f77b4"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> obs), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2000</span>, <span class="dv">2015</span>, <span class="at">by =</span> <span class="dv">2</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Моделируемая и фактическая (точки) динамика пререкрутов"</span>, <span class="at">x =</span> <span class="st">"Годы"</span>, <span class="at">y =</span> <span class="st">"Пререкруты (экз.)"</span>) <span class="sc">+</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_P1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter8_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p_R <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_r, <span class="fu">aes</span>(<span class="at">x =</span> YEAR)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi), <span class="at">fill =</span> <span class="st">"#2ca02c"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> median), <span class="at">color =</span> <span class="st">"#2ca02c"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> obs), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2000</span>, <span class="dv">2015</span>, <span class="at">by =</span> <span class="dv">2</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Моделируемая и фактическая (точки) динамика рекрутов"</span>, <span class="at">x =</span> <span class="st">"Годы"</span>, <span class="at">y =</span> <span class="st">"Рекруты (экз.)"</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter8_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p_P <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_p, <span class="fu">aes</span>(<span class="at">x =</span> YEAR)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi), <span class="at">fill =</span> <span class="st">"#ff7f0e"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> median), <span class="at">color =</span> <span class="st">"#ff7f0e"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> obs), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2000</span>, <span class="dv">2015</span>, <span class="at">by =</span> <span class="dv">2</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Моделируемая и фактическая (точки) динамика пострекрутов"</span>, <span class="at">x =</span> <span class="st">"Годы"</span>, <span class="at">y =</span> <span class="st">"Пострекруты (экз.)"</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter8_files/figure-html/unnamed-chunk-1-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter7.html" class="pagination-link" aria-label="Прогноз пополнения: от факторов до ансамбля">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter9.html" class="pagination-link" aria-label="Стандартизация CPUE: GLM, GAM, GAMM">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
