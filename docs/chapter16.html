@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>17&nbsp; I. DLM: Введение в методы анализа при ограниченных данных (DLM) – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>17&nbsp; I. DLM: Введение в методы анализа при очень ограниченных данных – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter16.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при ограниченных данных (DLM)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter16.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter16.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при ограниченных данных (DLM)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -276,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при ограниченных данных (DLM)</span></h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></h1>
 </div>
 
 
@@ -293,8 +293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Это занятие открывает серию практик о так называемых “немодельных”, как написано в некоторых методиках, подходах, которые в англоязычной литературе принято называть DLM. Это занятие вводное - возьмем замый простой метод и прогоним весь цикл.<br>
-Data-Limited Methods (DLM) — это не просто статистические подходы, а скорее философия работы в условиях неопределенности. Если классические методы оценки запасов требуют многолетних рядов данных, детальной информации о возрасте, размерах, промысловом усилии и прочих параметрах, то DLM предлагают прагматические решения для ситуаций, когда единственное, что у вас есть — это данные об уловах. И да, такое бывает чаще, чем кажется.</p>
+<p>Это занятие открывает серию практик о так называемых “немодельных”, как написано в некоторых <a href="http://www.vniro.ru/files/publish/metod_rek_ocenka_zapasov_babayan.pdf">методиках</a>, подходах, которые в англоязычной литературе принято называть DLM. Это занятие вводное - возьмем cамый простой метод и прогоним весь цикл. Data-Limited Methods (DLM) — это не просто статистические подходы, а скорее философия работы в условиях неопределенности. Если классические методы оценки запасов требуют многолетних рядов данных, детальной информации о возрасте, размерах, промысловом усилии и прочих параметрах, то DLM предлагают прагматические решения для ситуаций, когда единственное, что у вас есть — это данные об уловах. И да, такое бывает чаще, чем кажется.</p>
 <p>Представьте себе типичную ситуацию: новый объект промысла, развивающийся рыболовный регион, или просто вид, который никогда не был приоритетом для исследований. Данные об уловах есть — их собирают всегда. А вот биологические параметры, индексы численности, данные научных съемок — это уже из области фантастики. Именно в таких условиях DLM становятся не просто удобным инструментом, а единственным способом хоть как-то оценить состояние запаса.</p>
 <p>Среди множества DLM-методов особое место занимает Catch-MSY — подход, который позволяет оценить максимальный устойчивый вылов (<em>MSY</em>) на основе одних только данных об уловах. Метод основан на простой, но гениальной идее: если мы знаем историю промысла, мы можем методом подбора найти такие комбинации параметров роста популяции (<em>r</em> и <em>K</em>), которые объясняют наблюдаемую динамику уловов и при этом биологически реалистичны.</p>
 <p>Конечно, у этого метода есть ограничения. Он предполагает, что популяция следует логистической модели роста, что промысел был основным фактором смертности, и что мы можем разумно ограничить диапазоны параметров *r** и <em>K</em>. Но как говорится, в условиях слепоты и одноглазый — король.</p>
