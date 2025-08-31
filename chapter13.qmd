@@ -512,8 +512,8 @@ cat("График временных рядов сохранен как 'SPiCT_t
 cat("\n========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========\n")
 
 ## 9.1 Сохранение объекта модели
-saveRDS(fit, "spict_model_fit.rds")
-cat("Модель сохранена в 'spict_model_fit.rds'\n")
+#saveRDS(fit, "spict_model_fit.rds")
+#cat("Модель сохранена в 'spict_model_fit.rds'\n")
 
 ## 9.2 Экспорт таблицы с результатами
 results_table <- data.frame(

@@ -1059,41 +1059,39 @@ i Please use `linewidth` instead.</code></pre>
 ========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.1 Сохранение объекта модели</span></span>
-<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(fit, <span class="st">"spict_model_fit.rds"</span>)</span>
-<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Модель сохранена в 'spict_model_fit.rds'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Модель сохранена в 'spict_model_fit.rds'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.2 Экспорт таблицы с результатами</span></span>
-<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Parameter =</span> <span class="fu">c</span>(<span class="st">"r"</span>, <span class="st">"K"</span>, <span class="st">"MSY"</span>, <span class="st">"Bmsy"</span>, <span class="st">"Fmsy"</span>, </span>
-<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">"B_current"</span>, <span class="st">"F_current"</span>, <span class="st">"B/Bmsy"</span>, <span class="st">"F/Fmsy"</span>),</span>
-<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(r_est[<span class="dv">1</span>], K_est[<span class="dv">1</span>], MSY[<span class="dv">1</span>], Bmsy[<span class="dv">1</span>], Fmsy[<span class="dv">1</span>],</span>
-<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">1</span>], F_current[<span class="dv">1</span>], B_Bmsy[<span class="dv">1</span>], F_Fmsy[<span class="dv">1</span>]),</span>
-<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lower_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">2</span>], K_est[<span class="dv">2</span>], MSY[<span class="dv">2</span>], Bmsy[<span class="dv">2</span>], Fmsy[<span class="dv">2</span>],</span>
-<span id="cb123-8"><a href="#cb123-8" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">2</span>], F_current[<span class="dv">2</span>], B_Bmsy[<span class="dv">2</span>], F_Fmsy[<span class="dv">2</span>]),</span>
-<span id="cb123-9"><a href="#cb123-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Upper_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">3</span>], K_est[<span class="dv">3</span>], MSY[<span class="dv">3</span>], Bmsy[<span class="dv">3</span>], Fmsy[<span class="dv">3</span>],</span>
-<span id="cb123-10"><a href="#cb123-10" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">3</span>], F_current[<span class="dv">3</span>], B_Bmsy[<span class="dv">3</span>], F_Fmsy[<span class="dv">3</span>])</span>
-<span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb123-12"><a href="#cb123-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb123-13"><a href="#cb123-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results_table, <span class="st">"spict_results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb123-14"><a href="#cb123-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Таблица результатов сохранена в 'spict_results.csv'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="co">#saveRDS(fit, "spict_model_fit.rds")</span></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Модель сохранена в 'spict_model_fit.rds'\n")</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.2 Экспорт таблицы с результатами</span></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb121-7"><a href="#cb121-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Parameter =</span> <span class="fu">c</span>(<span class="st">"r"</span>, <span class="st">"K"</span>, <span class="st">"MSY"</span>, <span class="st">"Bmsy"</span>, <span class="st">"Fmsy"</span>, </span>
+<span id="cb121-8"><a href="#cb121-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">"B_current"</span>, <span class="st">"F_current"</span>, <span class="st">"B/Bmsy"</span>, <span class="st">"F/Fmsy"</span>),</span>
+<span id="cb121-9"><a href="#cb121-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(r_est[<span class="dv">1</span>], K_est[<span class="dv">1</span>], MSY[<span class="dv">1</span>], Bmsy[<span class="dv">1</span>], Fmsy[<span class="dv">1</span>],</span>
+<span id="cb121-10"><a href="#cb121-10" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">1</span>], F_current[<span class="dv">1</span>], B_Bmsy[<span class="dv">1</span>], F_Fmsy[<span class="dv">1</span>]),</span>
+<span id="cb121-11"><a href="#cb121-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lower_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">2</span>], K_est[<span class="dv">2</span>], MSY[<span class="dv">2</span>], Bmsy[<span class="dv">2</span>], Fmsy[<span class="dv">2</span>],</span>
+<span id="cb121-12"><a href="#cb121-12" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">2</span>], F_current[<span class="dv">2</span>], B_Bmsy[<span class="dv">2</span>], F_Fmsy[<span class="dv">2</span>]),</span>
+<span id="cb121-13"><a href="#cb121-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Upper_CI =</span> <span class="fu">c</span>(r_est[<span class="dv">3</span>], K_est[<span class="dv">3</span>], MSY[<span class="dv">3</span>], Bmsy[<span class="dv">3</span>], Fmsy[<span class="dv">3</span>],</span>
+<span id="cb121-14"><a href="#cb121-14" aria-hidden="true" tabindex="-1"></a>               B_current[<span class="dv">3</span>], F_current[<span class="dv">3</span>], B_Bmsy[<span class="dv">3</span>], F_Fmsy[<span class="dv">3</span>])</span>
+<span id="cb121-15"><a href="#cb121-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb121-16"><a href="#cb121-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-17"><a href="#cb121-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results_table, <span class="st">"spict_results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb121-18"><a href="#cb121-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Таблица результатов сохранена в 'spict_results.csv'</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Таблица результатов сохранена в 'spict_results.csv'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.3 Создание отчета</span></span>
-<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n========== ИТОГОВЫЙ ОТЧЕТ ==========\n")</span></span>
-<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Дата анализа:", format(Sys.Date(), "%d.%m.%Y"), "\n")</span></span>
-<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Версия SPiCT:", packageVersion("spict"), "\n")</span></span>
-<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Период данных:", min(inp$timeC), "-", max(inp$timeC), "\n")</span></span>
-<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Количество наблюдений:", length(inp$obsC), "\n")</span></span>
-<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Сходимость модели:", ifelse(fit$opt$convergence == 0, "Да", "Нет"), "\n")</span></span>
-<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\nОСНОВНЫЕ ВЫВОДЫ:\n")</span></span>
-<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("1. Текущая биомасса составляет", round(B_Bmsy[1]*100), "% от Bmsy\n")</span></span>
-<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("2. Промысловая смертность составляет", round(F_Fmsy[1]*100), "% от Fmsy\n")</span></span>
-<span id="cb125-11"><a href="#cb125-11" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("3. Рекомендуемый вылов (при F=Fmsy):", round(Fmsy[1] * B_current[1], 1), "тыс. т\n")</span></span>
-<span id="cb125-12"><a href="#cb125-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-13"><a href="#cb125-13" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n=============== КОНЕЦ АНАЛИЗА ===============\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 9.3 Создание отчета</span></span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n========== ИТОГОВЫЙ ОТЧЕТ ==========\n")</span></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Дата анализа:", format(Sys.Date(), "%d.%m.%Y"), "\n")</span></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Версия SPiCT:", packageVersion("spict"), "\n")</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Период данных:", min(inp$timeC), "-", max(inp$timeC), "\n")</span></span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Количество наблюдений:", length(inp$obsC), "\n")</span></span>
+<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Сходимость модели:", ifelse(fit$opt$convergence == 0, "Да", "Нет"), "\n")</span></span>
+<span id="cb123-8"><a href="#cb123-8" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\nОСНОВНЫЕ ВЫВОДЫ:\n")</span></span>
+<span id="cb123-9"><a href="#cb123-9" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("1. Текущая биомасса составляет", round(B_Bmsy[1]*100), "% от Bmsy\n")</span></span>
+<span id="cb123-10"><a href="#cb123-10" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("2. Промысловая смертность составляет", round(F_Fmsy[1]*100), "% от Fmsy\n")</span></span>
+<span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("3. Рекомендуемый вылов (при F=Fmsy):", round(Fmsy[1] * B_current[1], 1), "тыс. т\n")</span></span>
+<span id="cb123-12"><a href="#cb123-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-13"><a href="#cb123-13" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("\n=============== КОНЕЦ АНАЛИЗА ===============\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="результаты-выполнения-первого-скрипта" class="level2" data-number="14.3">

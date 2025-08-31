@@ -18683,14 +18683,14 @@ Saved: monitor_summary.csv
  $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
  $ #Vectors to monitor: chr  "x[1]<-M" "x[2]<-q1" "x[3]<-q2" "x[4]<-q3" ...
  $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
- $ mean               : num  0.171 0.423 0.74 0.933 0.315 ...
- $ sd                 : num  0.0634 0.0959 0.134 0.0615 0.0414 ...
- $ MC error           : num  0.002128 0.006839 0.008959 0.001524 0.000582 ...
- $ 2.50%              : num  0.0433 0.2722 0.4955 0.7723 0.2456 ...
- $ 25.00%             : num  0.129 0.351 0.636 0.905 0.286 ...
- $ median             : num  0.172 0.41 0.736 0.951 0.311 ...
- $ 75.00%             : num  0.213 0.479 0.845 0.979 0.341 ...
- $ 97.50%             : num  0.296 0.644 0.981 0.998 0.406 ...
+ $ mean               : num  0.172 0.413 0.726 0.933 0.316 ...
+ $ sd                 : num  0.0638 0.0974 0.14 0.0594 0.0423 ...
+ $ MC error           : num  0.002265 0.007204 0.009837 0.001364 0.000638 ...
+ $ 2.50%              : num  0.0473 0.256 0.4685 0.7795 0.2448 ...
+ $ 25.00%             : num  0.13 0.344 0.62 0.904 0.286 ...
+ $ median             : num  0.173 0.402 0.721 0.95 0.311 ...
+ $ 75.00%             : num  0.215 0.471 0.832 0.979 0.341 ...
+ $ 97.50%             : num  0.295 0.636 0.98 0.998 0.408 ...
 \end{verbatim}
 
 \begin{Shaded}
@@ -29638,16 +29638,16 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 Simple feature collection with 4 features and 4 fields
 Geometry type: LINESTRING
 Dimension:     XY
-Bounding box:  xmin: 36.87009 ymin: 68.49073 xmax: 47.58035 ymax: 74.28937
+Bounding box:  xmin: 36.65644 ymin: 68.48816 xmax: 47.80725 ymax: 74.40474
 Geodetic CRS:  WGS 84
 # A tibble: 4 x 5
 # Groups:   Вариант [4]
   Вариант     `Количество тралений` `Длина маршрута (км)` Площадь полигона (км~1
   <fct>                       <dbl>                 <dbl>                  <dbl>
-1 Original                      137                 3524.                 63101.
-2 Expanded_x~                   137                 4489.                 99791.
-3 Expanded_x2                   137                 4737.                135352.
-4 Expanded_x3                   137                 6087.                207066.
+1 Original                      137                 3595.                 63101.
+2 Expanded_x~                   137                 4167.                 99791.
+3 Expanded_x2                   137                 4876.                135352.
+4 Expanded_x3                   137                 6381.                207066.
 # i abbreviated name: 1: `Площадь полигона (км2)`
 # i 1 more variable: geometry <LINESTRING [arc_degree]>
 \end{verbatim}
@@ -34954,17 +34954,9 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 \begin{Shaded}
 \begin{Highlighting}[]
 \DocumentationTok{\#\# 9.1 Сохранение объекта модели}
-\FunctionTok{saveRDS}\NormalTok{(fit, }\StringTok{"spict\_model\_fit.rds"}\NormalTok{)}
-\FunctionTok{cat}\NormalTok{(}\StringTok{"Модель сохранена в \textquotesingle{}spict\_model\_fit.rds\textquotesingle{}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\CommentTok{\#saveRDS(fit, "spict\_model\_fit.rds")}
+\CommentTok{\#cat("Модель сохранена в \textquotesingle{}spict\_model\_fit.rds\textquotesingle{}\textbackslash{}n")}
 
-\begin{verbatim}
-Модель сохранена в 'spict_model_fit.rds'
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \DocumentationTok{\#\# 9.2 Экспорт таблицы с результатами}
 \NormalTok{results\_table }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
   \AttributeTok{Parameter =} \FunctionTok{c}\NormalTok{(}\StringTok{"r"}\NormalTok{, }\StringTok{"K"}\NormalTok{, }\StringTok{"MSY"}\NormalTok{, }\StringTok{"Bmsy"}\NormalTok{, }\StringTok{"Fmsy"}\NormalTok{, }
