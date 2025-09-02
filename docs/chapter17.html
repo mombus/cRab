@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Сергей Баканёв">
-<meta name="dcterms.date" content="2025-04-30">
 
-<title>Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<title>18&nbsp; GMM кластеризация: Определение широкопалости самцов краба-стригуна – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -32,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./intro.html" rel="next">
+<link href="./references.html" rel="next">
+<link href="./chapter16.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -83,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Аннотация</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter17.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GMM кластеризация: Определение широкопалости самцов краба-стригуна</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -110,7 +109,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Аннотация</span></a>
   </div>
 </li>
@@ -218,7 +217,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapter17.html" class="sidebar-item-text sidebar-link">
+  <a href="./chapter17.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GMM кластеризация: Определение широкопалости самцов краба-стригуна</span></span></a>
   </div>
 </li>
@@ -238,7 +237,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#аннотация" id="toc-аннотация" class="nav-link active" data-scroll-target="#аннотация">Аннотация</a></li>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">18.1</span> Введение</a></li>
+  <li><a href="#данные-и-скрипты" id="toc-данные-и-скрипты" class="nav-link" data-scroll-target="#данные-и-скрипты"><span class="header-section-number">18.2</span> Данные и скрипты</a></li>
   </ul>
 </nav>
     </div>
@@ -247,26 +247,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</h1>
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GMM кластеризация: Определение широкопалости самцов краба-стригуна</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Сергей Баканёв </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">April 30, 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -276,15 +264,30 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="аннотация" class="level1 unnumbered">
-<h1 class="unnumbered">Аннотация</h1>
-<p><strong>Баканев С. В. (2025) Оценка водных биоресурсов при недостатке данных в среде R (для начинающих). — Курс лекций и практических занятий, адрес доступа: https://mombus.github.io/cRab</strong></p>
-<p>Данный ресурс представляет собой сборник практических решений по применению современных статистических методов в гидробиологии и рыбохозяйственных исследованиях при анализе “неполных” данных. Курс включает пошаговые алгоритмы реализации методов анализа и оценки водных биоресурсов в среде R и ориентирован как на начинающих, так и просто - интересующихся специалистов.</p>
-<p>Практическая программа охватывает ключевые методы оценки водных биоресурсов, выстроенные в логической последовательности: от основ анализа данных улова и картографии до продвинутого пространственно-временного моделирования (sdmTMB) и методов машинного обучения.</p>
-<p>Ресурс постоянно развивается и дополняется новыми практическими примерами.</p>
+<section id="введение" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">18.1</span> Введение</h2>
+<p>Определение функциональной зрелости у самцов крабов-стригунов — одна из тех задач, где биология встречается с статистикой лицом к лицу, и где простое наблюдение часто уступает место изощренному анализу. У самцов краба-стригуна переход к половозрелости маркируется драматическим изменением морфометрии: узкие, почти изящные клешни неполовозрелого «ювениала» (фенотип “узкопалый”) сменяются массивным, брутальным инструментом половозрелого самца (фенотип “широкопалый”). Этот аллометрический скачок — не просто украшение, а ключевой адаптивный признак, определяющий успех в боях за территорию и самок, а значит, и репродуктивный вклад особи. Проблема в том, что в природе редко встречаются учебные примеры; вместо этого она подсовывает нам сплошной континуум, где самый тощий жених запросто может оказаться рядом с самым упитанным холостяком, а шум измерений и индивидуальная изменчивость довершают картину хаоса. Задача исследователя — найти объективную границу в этом континууме, разделив популяцию на две функциональные группы, даже если сами крабы об этой границе не подозревают.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/cRab_logo.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
+<p><img src="images/SNOW.jpg" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Рис. 1.: Краб-стригун опилио узкопалый (вверху) и широкопалый (внизу)</figcaption>
+</figure>
+</div>
+<p>Метод «классификация без учителя» — это по сути попытка найти скрытую структуру в данных, когда у нас есть измерения, но нет заранее известных меток. Мы как бы спрашиваем данные: “На какие осмысленные группы вы сами хотите распасться?”. Базовые методы вроде k-means пытаются сделать это жестко, проставляя границы по принципу ближайшего центра, что часто приводит к ошибкам на перекрывающихся хвостах распределений. Иерархическая кластеризация видит структуру вложенно, но чувствительна к шуму и опять-таки требует субъективного выбора уровня отсечения. Модели гауссовских смесей (Gaussian mixture models; GMM) подходят к задаче иначе — они не просто группируют точки, а предполагают, что каждая точка порождена одной из нескольких вероятностных моделей (компонент смеси), каждая из которых является многомерным нормальным распределением со своими параметрами — вектором средних и ковариационной матрицей. Это мощное допущение: оно позволяет каждой группе иметь свою собственную форму, размер и ориентацию в пространстве признаков, что биологически осмысленно — ведь мы и ожидаем, что “широкопалые” особи будут не только в среднем крупнее, но и иметь иную форму соотношения ширины карапакса и клешни по сравнению с “узкопалыми”. Преимущество GMM в том, что это мягкая, вероятностная кластеризация; вместо того чтобы насильно приписывать наблюдение к кластеру, модель оценивает вероятность принадлежности, что особенно ценно для пограничных случаев, которые в биологии встречаются сплошь и рядом. Однако и у классического GMM есть ахиллесова пята — он, как и большинство методов, основанных на нормальном распределении, чувствителен к выбросам. Стоит появиться нескольким аномально крупным или, наоборот, мелким особям, и оценки параметров могут сместиться, а границы кластеров — исказиться. Именно здесь на сцену выходит робастная (robust) GMM, основанная на t-распределении Стьюдента. t-распределение имеет более тяжелые хвосты, чем гауссово, что позволяет модели терпимее относиться к выбросам — они перестают быть “проблемными точками, которые нужно во что бы то ни стало объяснить”, а становятся просто маловероятными, но допустимыми событиями. Робастная GMM не пытается подогнать компоненты смеси под все точки сразу, а более устойчиво оценивает параметры основных, центральных групп, игнорируя экстремальные отклонения. Т.е. подобен человеку, который на шумной вечеринке слушает не всех сразу, а только тех, кто говорит внятно и по делу, мудро игнорируя пьяные дискуссии о работе. В контексте нашей задачи это важно: полевые данные по крабам почти всегда зашумлены — возможны ошибки промеров, наличие больных или травмированных особей, наконец, просто природные аномалии, которые не отменяют общего правила. Использование робастной GMM позволяет нам сосредоточиться на основной биологической сигнатуре — различии между двумя фенотипами, — не позволяя шуму заглушить этот сигнал. Таким образом, применение такой разновидности GMM это не просто технический выбор, а методологическая необходимость, позволяющая извлечь из данных истинную биологическую структуру, скрытую за завесой естественной изменчивости и погрешности измерения.</p>
+</section>
+<section id="данные-и-скрипты" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="данные-и-скрипты"><span class="header-section-number">18.2</span> Данные и скрипты</h2>
+<p>Исходные данные по ширине карапакса и высоте клешни находятся <a href="https://mombus.github.io/cRab/data/SNOW.xlsx">здесь</a>. Скрипты можно скачать целиком: <a href="https://mombus.github.io/cRab/data/SNOW_3_popular">Первый</a> - три разновидности метода классификации, включая обычную GMM. <a href="https://mombus.github.io/cRab/data/SNOW_GMM_robust.R">Второй</a> – робастная GMM. <a href="https://mombus.github.io/cRab/data/SNOW_GMM_robust_predict.R">Третий</a> – прогноз с использованием робастной GMM.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SNOW1.PNG" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Рис. 2.: Визуализация кластерного анализа половозрелости краба-стригуна опилио тремя методами классификации без учителя</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/SNOW2.PNG" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Рис. 3.: Результаты использования робастной модели гауссовских смесей (GMM)</figcaption>
 </figure>
 </div>
 
@@ -693,10 +696,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./chapter16.html" class="pagination-link" aria-label="I. DLM: Введение в методы анализа при очень ограниченных данных">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./intro.html" class="pagination-link" aria-label="Введение">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
