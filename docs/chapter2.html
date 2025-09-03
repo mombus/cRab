@@ -287,6 +287,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Модели истощения Лесли и Делури</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -348,8 +354,7 @@ window.Quarto = {
 <p>Организация работы предельно проста. Даны три версии скрипта: <a href="https://mombus.github.io/cRab/data/KOROSOV.R">KOROSOV.R</a> — максимально близко к оригиналу; <a href="https://mombus.github.io/cRab/data/KOROSOV_updated.R">KOROSOV_updated.R</a> — тот же код с подробными комментариями и пояснениями (основной учебный вариант); <a href="https://mombus.github.io/cRab/data/KOROSOV_visual.R">KOROSOV_visual.R</a> — дополненный продвинутой визуализацией и небольшой аналитикой качества. Для запуска понадобятся данные <a href="https://mombus.github.io/cRab/data/vipkar.csv">vipkar.csv</a> и <a href="https://mombus.github.io/cRab/data/kihzsdat.csv">kihzsdat.csv</a>, корректная рабочая директория в setwd() и набор пакетов (как минимум neuralnet и ggplot2). Мы сознательно держим зависимости минимальными, чтобы главный фокус был на методе и интерпретации, а не на обвязке.</p>
 <p>Чему вы научитесь и на что обращать внимание. Во‑первых, всегда проверять, что модель решает именно ваш вопрос: чёткая формулировка задачи до выбора алгоритма экономит половину времени. Во‑вторых, всегда показывать эффект и неопределённость: коэффициенты с интервалами, калибровка вероятностей, ошибки прогноза на независимых данных. В‑третьих, всегда сравнивать с простым бэйзлайном: если «сеть» не лучше честной регрессии на чистых признаках, значит, проблема не в архитектуре, а в данных или постановке. И да, старайтесь говорить языком биологии: «параметр <em>b</em> близок к 3» — это про объём, «L50 сдвинулся» — про созревание, «AUC высок, но калибровка плывёт» — про надёжность решений на уровне индивидуальных вероятностей.</p>
 <p>Наконец, про дисциплину и воспроизводимость. Фиксируйте seed, документируйте версии пакетов и исходные предположения, храните все промежуточные шаги в скриптах. Это скучно минуту, но экономит дни. И даже когда вы дойдёте до «сетей», помните: сложная модель — это не билет в истину, а всего лишь более гибкий аппроксиматор. Хорошая практика — держать рядом простой, интерпретируемый аналог и объяснять расхождения между ними. Тогда ваши результаты будут не просто «работать», а выдерживать обсуждение с биологами, инженерами и управленцами — то есть приносить пользу за пределами экрана.</p>
-<section id="для-работы-скрипта" class="level4" data-number="3.1.0.1">
-<h4 data-number="3.1.0.1" class="anchored" data-anchor-id="для-работы-скрипта"><span class="header-section-number">3.1.0.1</span> <strong>Для работы скрипта:</strong></h4>
+<p><strong>Для работы скрипта:</strong></p>
 <ol type="1">
 <li><p>Скачайте файлы данных (<a href="https://mombus.github.io/cRab/data/vipkar.csv">vipkar.csv</a> и <a href="https://mombus.github.io/cRab/data/kihzsdat.csv">kihzsdat.csv</a>)</p></li>
 <li><p>Установите рабочую директорию в setwd()</p></li>
@@ -363,7 +368,6 @@ window.Quarto = {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Установите свою рабочую директорию (где лежат файлы данных)</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd("C:/ВАША_ДИРЕКТОРИЯ/")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
 </section>
 <section id="линейная-регрессия" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="линейная-регрессия"><span class="header-section-number">3.2</span> ЛИНЕЙНАЯ РЕГРЕССИЯ</h2>

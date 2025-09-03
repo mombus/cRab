@@ -2232,8 +2232,7 @@ neuralnet и ggplot2). Мы сознательно держим зависимо
 «работать», а выдерживать обсуждение с биологами, инженерами и
 управленцами --- то есть приносить пользу за пределами экрана.
 
-\subsubsection{\texorpdfstring{\textbf{Для работы
-скрипта:}}{Для работы скрипта:}}\label{ux434ux43bux44f-ux440ux430ux431ux43eux442ux44b-ux441ux43aux440ux438ux43fux442ux430}
+\textbf{Для работы скрипта:}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -18683,14 +18682,14 @@ Saved: monitor_summary.csv
  $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
  $ #Vectors to monitor: chr  "x[1]<-M" "x[2]<-q1" "x[3]<-q2" "x[4]<-q3" ...
  $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
- $ mean               : num  0.172 0.414 0.727 0.932 0.315 ...
- $ sd                 : num  0.0646 0.0929 0.1347 0.0611 0.0412 ...
- $ MC error           : num  0.002162 0.006011 0.008595 0.001536 0.000564 ...
- $ 2.50%              : num  0.0457 0.2666 0.4814 0.7712 0.2458 ...
- $ 25.00%             : num  0.128 0.346 0.625 0.903 0.285 ...
- $ median             : num  0.172 0.403 0.722 0.95 0.311 ...
- $ 75.00%             : num  0.216 0.469 0.829 0.978 0.34 ...
- $ 97.50%             : num  0.298 0.625 0.976 0.998 0.406 ...
+ $ mean               : num  0.175 0.41 0.725 0.936 0.315 ...
+ $ sd                 : num  0.064 0.0971 0.1408 0.0588 0.0413 ...
+ $ MC error           : num  0.00213 0.006693 0.009217 0.001381 0.000566 ...
+ $ 2.50%              : num  0.0479 0.2526 0.4684 0.7804 0.2449 ...
+ $ 25.00%             : num  0.131 0.338 0.617 0.91 0.286 ...
+ $ median             : num  0.176 0.4 0.72 0.953 0.311 ...
+ $ 75.00%             : num  0.217 0.471 0.835 0.98 0.34 ...
+ $ 97.50%             : num  0.299 0.629 0.979 0.998 0.407 ...
 \end{verbatim}
 
 \begin{Shaded}
@@ -29638,16 +29637,16 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 Simple feature collection with 4 features and 4 fields
 Geometry type: LINESTRING
 Dimension:     XY
-Bounding box:  xmin: 36.45501 ymin: 68.45345 xmax: 47.73892 ymax: 74.28687
+Bounding box:  xmin: 36.75986 ymin: 68.4662 xmax: 47.7267 ymax: 74.36136
 Geodetic CRS:  WGS 84
 # A tibble: 4 x 5
 # Groups:   Вариант [4]
   Вариант     `Количество тралений` `Длина маршрута (км)` Площадь полигона (км~1
   <fct>                       <dbl>                 <dbl>                  <dbl>
-1 Original                      137                 3547.                 63101.
-2 Expanded_x~                   137                 4270.                 99791.
-3 Expanded_x2                   137                 5128.                135352.
-4 Expanded_x3                   137                 6686.                207066.
+1 Original                      137                 3516.                 63101.
+2 Expanded_x~                   137                 4462.                 99791.
+3 Expanded_x2                   137                 5204.                135352.
+4 Expanded_x3                   137                 5735.                207066.
 # i abbreviated name: 1: `Площадь полигона (км2)`
 # i 1 more variable: geometry <LINESTRING [arc_degree]>
 \end{verbatim}
@@ -49442,7 +49441,7 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.5\linewidth,height=\textheight,keepaspectratio]{images/SNOW.jpg}
+{\centering \includegraphics[width=0.5\linewidth,height=\textheight,keepaspectratio]{images/SNOW1.jpg}
 
 }
 
@@ -49532,6 +49531,2920 @@ t-распределении Стьюдента. t-распределение и
 смесей (GMM)}
 
 \end{figure}%
+
+\bookmarksetup{startatroot}
+
+\chapter{Модели истощения Лесли и
+Делури}\label{ux43cux43eux434ux435ux43bux438-ux438ux441ux442ux43eux449ux435ux43dux438ux44f-ux43bux435ux441ux43bux438-ux438-ux434ux435ux43bux443ux440ux438}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-13}
+
+Если вы когда-нибудь задумывались, как оценить, сколько всего крабов
+было в море до того, как начался промысел, то сегодняшнее занятие ---
+для вас. Мы погрузимся в причудливый и лапидарный мир моделей истощения
+--- пожалуй, одних из самых интуитивно понятных и в то же время самых
+капризных инструментов в арсенале рыбохозяйственной науки. Модели Лесли
+и ДеЛури, рожденные в середине прошлого века, предлагают элегантное и на
+первый взгляд простое решение: если мы видим, что с каждой проведенной
+на промысле минутой улов на усилие (пресловутый CPUE или
+производительность промысла) неумолимо падает, то, значит, мы
+последовательно вылавливаем некую исходную популяцию. Проведя линию
+через эти точки снижения, мы можем экстраполировать её назад, к моменту
+начала лова, и получить оценку начальной численности. В теории всё
+звучит прекрасно и логично. Лесли предлагает смотреть на зависимость
+CPUE от кумулятивного (суммарного) усилия, а Делури --- логарифма CPUE
+от кумулятивного улова; разница в подходе, но философия одна:
+зафиксировать сам факт истощения и дать ему количественную оценку.
+
+Проблема, однако, в том, что эти модели требуют идеальных, почти
+лабораторных условий, которые в реальном мире встречаются реже, чем
+искренний ответ пахаря голубой нивы на вопрос «Много ли поймал?». Нужно,
+чтобы один и тот же флот, с одной и той же эффективностью, одним и тем
+же орудием лова работал на ограниченной акватории, изымая запас без
+всякой притравки извне. Нужно, чтобы за это время была устойчивая
+погода, не изменилась температура воды, не подошла новая агрегация краба
+с соседнего участка. Нужно, чтобы крабы вели себя как хорошие
+статистические единицы --- предсказумо и пассивно. В общем, нужно чудо.
+
+И такое чудо иногда случается. Данные, с которыми мы будем работать
+сегодня --- тот самый редкий и почти уникальный случай. С 2007 по 2018
+(рисунок немного устарел) год один промысловый флот вёл лов камчатского
+краба на относительно локальном участке Баренцева моря по одной и той же
+схеме. И в каждый промысловый сезон, длиной в два-три месяца, кривая
+CPUE послушно и плавно ползла вниз, как будто краб специально подгадал и
+выстроился в очередь по приказу статистика. Это был идеальный, просто
+учебный сюжет, подарок для любого аналитика. Увы, всему хорошему
+приходит конец. С приходом новых игроков на промысел идиллическая
+картина разрушилась. Пространственная структура запаса перемешалась,
+усилие стало прикладываться довольно неравномерно, и та самая чистая
+сигнатура истощения, которую нам так нравилась, пропала, растворившись в
+шуме конкуренции и возросшего пресса. Теперь эти данные --- скорее
+исключение, музейный экспонат, наглядно демонстрирующий, как должны
+выглядеть модели истощения в идеале, и почему мы не можем использовать
+их так часто, как хотелось бы. Давайте же воспользуемся этой уникальной
+возможностью и разберёмся, как работают эти капризные, но прекрасные в
+своей простоте методы.
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KINGCRABdepletion.png}
+\end{center}
+
+\textbf{Для работы скрипта:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Скачайте файлы данных
+  \href{https://mombus.github.io/cRab/data/DATAdep.csv}{DATAdep.csv}.
+\item
+  Установите рабочую директорию в setwd().
+\item
+  Установите необходимые пакеты :
+  \textbf{\texttt{install.packages(c("FSA",\ "ggplot2",\ "dplyr","broom","tidyverse"\ ))}}.
+\end{enumerate}
+
+Файл скрипта находиться
+\href{https://mombus.github.io/cRab/data/DEPLETION.R}{здесь}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ========================================================================================================================}
+\CommentTok{\# ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: МОДЕЛИ ИСТОЩЕНИЯ ЛЕСЛИ И ДЕЛУРИ}
+\CommentTok{\# Курс: "Оценка водных биоресурсов в среде R (для начинающих)"}
+\CommentTok{\# Автор: Баканев С. В. Дата: 03.09.2025}
+\CommentTok{\# ========================================================================================================================}
+
+\CommentTok{\# 1. ПОДГОТОВКА СРЕДЫ ====================================================================================================}
+
+\CommentTok{\# Установка и подключение необходимых пакетов}
+\CommentTok{\# FSA {-} Fisheries Stock Analysis для моделей истощения}
+\CommentTok{\# ggplot2 {-} для продвинутой визуализации}
+\CommentTok{\# dplyr {-} для манипуляций с данными}
+\CommentTok{\# tidyverse {-} современный подход к обработке данных}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Загрузка требуемого пакета: FSA
+\end{verbatim}
+
+\begin{verbatim}
+## FSA v0.10.0. See citation('FSA') if used in publication.
+## Run fishR() for related website and fishR('IFAR') for related book.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Загрузка требуемого пакета: ggplot2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Загрузка требуемого пакета: dplyr
+\end{verbatim}
+
+\begin{verbatim}
+
+Присоединяю пакет: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+Следующие объекты скрыты от 'package:stats':
+
+    filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+Следующие объекты скрыты от 'package:base':
+
+    intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"broom"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"broom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Загрузка требуемого пакета: broom
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Загрузка требуемого пакета: tidyverse
+\end{verbatim}
+
+\begin{verbatim}
+-- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+v forcats   1.0.0     v stringr   1.5.1
+v lubridate 1.9.4     v tibble    3.2.1
+v purrr     1.0.4     v tidyr     1.3.1
+v readr     2.1.5     
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(FSA)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(broom)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+\CommentTok{\# Установка рабочей директории {-} укажите путь к папке с данными}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/DEPLETION/"}\NormalTok{)}
+
+\CommentTok{\# 2. ЗАГРУЗКА И ПЕРВИЧНЫЙ АНАЛИЗ ДАННЫХ ==================================================================================}
+
+\CommentTok{\# Чтение данных из CSV{-}файла}
+\CommentTok{\# header = TRUE {-} первая строка содержит названия колонок}
+\CommentTok{\# sep = ";" {-} разделитель точка с запятой (common для European CSV)}
+\NormalTok{LESLIDATA }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"DATAdep.csv"}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{)}
+
+\CommentTok{\# Проверка структуры данных}
+\CommentTok{\# Функция str() показывает:}
+\CommentTok{\# {-} тип объекта (data.frame)}
+\CommentTok{\# {-} количество наблюдений и переменных}
+\CommentTok{\# {-} тип каждой переменной}
+\FunctionTok{str}\NormalTok{(LESLIDATA)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+'data.frame':   131 obs. of  5 variables:
+ $ CPUE  : num  51 90 68 64 60 72 75 75 65 65 ...
+ $ CATCH : num  262 826 596 545 564 ...
+ $ YEAR  : int  2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...
+ $ WEEK  : int  37 38 39 40 41 42 43 44 45 46 ...
+ $ EFFORT: num  5.14 9.18 8.77 8.52 9.39 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 3. БАЗОВЫЙ АНАЛИЗ МОДЕЛИ ЛЕСЛИ ДЛЯ ОДНОГО ПЕРИОДА ======================================================================}
+
+\CommentTok{\# Фильтрация данных для 2008 года (2007 \textless{} YEAR \textless{} 2009)}
+\NormalTok{DATA }\OtherTok{\textless{}{-}}\NormalTok{ LESLIDATA[LESLIDATA}\SpecialCharTok{$}\NormalTok{YEAR }\SpecialCharTok{\textgreater{}} \DecValTok{2007} \SpecialCharTok{\&}\NormalTok{ LESLIDATA}\SpecialCharTok{$}\NormalTok{YEAR }\SpecialCharTok{\textless{}} \DecValTok{2009}\NormalTok{, ]}
+
+\CommentTok{\# Построение модели истощения по методу Лесли}
+\CommentTok{\# Модель Лесли: CPUE \textasciitilde{} кумулятивное усилие}
+\CommentTok{\# Использует линейную регрессию для оценки начальной численности}
+\NormalTok{lesli }\OtherTok{\textless{}{-}} \FunctionTok{depletion}\NormalTok{(DATA}\SpecialCharTok{$}\NormalTok{CATCH, DATA}\SpecialCharTok{$}\NormalTok{EFFORT, }\AttributeTok{method =} \StringTok{"Leslie"}\NormalTok{)}
+
+\CommentTok{\# Визуализация модели}
+\CommentTok{\# График показывает зависимость CPUE от кумулятивного усилия}
+\FunctionTok{plot}\NormalTok{(lesli)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapter18_files/figure-pdf/unnamed-chunk-1-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Доверительные интервалы для параметров модели}
+\FunctionTok{confint}\NormalTok{(lesli)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+        95% LCI      95% UCI
+No 1.041229e+04 1.836816e+04
+q  3.005055e-03 6.548509e-03
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Сводная информация по модели}
+\CommentTok{\# Включает оценки параметров и статистику качества拟合}
+\FunctionTok{summary}\NormalTok{(lesli)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       Estimate    Std. Err.
+No 1.439023e+04 1.854700e+03
+q  4.776782e-03 8.260623e-04
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 4. РАСШИРЕННЫЙ АНАЛИЗ ПО ГОДАМ (2007{-}2018) =============================================================================}
+
+\CommentTok{\# Создаем функцию для расчета кумулятивных показателей}
+\CommentTok{\# Кумулятивные показатели необходимы для построения моделей истощения}
+\NormalTok{calculate\_cumulative }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data) \{}
+\NormalTok{  data }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{arrange}\NormalTok{(WEEK) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# Сортировка по неделям}
+    \FunctionTok{mutate}\NormalTok{(}
+      \AttributeTok{cumulative\_effort =} \FunctionTok{cumsum}\NormalTok{(EFFORT),  }\CommentTok{\# Накопленное усилие}
+      \AttributeTok{cumulative\_catch =} \FunctionTok{cumsum}\NormalTok{(CATCH)     }\CommentTok{\# Накопленный улов}
+\NormalTok{    )}
+\NormalTok{\}}
+
+\CommentTok{\# Инициализация списка для хранения результатов}
+\NormalTok{leslie\_models\_list }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+
+\CommentTok{\# Анализ для каждого года в диапазоне 2007{-}2018}
+\ControlFlowTok{for}\NormalTok{ (year }\ControlFlowTok{in} \DecValTok{2007}\SpecialCharTok{:}\DecValTok{2018}\NormalTok{) \{}
+  \CommentTok{\# Фильтрация данных по году}
+\NormalTok{  year\_data }\OtherTok{\textless{}{-}}\NormalTok{ LESLIDATA }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==}\NormalTok{ year) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{na.omit}\NormalTok{()  }\CommentTok{\# Удаление пропущенных значений}
+  
+  \CommentTok{\# Проверка достаточности данных (минимум 3 наблюдения)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{nrow}\NormalTok{(year\_data) }\SpecialCharTok{\textless{}} \DecValTok{3}\NormalTok{) \{}
+    \FunctionTok{message}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Недостаточно данных для анализа в"}\NormalTok{, year))}
+    \ControlFlowTok{next}  \CommentTok{\# Переход к следующему году}
+\NormalTok{  \}}
+  
+  \CommentTok{\# Расчет кумулятивных показателей}
+\NormalTok{  year\_data }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_cumulative}\NormalTok{(year\_data)}
+  
+  \CommentTok{\# Добавление CPUE (улов на единицу усилия)}
+\NormalTok{  year\_data}\SpecialCharTok{$}\NormalTok{CPUE }\OtherTok{\textless{}{-}}\NormalTok{ year\_data}\SpecialCharTok{$}\NormalTok{CATCH }\SpecialCharTok{/}\NormalTok{ year\_data}\SpecialCharTok{$}\NormalTok{EFFORT}
+  
+  \CommentTok{\# Построение модели Лесли через линейную регрессию}
+\NormalTok{  leslie\_model }\OtherTok{\textless{}{-}} \FunctionTok{try}\NormalTok{(}\FunctionTok{lm}\NormalTok{(CPUE }\SpecialCharTok{\textasciitilde{}}\NormalTok{ cumulative\_effort, }\AttributeTok{data =}\NormalTok{ year\_data), }\AttributeTok{silent =} \ConstantTok{TRUE}\NormalTok{)}
+  
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(leslie\_model, }\StringTok{"try{-}error"}\NormalTok{)) \{}
+    \CommentTok{\# Обработка ошибок моделирования}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_predicted }\OtherTok{\textless{}{-}} \ConstantTok{NA}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_lwr }\OtherTok{\textless{}{-}} \ConstantTok{NA}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_upr }\OtherTok{\textless{}{-}} \ConstantTok{NA}
+    \FunctionTok{message}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Ошибка в модели Лесли для"}\NormalTok{, year))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \CommentTok{\# Получение предсказаний с доверительными интервалами}
+\NormalTok{    predictions }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(leslie\_model, }\AttributeTok{interval =} \StringTok{"confidence"}\NormalTok{, }\AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_predicted }\OtherTok{\textless{}{-}}\NormalTok{ predictions[, }\StringTok{"fit"}\NormalTok{]}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_lwr }\OtherTok{\textless{}{-}}\NormalTok{ predictions[, }\StringTok{"lwr"}\NormalTok{]}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{leslie\_upr }\OtherTok{\textless{}{-}}\NormalTok{ predictions[, }\StringTok{"upr"}\NormalTok{]}
+    
+    \CommentTok{\# Расчет начальной биомассы (No)}
+    \CommentTok{\# No = {-}a/b, где a {-} интерсепт, b {-} коэффициент кумулятивного усилия}
+\NormalTok{    a }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(leslie\_model)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{    b }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(leslie\_model)[}\DecValTok{2}\NormalTok{]}
+\NormalTok{    No }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\NormalTok{a }\SpecialCharTok{/}\NormalTok{ b}
+\NormalTok{    year\_data}\SpecialCharTok{$}\NormalTok{No }\OtherTok{\textless{}{-}}\NormalTok{ No}
+\NormalTok{  \}}
+  
+  \CommentTok{\# Сохранение результатов для года}
+\NormalTok{  leslie\_models\_list[[}\FunctionTok{as.character}\NormalTok{(year)]] }\OtherTok{\textless{}{-}}\NormalTok{ year\_data}
+\NormalTok{\}}
+
+\CommentTok{\# Объединение данных всех лет}
+\NormalTok{all\_years\_leslie }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(leslie\_models\_list, }\AttributeTok{.id =} \StringTok{"Year"}\NormalTok{)}
+
+\CommentTok{\# Преобразование Year в фактор с сохранением порядка}
+\NormalTok{all\_years\_leslie}\SpecialCharTok{$}\NormalTok{Year }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(all\_years\_leslie}\SpecialCharTok{$}\NormalTok{Year, }\AttributeTok{levels =} \FunctionTok{as.character}\NormalTok{(}\DecValTok{2007}\SpecialCharTok{:}\DecValTok{2018}\NormalTok{))}
+
+\CommentTok{\# 5. ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ МОДЕЛИ ЛЕСЛИ ==============================================================================}
+
+\CommentTok{\# Построение фасетного графика для всех лет}
+\NormalTok{leslie\_facet\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(all\_years\_leslie, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ cumulative\_effort)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ CPUE), }\AttributeTok{size =} \DecValTok{2}\NormalTok{, }\AttributeTok{color =} \StringTok{"darkblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_ribbon}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{ymin =}\NormalTok{ leslie\_lwr, }\AttributeTok{ymax =}\NormalTok{ leslie\_upr), }
+              \AttributeTok{fill =} \StringTok{"red"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Доверительный интервал}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ leslie\_predicted), }\AttributeTok{color =} \StringTok{"red"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Year, }\AttributeTok{scales =} \StringTok{"free"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Свободные масштабы для каждого года}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Модель Лесли: зависимость CPUE от кумулятивного усилия"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"С доверительными интервалами (95\%)"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Кумулятивное усилие лова"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"CPUE (улов на единицу усилия)"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{),}
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{12}\NormalTok{),}
+    \AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{10}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\# Вывод графика}
+\FunctionTok{print}\NormalTok{(leslie\_facet\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf6 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xea в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xd1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xca в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xca в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf6 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xd1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xea в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapter18_files/figure-pdf/unnamed-chunk-1-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Сохранение графика (раскомментируйте для использования)}
+\CommentTok{\# ggsave("Leslie\_Model\_Facets\_2007\_2018\_with\_CI.png", plot = leslie\_facet\_plot, width = 14, height = 10, dpi = 300)}
+
+\CommentTok{\# 6. СРАВНИТЕЛЬНЫЙ АНАЛИЗ МОДЕЛЕЙ ЛЕСЛИ И ДЕЛУРИ ========================================================================}
+
+\CommentTok{\# Инициализация списка для хранения результатов}
+\NormalTok{results\_list }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+
+\CommentTok{\# Анализ для каждого года}
+\ControlFlowTok{for}\NormalTok{ (year }\ControlFlowTok{in} \DecValTok{2007}\SpecialCharTok{:}\DecValTok{2018}\NormalTok{) \{}
+\NormalTok{  year\_data }\OtherTok{\textless{}{-}}\NormalTok{ LESLIDATA }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==}\NormalTok{ year) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{na.omit}\NormalTok{()}
+  
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{nrow}\NormalTok{(year\_data) }\SpecialCharTok{\textless{}} \DecValTok{3}\NormalTok{) }\ControlFlowTok{next}
+  
+  \CommentTok{\# Модель Лесли через FSA}
+\NormalTok{  leslie\_model }\OtherTok{\textless{}{-}} \FunctionTok{try}\NormalTok{(}\FunctionTok{depletion}\NormalTok{(year\_data}\SpecialCharTok{$}\NormalTok{CATCH, year\_data}\SpecialCharTok{$}\NormalTok{EFFORT, }\AttributeTok{method =} \StringTok{"Leslie"}\NormalTok{), }\AttributeTok{silent =} \ConstantTok{TRUE}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(leslie\_model, }\StringTok{"try{-}error"}\NormalTok{)) \{}
+\NormalTok{    leslie\_no }\OtherTok{\textless{}{-}}\NormalTok{ leslie\_lci }\OtherTok{\textless{}{-}}\NormalTok{ leslie\_uci }\OtherTok{\textless{}{-}} \ConstantTok{NA}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    leslie\_ci }\OtherTok{\textless{}{-}} \FunctionTok{confint}\NormalTok{(leslie\_model)}
+\NormalTok{    leslie\_no }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(leslie\_model)[}\StringTok{"No"}\NormalTok{]}
+\NormalTok{    leslie\_lci }\OtherTok{\textless{}{-}}\NormalTok{ leslie\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{]}
+\NormalTok{    leslie\_uci }\OtherTok{\textless{}{-}}\NormalTok{ leslie\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{]}
+\NormalTok{  \}}
+  
+  \CommentTok{\# Модель Делури через FSA}
+\NormalTok{  delury\_model }\OtherTok{\textless{}{-}} \FunctionTok{try}\NormalTok{(}\FunctionTok{depletion}\NormalTok{(year\_data}\SpecialCharTok{$}\NormalTok{CATCH, year\_data}\SpecialCharTok{$}\NormalTok{EFFORT, }\AttributeTok{method =} \StringTok{"Delury"}\NormalTok{), }\AttributeTok{silent =} \ConstantTok{TRUE}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(delury\_model, }\StringTok{"try{-}error"}\NormalTok{)) \{}
+\NormalTok{    delury\_no }\OtherTok{\textless{}{-}}\NormalTok{ delury\_lci }\OtherTok{\textless{}{-}}\NormalTok{ delury\_uci }\OtherTok{\textless{}{-}} \ConstantTok{NA}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    delury\_ci }\OtherTok{\textless{}{-}} \FunctionTok{confint}\NormalTok{(delury\_model)}
+\NormalTok{    delury\_no }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(delury\_model)[}\StringTok{"No"}\NormalTok{]}
+\NormalTok{    delury\_lci }\OtherTok{\textless{}{-}}\NormalTok{ delury\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{]}
+\NormalTok{    delury\_uci }\OtherTok{\textless{}{-}}\NormalTok{ delury\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{]}
+\NormalTok{  \}}
+  
+  \CommentTok{\# Сохранение результатов}
+\NormalTok{  results\_list[[}\FunctionTok{as.character}\NormalTok{(year)]] }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{Year =}\NormalTok{ year,}
+    \AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Лесли"}\NormalTok{, }\StringTok{"Делури"}\NormalTok{),}
+    \AttributeTok{Initial\_Biomass =} \FunctionTok{c}\NormalTok{(leslie\_no, delury\_no),}
+    \AttributeTok{LCI =} \FunctionTok{c}\NormalTok{(leslie\_lci, delury\_lci),}
+    \AttributeTok{UCI =} \FunctionTok{c}\NormalTok{(leslie\_uci, delury\_uci)}
+\NormalTok{  )}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Преобразование списка в dataframe}
+\NormalTok{results\_df }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(results\_list)}
+
+\CommentTok{\# 7. ВИЗУАЛИЗАЦИЯ СРАВНЕНИЯ МОДЕЛЕЙ =====================================================================================}
+
+\CommentTok{\# График динамики начальной биомассы}
+\NormalTok{biomass\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(results\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Year, }\AttributeTok{y =}\NormalTok{ Initial\_Biomass}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{, }\AttributeTok{color =}\NormalTok{ Model)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{2.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_errorbar}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{ymin =}\NormalTok{ LCI}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{, }\AttributeTok{ymax =}\NormalTok{ UCI}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{), }\AttributeTok{width =} \FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ Model), }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Динамика начальной биомассы (2007{-}2018)"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Модели Лесли и Делури с 95\% доверительными интервалами"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Год"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Начальная биомасса, тыс. т"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Модель"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"top"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Лесли"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Делури"} \OtherTok{=} \StringTok{"red"}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(biomass\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcd в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xea в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe9 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcd в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xff в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xcb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf3 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe5 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe2 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xc4 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xea в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf7 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xeb в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfc в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xed в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe9 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe8 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xee в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xec в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xe0 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xf1 в кодировке CP1251
+\end{verbatim}
+
+\begin{verbatim}
+Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+неизвестна ширина символа 0xfb в кодировке CP1251
+\end{verbatim}
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapter18_files/figure-pdf/unnamed-chunk-1-3.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 8. ДЕТАЛИЗИРОВАННЫЙ АНАЛИЗ ПАРАМЕТРОВ =================================================================================}
+
+\CommentTok{\# Создание таблиц с параметрами моделей}
+\NormalTok{leslie\_all\_years }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{()}
+\NormalTok{delury\_all\_years }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{()}
+
+\ControlFlowTok{for}\NormalTok{ (year }\ControlFlowTok{in} \DecValTok{2007}\SpecialCharTok{:}\DecValTok{2018}\NormalTok{) \{}
+\NormalTok{  year\_data }\OtherTok{\textless{}{-}}\NormalTok{ LESLIDATA }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(YEAR }\SpecialCharTok{==}\NormalTok{ year) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{na.omit}\NormalTok{()}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{nrow}\NormalTok{(year\_data) }\SpecialCharTok{\textless{}} \DecValTok{3}\NormalTok{) }\ControlFlowTok{next}
+  
+  \CommentTok{\# Анализ для модели Лесли}
+  \FunctionTok{tryCatch}\NormalTok{(\{}
+\NormalTok{    leslie\_model }\OtherTok{\textless{}{-}} \FunctionTok{depletion}\NormalTok{(year\_data}\SpecialCharTok{$}\NormalTok{CATCH, year\_data}\SpecialCharTok{$}\NormalTok{EFFORT, }\AttributeTok{method =} \StringTok{"Leslie"}\NormalTok{)}
+\NormalTok{    leslie\_ci }\OtherTok{\textless{}{-}} \FunctionTok{confint}\NormalTok{(leslie\_model)}
+\NormalTok{    leslie\_all\_years }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(leslie\_all\_years, }\FunctionTok{data.frame}\NormalTok{(}
+\NormalTok{      Модель }\OtherTok{=} \StringTok{"Лесли"}\NormalTok{,}
+\NormalTok{      Год }\OtherTok{=}\NormalTok{ year,}
+      \AttributeTok{B0 =} \FunctionTok{round}\NormalTok{(leslie\_model}\SpecialCharTok{$}\NormalTok{est[}\StringTok{"No"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{B0\_LCI =} \FunctionTok{round}\NormalTok{(leslie\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{B0\_UCI =} \FunctionTok{round}\NormalTok{(leslie\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{q =} \FunctionTok{round}\NormalTok{(leslie\_model}\SpecialCharTok{$}\NormalTok{est[}\StringTok{"q"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{q\_LCI =} \FunctionTok{round}\NormalTok{(leslie\_ci[}\StringTok{"q"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{q\_UCI =} \FunctionTok{round}\NormalTok{(leslie\_ci[}\StringTok{"q"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{R2 =} \FunctionTok{round}\NormalTok{(}\FunctionTok{summary}\NormalTok{(leslie\_model}\SpecialCharTok{$}\NormalTok{lm)}\SpecialCharTok{$}\NormalTok{r.squared, }\DecValTok{4}\NormalTok{)}
+\NormalTok{    ))}
+\NormalTok{  \}, }\AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) \{}
+    \FunctionTok{message}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Ошибка в модели Лесли для"}\NormalTok{, year, }\StringTok{":"}\NormalTok{, e}\SpecialCharTok{$}\NormalTok{message))}
+\NormalTok{  \})}
+  
+  \CommentTok{\# Анализ для модели Делури}
+  \FunctionTok{tryCatch}\NormalTok{(\{}
+\NormalTok{    delury\_model }\OtherTok{\textless{}{-}} \FunctionTok{depletion}\NormalTok{(year\_data}\SpecialCharTok{$}\NormalTok{CATCH, year\_data}\SpecialCharTok{$}\NormalTok{EFFORT, }\AttributeTok{method =} \StringTok{"DeLury"}\NormalTok{)}
+\NormalTok{    delury\_ci }\OtherTok{\textless{}{-}} \FunctionTok{confint}\NormalTok{(delury\_model)}
+\NormalTok{    delury\_all\_years }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(delury\_all\_years, }\FunctionTok{data.frame}\NormalTok{(}
+\NormalTok{      Модель }\OtherTok{=} \StringTok{"Делури"}\NormalTok{,}
+\NormalTok{      Год }\OtherTok{=}\NormalTok{ year,}
+      \AttributeTok{B0 =} \FunctionTok{round}\NormalTok{(delury\_model}\SpecialCharTok{$}\NormalTok{est[}\StringTok{"No"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{B0\_LCI =} \FunctionTok{round}\NormalTok{(delury\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{B0\_UCI =} \FunctionTok{round}\NormalTok{(delury\_ci[}\StringTok{"No"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{], }\DecValTok{2}\NormalTok{),}
+      \AttributeTok{q =} \FunctionTok{round}\NormalTok{(delury\_model}\SpecialCharTok{$}\NormalTok{est[}\StringTok{"q"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{q\_LCI =} \FunctionTok{round}\NormalTok{(delury\_ci[}\StringTok{"q"}\NormalTok{, }\StringTok{"95\% LCI"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{q\_UCI =} \FunctionTok{round}\NormalTok{(delury\_ci[}\StringTok{"q"}\NormalTok{, }\StringTok{"95\% UCI"}\NormalTok{], }\DecValTok{6}\NormalTok{),}
+      \AttributeTok{R2 =} \FunctionTok{round}\NormalTok{(}\FunctionTok{summary}\NormalTok{(delury\_model}\SpecialCharTok{$}\NormalTok{lm)}\SpecialCharTok{$}\NormalTok{r.squared, }\DecValTok{4}\NormalTok{)}
+\NormalTok{    ))}
+\NormalTok{  \}, }\AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) \{}
+    \FunctionTok{message}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Ошибка в модели Делури для"}\NormalTok{, year, }\StringTok{":"}\NormalTok{, e}\SpecialCharTok{$}\NormalTok{message))}
+\NormalTok{  \})}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+Warning: Estimates are suspect as model did not exhibit a significantly (p>0.05)
+  negative slope.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Вывод результатов}
+\FunctionTok{print}\NormalTok{(}\StringTok{"Таблица параметров модели Лесли по годам:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "Таблица параметров модели Лесли по годам:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(leslie\_all\_years)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+   Модель  Год       B0    B0_LCI    B0_UCI        q     q_LCI    q_UCI     R2
+1   Лесли 2007 31498.37   2705.68  60291.05 0.002323 -0.000097 0.004743 0.2672
+2   Лесли 2008 14390.23  10412.29  18368.16 0.004777  0.003005 0.006549 0.7049
+3   Лесли 2009 11715.54   7860.93  15570.16 0.004168  0.002409 0.005927 0.6684
+4   Лесли 2010  5817.66   4369.39   7265.92 0.010571  0.006406 0.014736 0.6791
+5   Лесли 2011  7968.21   4793.42  11143.00 0.011168  0.005162 0.017174 0.7342
+6   Лесли 2012 18913.61   -844.81  38672.03 0.006095 -0.001239 0.013430 0.4080
+7   Лесли 2013 27185.11  -3514.76  57884.98 0.006883 -0.001716 0.015481 0.3900
+8   Лесли 2014 37864.24 -41069.72 116798.19 0.006719 -0.008193 0.021630 0.2812
+9   Лесли 2015 26234.94  11351.15  41118.72 0.009624  0.003571 0.015677 0.7161
+10  Лесли 2016 22168.22   8133.31  36203.14 0.009094  0.002560 0.015628 0.7191
+11  Лесли 2017 15614.16  12692.12  18536.19 0.012778  0.009719 0.015838 0.9330
+12  Лесли 2018 19825.00  14882.60  24767.40 0.012953  0.008866 0.017039 0.8330
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Таблица параметров модели Делури по годам:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "Таблица параметров модели Делури по годам:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(delury\_all\_years)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+   Модель  Год       B0    B0_LCI    B0_UCI        q     q_LCI    q_UCI     R2
+1  Делури 2007 28236.12   3911.96  52560.28 0.002584 -0.000016 0.005184 0.2810
+2  Делури 2008 14297.12  11422.52  17171.73 0.004778  0.003382 0.006174 0.7938
+3  Делури 2009 12725.30   8827.49  16623.12 0.003720  0.002219 0.005220 0.6881
+4  Делури 2010  4393.17   3603.17   5183.16 0.016319  0.010545 0.022094 0.7241
+5  Делури 2011  6583.20   4041.91   9124.50 0.014016  0.005647 0.022386 0.6914
+6  Делури 2012 18610.09  -3184.94  40405.13 0.006133 -0.002249 0.014516 0.3482
+7  Делури 2013 29170.84  -5308.38  63650.06 0.006347 -0.001969 0.014662 0.3676
+8  Делури 2014 38177.41 -41839.92 118194.74 0.006637 -0.008199 0.021473 0.2783
+9  Делури 2015 25898.41  11522.67  40274.15 0.009716  0.003691 0.015740 0.7218
+10 Делури 2016 23437.65   6629.31  40245.99 0.008496  0.001564 0.015428 0.6650
+11 Делури 2017 15112.98  12490.27  17735.70 0.013178  0.010103 0.016254 0.9362
+12 Делури 2018 17743.61  13271.76  22215.47 0.014745  0.009658 0.019833 0.8066
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Сохранение результатов}
+\FunctionTok{write.csv}\NormalTok{(leslie\_all\_years, }\StringTok{"Leslie\_parameters\_all\_years.csv"}\NormalTok{, }\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{write.csv}\NormalTok{(delury\_all\_years, }\StringTok{"Delury\_parameters\_all\_years.csv"}\NormalTok{, }\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# ========================================================================================================================}
+\CommentTok{\# ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ:}
+\CommentTok{\# 1. Модель Лесли: CPUE = a + b * (кумулятивное усилие)}
+\CommentTok{\# 2. Модель Делури: ln(CPUE) = a + b * (кумулятивное усилие)}
+\CommentTok{\# Параметры:}
+\CommentTok{\# {-} B0 (No): начальная биомасса/численность}
+\CommentTok{\# {-} q: коэффициент уловистости}
+\CommentTok{\# {-} R2: показатель качества модели (0{-}1)}
+\CommentTok{\# Доверительные интервалы показывают точность оценок}
+\CommentTok{\# ========================================================================================================================}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Результаты применения моделей
+истощения}\label{ux440ux435ux437ux443ux43bux44cux442ux430ux442ux44b-ux43fux440ux438ux43cux435ux43dux435ux43dux438ux44f-ux43cux43eux434ux435ux43bux435ux439-ux438ux441ux442ux43eux449ux435ux43dux438ux44f}
+
+Анализ данных промысла камчатского краба в Баренцевом море с 2007 по
+2018 год выявил крайне неоднородную эффективность моделей истощения. В
+течение 2008-2011 и 2017-2018 годов обе модели демонстрировали
+статистически значимые результаты с высокими коэффициентами детерминации
+(R² \textgreater{} 0.65), что указывало на четко выраженный эффект
+истощения запаса в эти периоды. Наиболее надежные оценки начальной
+биомассы (\emph{B\textsubscript{0}}) были получены для 2008 года: модель
+Лесли показала 14.4 тыс. тонн, а модель Делури --- 14.3 тыс. тонн с
+относительно узкими доверительными интервалами.
+
+Однако в другие годы (2012-2014) результаты оказались статистически
+несостоятельными --- модели не выявили значимого отрицательного наклона,
+а доверительные интервалы включали биологически нереалистичные значения,
+включая отрицательную биомассу. Особенно показательными были 2012 и 2013
+годы, где верхняя граница доверительного интервала превышала нижнюю
+более чем на 40 тыс. тонн, что свидетельствует о крайне ненадежных
+оценках.
+
+Анализ коэффициента уловистости (\emph{q}) выявил интересную динамику:
+значения демонстрировали выраженную изменчивость от 0.0023 в 2007 году
+до 0.0163 в 2010 году по модели Делури. Начиная с 2011 года значения
+\emph{q} стабилизировались на более высоком уровне (0.009-0.015), что
+может указывать на изменение эффективности промысла или поведенческих
+характеристик краба.
+
+Сравнительный анализ двух моделей показал их принципиальную
+согласованность: расхождения в оценках \emph{B\textsubscript{0}} редко
+превышали 10-15\%, что является приемлемым для данного типа моделей.
+Однако модель ДеЛури в большинстве случаев демонстрировала несколько
+более высокую точность оценок, выражающуюся в немного более узких
+доверительных интервалах.
+
+Ключевым выводом исследования стало подтверждение ограниченной
+применимости моделей истощения --- они работают адекватно только в
+условиях контролируемого промысла с изолированной популяцией. После 2018
+года, с появлением новых промысловых игроков, модели потеряли
+практическую ценность, поскольку нарушилось основное предположение о
+закрытости системы и стабильности технологии добычи. Таким образом,
+несмотря на теоретическую элегантность, модели Лесли и Делури остаются
+нишевым инструментом, применимым лишь в редких условиях идеального
+промыслового сценария.
 
 \bookmarksetup{startatroot}
 
