@@ -18682,14 +18682,14 @@ Saved: monitor_summary.csv
  $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
  $ #Vectors to monitor: chr  "x[1]<-M" "x[2]<-q1" "x[3]<-q2" "x[4]<-q3" ...
  $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
- $ mean               : num  0.173 0.419 0.739 0.934 0.316 ...
- $ sd                 : num  0.0641 0.0982 0.1364 0.0609 0.0417 ...
- $ MC error           : num  0.002086 0.007463 0.010005 0.001549 0.000576 ...
- $ 2.50%              : num  0.0472 0.2686 0.4904 0.7682 0.2454 ...
- $ 25.00%             : num  0.129 0.346 0.635 0.906 0.287 ...
- $ median             : num  0.173 0.405 0.736 0.952 0.312 ...
- $ 75.00%             : num  0.216 0.478 0.848 0.98 0.341 ...
- $ 97.50%             : num  0.297 0.648 0.983 0.998 0.409 ...
+ $ mean               : num  0.168 0.434 0.755 0.935 0.315 ...
+ $ sd                 : num  0.0647 0.1007 0.1353 0.06 0.0414 ...
+ $ MC error           : num  0.002621 0.007618 0.008879 0.001472 0.000631 ...
+ $ 2.50%              : num  0.0405 0.2674 0.4984 0.7746 0.2452 ...
+ $ 25.00%             : num  0.124 0.361 0.654 0.909 0.286 ...
+ $ median             : num  0.167 0.422 0.753 0.952 0.311 ...
+ $ 75.00%             : num  0.211 0.497 0.863 0.98 0.34 ...
+ $ 97.50%             : num  0.294 0.657 0.986 0.998 0.407 ...
 \end{verbatim}
 
 \begin{Shaded}
@@ -29637,16 +29637,16 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 Simple feature collection with 4 features and 4 fields
 Geometry type: LINESTRING
 Dimension:     XY
-Bounding box:  xmin: 36.94513 ymin: 68.47917 xmax: 47.74632 ymax: 74.44301
+Bounding box:  xmin: 36.72109 ymin: 68.47811 xmax: 47.70158 ymax: 74.4213
 Geodetic CRS:  WGS 84
 # A tibble: 4 x 5
 # Groups:   Вариант [4]
   Вариант     `Количество тралений` `Длина маршрута (км)` Площадь полигона (км~1
   <fct>                       <dbl>                 <dbl>                  <dbl>
-1 Original                      137                 3864.                 63101.
-2 Expanded_x~                   137                 4291.                 99791.
-3 Expanded_x2                   137                 4868.                135352.
-4 Expanded_x3                   137                 5964.                207066.
+1 Original                      137                 3284.                 63101.
+2 Expanded_x~                   137                 4060.                 99791.
+3 Expanded_x2                   137                 5411.                135352.
+4 Expanded_x3                   137                 6504.                207066.
 # i abbreviated name: 1: `Площадь полигона (км2)`
 # i 1 more variable: geometry <LINESTRING [arc_degree]>
 \end{verbatim}
@@ -53824,6 +53824,545 @@ CC & & & 11.6 & Средний исторический улов за после
 параметров и интеграции всех доступных данных, а затем сформулировать
 управленческую рекомендацию, явно учитывающую оставшуюся
 неопределенность.
+
+\bookmarksetup{startatroot}
+
+\chapter{Оценка параметров роста гидробионтов методом
+ELEFAN}\label{ux43eux446ux435ux43dux43aux430-ux43fux430ux440ux430ux43cux435ux442ux440ux43eux432-ux440ux43eux441ux442ux430-ux433ux438ux434ux440ux43eux431ux438ux43eux43dux442ux43eux432-ux43cux435ux442ux43eux434ux43eux43c-elefan}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-15}
+
+Это практическое занятие --- про то, как извлекать параметры роста
+(\emph{L∞}, \emph{K}) из рядов распределений по длине, когда возраст
+недоступен. Мы используем ELEFAN (Electronic Length Frequency Analysis)
+--- алгоритм, который по последовательности размерных срезов находит
+модальные «гребни» когорт и подбирает сезонную кривую фон Берталанфи,
+проходящую через них. Метод исторически разработан для тропических рыб,
+но применим и к холодноводным видам, если помнить об ограничениях: рост
+у ракообразных дискретный (линьки), а терминальная линька нарушает
+гладкую асимптотику VBGF. Поэтому \emph{K} интерпретируем как
+«эффективный» темп роста, а \emph{L∞} верифицируем правым хвостом
+промысла.
+
+Как отмечает Паули (1987), традиционные методы ихтиологии, разработанные
+в Северной Атлантике (например, для трески и сельди), часто опирались на
+определение возраста по кольцам на чешуе или отолитах. Однако в
+тропиках, где сезонные колебания температуры и других факторов среды
+выражены слабее, годовые кольца формируются нечётко или отсутствуют
+вовсе. Кроме того, многие важные промысловые объекты --- например, крабы
+и креветки --- вообще не имеют твёрдых структур, пригодных для
+определения возраста. В таких условиях распределения по длине становятся
+основным, а зачастую и единственным источником информации о росте,
+смертности и пополнении популяций. Более того, как подчёркивает Паули,
+многие биологические и промысловые процессы (хищничество, селективность
+орудий лова, товарная стоимость) зависят именно от размера, а не от
+возраста. Это делает основанный на длине (length-based) подход не просто
+вынужденной мерой, а биологически обоснованной альтернативой основанным
+на возрасте (age-based методам).
+
+ELEFAN --- это не одна программа, а целая система взаимосвязанных
+программ (ELEFAN 0--IV), предназначенных для:
+
+ELEFAN I: Оценка параметров роста (\emph{L∞}, \emph{K}, \emph{C},
+\emph{ts}) по сезонной версии уравнения Берталанфи.
+
+ELEFAN II: Оценка смертности (\emph{Z}, \emph{M}, \emph{F}),
+вероятностей поимки и сезонности пополнения.
+
+ELEFAN III: Виртуальный анализ популяций (VPA) на основе данных по
+длине.
+
+ELEFAN IV: Оценка естественной смертности (\emph{M}) с учётом
+селективности орудий лова.
+
+Сердце системы --- ELEFAN I. В отличие от классических графических
+методов, он использует алгоритм ``высокочастотной фильтрации'' для
+автоматического выявления пиков (мод) в распределениях по длине, а затем
+подбирает такую кривую роста, которая ``объясняет'' максимальное
+количество этих пиков во времени. Ключевой показатель --- ESP/ASP
+(Explained Sum of Peaks / Available Sum of Peaks) --- позволяет
+объективно выбрать наилучший набор параметров.
+
+Особенно важно, что ELEFAN I не требует предварительного знания возраста
+или числа поколений в выборке --- он выводит их автоматически, что
+делает его мощным инструментом для анализа плохо изученных видов.
+
+Что делаем на занятии: Сбор и визуализация данных: - Строим
+ridgeline-графики (ggridges) распределений ширины карапакса по годам
+отдельно для съёмки и промысла (самцы). - Формируем LFQ-объект (бининги
+по 2 мм; стабильные месяцы съёмки).
+
+Оценка параметров ростовой кривой: - Запускаем ELEFAN\_SA (seasonal VBGF
+Somers: \emph{L∞}, \emph{K}, \emph{C}, \emph{ts}, \emph{t\_anchor}) с
+реалистичными ограничениями для опилио. - Инициализацию \emph{L∞} берём
+из правого хвоста промысла (Q99/0.95) и «прижимаем» к 155--165 мм.
+
+Сдерживаем сезонность (\emph{C}) и не допускаем слишком малых \emph{K}.
+
+Диагностика и валидация: - Смотрим «реструктурированные» rcounts ---
+кривая должна проходить через зелёные гребни. - Сравниваем \emph{L∞} с
+промысловым хвостом по плотностям. - Проверяем здравый смысл по
+\emph{φ′} и по времени достижения 95\% от \emph{L∞}: \emph{t95} ≈
+−ln(1−0.95)/\emph{K} (для опилио целевой ориентир ≈ 12--15 лет).
+
+Выходы занятия: - Оценённые параметры роста (CSV), графики ridges,
+плотностей и сезонной VBGF, rcounts.
+
+Минимальные требования к данным - Поособные длины (ширина карапакса,
+мм), дата (год/месяц), пол, источник (съёмка/промысел). - Стабильные
+месяцы съёмки по годам, достаточный объём выборки в годовых срезах. -
+Для сопоставимости с промыслом --- анализируем самцов; бины 2 мм
+(≈1--2\% от ожидаемого \emph{L∞}).
+
+\textbf{Для работы скрипта
+(}\href{https://mombus.github.io/cRab/data/Bertalanffy_ELEFAN.R}{полный
+скрипт}\textbf{):}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Скачайте файлы данных
+  (``\href{https://mombus.github.io/cRab/data/SURVEYDATA.csv}{SURVEYDATA.csv}''
+  и
+  ``\href{https://mombus.github.io/cRab/data/FISHERYDATA.csv}{FISHERYDATA.csv}'')
+\item
+  Установите рабочую директорию в setwd() 3.Установите необходимые
+  пакеты (tidyverse, lubridate, ggridges, TropFishR).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# НАСТРОЙКА СРЕДЫ И ЗАГРУЗКА ПАКЕТОВ}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Установка рабочей директории {-} указываем путь к папке с данными}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/LBM/"}\NormalTok{)}
+
+\CommentTok{\# Тихая загрузка пакетов (без вывода сообщений)}
+\FunctionTok{suppressPackageStartupMessages}\NormalTok{(\{}
+  \FunctionTok{library}\NormalTok{(tidyverse)    }\CommentTok{\# Набор пакетов для обработки и визуализации данных}
+  \FunctionTok{library}\NormalTok{(lubridate)    }\CommentTok{\# Работа с датами}
+  \FunctionTok{library}\NormalTok{(ggridges)     }\CommentTok{\# Риджлайн{-}графики (горные хребты)}
+  \FunctionTok{library}\NormalTok{(TropFishR)    }\CommentTok{\# Пакет для анализа данных рыболовства}
+\NormalTok{\})}
+
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 1. ЗАГРУЗКА И ПРЕДВАРИТЕЛЬНАЯ ОБРАБОТКА ДАННЫХ}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Загрузка данных из CSV{-}файлов с разделителем ";"}
+\NormalTok{SURVEY  }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"SURVEYDATA.csv"}\NormalTok{,  }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)  }\CommentTok{\# Данные съемки}
+\NormalTok{FISHERY }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"FISHERYDATA.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)  }\CommentTok{\# Данные промысла}
+
+\CommentTok{\# ОБРАБОТКА ДАННЫХ СЪЕМКИ:}
+\CommentTok{\# 1. Добавляем столбец TYPE для идентификации типа данных}
+\CommentTok{\# 2. Стандартизируем обозначения пола (M/F)}
+\CommentTok{\# 3. Создаем дату (середина месяца)}
+\CommentTok{\# 4. Преобразуем размер карапакса в числовой формат}
+\CommentTok{\# 5. Фильтруем некорректные значения (отсутствующие, отрицательные, слишком большие)}
+\NormalTok{survey }\OtherTok{\textless{}{-}}\NormalTok{ SURVEY }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{TYPE     =} \StringTok{"Съёмка"}\NormalTok{,}
+    \AttributeTok{SEX      =} \FunctionTok{if\_else}\NormalTok{(SEX }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"M"}\NormalTok{,}\StringTok{"male"}\NormalTok{,}\StringTok{"m"}\NormalTok{), }\StringTok{"M"}\NormalTok{,}
+                       \FunctionTok{if\_else}\NormalTok{(SEX }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"F"}\NormalTok{,}\StringTok{"female"}\NormalTok{,}\StringTok{"f"}\NormalTok{), }\StringTok{"F"}\NormalTok{, }\ConstantTok{NA\_character\_}\NormalTok{)),}
+    \AttributeTok{date     =} \FunctionTok{ymd}\NormalTok{(}\FunctionTok{paste}\NormalTok{(YEAR, MONTH, }\DecValTok{15}\NormalTok{, }\AttributeTok{sep =} \StringTok{"{-}"}\NormalTok{)),}
+    \AttributeTok{CARAPACE =} \FunctionTok{as.numeric}\NormalTok{(CARAPACE)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(CARAPACE), CARAPACE }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, CARAPACE }\SpecialCharTok{\textless{}} \DecValTok{220}\NormalTok{)}
+
+\CommentTok{\# Аналогичная обработка данных промысла}
+\NormalTok{fishery }\OtherTok{\textless{}{-}}\NormalTok{ FISHERY }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{TYPE     =} \StringTok{"Промысел"}\NormalTok{,}
+    \AttributeTok{SEX      =} \FunctionTok{if\_else}\NormalTok{(SEX }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"M"}\NormalTok{,}\StringTok{"male"}\NormalTok{,}\StringTok{"m"}\NormalTok{), }\StringTok{"M"}\NormalTok{,}
+                       \FunctionTok{if\_else}\NormalTok{(SEX }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"F"}\NormalTok{,}\StringTok{"female"}\NormalTok{,}\StringTok{"f"}\NormalTok{), }\StringTok{"F"}\NormalTok{, }\ConstantTok{NA\_character\_}\NormalTok{)),}
+    \AttributeTok{date     =} \FunctionTok{ymd}\NormalTok{(}\FunctionTok{paste}\NormalTok{(YEAR, MONTH, }\DecValTok{15}\NormalTok{, }\AttributeTok{sep =} \StringTok{"{-}"}\NormalTok{)),}
+    \AttributeTok{CARAPACE =} \FunctionTok{as.numeric}\NormalTok{(CARAPACE)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(CARAPACE), CARAPACE }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, CARAPACE }\SpecialCharTok{\textless{}} \DecValTok{240}\NormalTok{)}
+
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 2. ВИЗУАЛИЗАЦИЯ РАЗМЕРНЫХ РАСПРЕДЕЛЕНИЙ (РИДЖЛАЙН{-}ГРАФИКИ)}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Объединяем данные съемки и промысла и фильтруем только самцов}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(survey, fishery) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(YEAR), }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(TYPE), SEX }\SpecialCharTok{==} \StringTok{"M"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{YEAR   =} \FunctionTok{as.integer}\NormalTok{(YEAR),}
+    \AttributeTok{YEAR\_F =} \FunctionTok{factor}\NormalTok{(YEAR, }\AttributeTok{levels =} \FunctionTok{sort}\NormalTok{(}\FunctionTok{unique}\NormalTok{(YEAR)))  }\CommentTok{\# Преобразуем год в фактор}
+\NormalTok{  )}
+
+\CommentTok{\# Определяем границы для оси X (округленные до десятков)}
+\NormalTok{xmin }\OtherTok{\textless{}{-}} \FunctionTok{floor}\NormalTok{(}\FunctionTok{min}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{CARAPACE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{/} \DecValTok{10}\NormalTok{) }\SpecialCharTok{*} \DecValTok{10}
+\NormalTok{xmax }\OtherTok{\textless{}{-}} \FunctionTok{ceiling}\NormalTok{(}\FunctionTok{max}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{CARAPACE, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{/} \DecValTok{10}\NormalTok{) }\SpecialCharTok{*} \DecValTok{10}
+
+\CommentTok{\# Создаем риджлайн{-}график (горный хребет)}
+\CommentTok{\# Риджлайны показывают распределение размеров по годам}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ CARAPACE, }\AttributeTok{y =}\NormalTok{ YEAR\_F, }\AttributeTok{fill =} \FunctionTok{after\_stat}\NormalTok{(x))) }\SpecialCharTok{+}
+  \FunctionTok{stat\_density\_ridges}\NormalTok{(}
+    \AttributeTok{geom =} \StringTok{"density\_ridges\_gradient"}\NormalTok{,}
+    \AttributeTok{calc\_ecdf =} \ConstantTok{FALSE}\NormalTok{,}
+    \AttributeTok{rel\_min\_height =} \FloatTok{0.001}\NormalTok{,}
+    \AttributeTok{bandwidth =} \DecValTok{3}  \CommentTok{\# Параметр сглаживания}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{(}\AttributeTok{name =} \StringTok{"Размер, мм"}\NormalTok{, }\AttributeTok{option =} \StringTok{"C"}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Цветовая схема}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ TYPE, }\AttributeTok{ncol =} \DecValTok{1}\NormalTok{, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Разделяем по типам данных}
+  \FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(xmin, xmax)) }\SpecialCharTok{+}  \CommentTok{\# Устанавливаем границы оси X}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Ширина карапакса, мм"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Год"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Размерные распределения по годам: съёмка и промысел (самцы)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{, }\AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{())}
+
+\NormalTok{p  }\CommentTok{\# Отображаем график}
+
+\CommentTok{\# Сохранение графика (раскомментируйте при необходимости)}
+\CommentTok{\# ggsave("size\_ridges\_by\_year\_type\_M.png", p, width = 10, height = 12, dpi = 200)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BERTA1.png}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 3. ОЦЕНКА ПАРАМЕТРОВ РОСТА МЕТОДОМ ELEFAN\_SA}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Фильтруем данные только по самцам}
+\NormalTok{survey\_m }\OtherTok{\textless{}{-}}\NormalTok{ survey }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(SEX }\SpecialCharTok{==} \StringTok{"M"}\NormalTok{)}
+\NormalTok{fish\_m   }\OtherTok{\textless{}{-}}\NormalTok{ fishery }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(SEX }\SpecialCharTok{==} \StringTok{"M"}\NormalTok{)}
+
+\CommentTok{\# Не ограничиваем анализ определенными годами для устойчивости результатов}
+\NormalTok{survey\_m }\OtherTok{\textless{}{-}}\NormalTok{ survey\_m }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(YEAR))  }\CommentTok{\# Все доступные данные}
+
+ \CommentTok{\#years\_use \textless{}{-} 2010:2019  \# 10 лет вместо неограниченного периода}
+ \CommentTok{\#survey\_m \textless{}{-} survey\_m \%\textgreater{}\% filter(YEAR \%in\% years\_use)}
+
+
+\CommentTok{\# Создаем объект LFQ (Length{-}Frequency Data) для анализа}
+\NormalTok{binw }\OtherTok{\textless{}{-}} \DecValTok{2}  \CommentTok{\# Ширина класса размеров (2 мм)}
+\NormalTok{lfq }\OtherTok{\textless{}{-}}\NormalTok{ TropFishR}\SpecialCharTok{::}\FunctionTok{lfqCreate}\NormalTok{(}
+  \AttributeTok{data     =}\NormalTok{ survey\_m }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(date)),}
+  \AttributeTok{Lname    =} \StringTok{"CARAPACE"}\NormalTok{,  }\CommentTok{\# Столбец с размерами}
+  \AttributeTok{Dname    =} \StringTok{"date"}\NormalTok{,      }\CommentTok{\# Столбец с датами}
+  \AttributeTok{bin\_size =}\NormalTok{ binw         }\CommentTok{\# Ширина класса}
+\NormalTok{)}
+
+\CommentTok{\# Инициализация параметра L∞ (максимальный теоретический размер)}
+\CommentTok{\# Основана на 99{-}м процентиле размеров промысла с поправочным коэффициентом}
+\NormalTok{init\_Linf2 }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{quantile}\NormalTok{(fish\_m}\SpecialCharTok{$}\NormalTok{CARAPACE, }\FloatTok{0.99}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{/} \FloatTok{0.95}
+\NormalTok{init\_Linf2 }\OtherTok{\textless{}{-}} \FunctionTok{min}\NormalTok{(}\FunctionTok{max}\NormalTok{(init\_Linf2, }\DecValTok{155}\NormalTok{), }\DecValTok{165}\NormalTok{)  }\CommentTok{\# Ограничиваем разумными пределами}
+
+\CommentTok{\# Оценка параметров роста методом имитации отжига (ELEFAN\_SA)}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)  }\CommentTok{\# Для воспроизводимости результатов}
+\NormalTok{res\_sa2 }\OtherTok{\textless{}{-}}\NormalTok{ TropFishR}\SpecialCharTok{::}\FunctionTok{ELEFAN\_SA}\NormalTok{(}
+\NormalTok{  lfq,}
+  \AttributeTok{seasonalised =} \ConstantTok{TRUE}\NormalTok{,  }\CommentTok{\# Используем сезонную модель}
+  \CommentTok{\# Начальные значения параметров:}
+  \AttributeTok{init\_par =} \FunctionTok{list}\NormalTok{(}\AttributeTok{Linf =}\NormalTok{ init\_Linf2, }\AttributeTok{K =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{t\_anchor =} \FloatTok{0.1}\NormalTok{, }\AttributeTok{C =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{ts =} \FloatTok{0.5}\NormalTok{),}
+  \CommentTok{\# Нижние границы параметров:}
+  \AttributeTok{low\_par  =} \FunctionTok{list}\NormalTok{(}\AttributeTok{Linf =} \DecValTok{155}\NormalTok{,        }\AttributeTok{K =} \FloatTok{0.20}\NormalTok{, }\AttributeTok{t\_anchor =} \FloatTok{0.0}\NormalTok{, }\AttributeTok{C =} \FloatTok{0.0}\NormalTok{, }\AttributeTok{ts =} \FloatTok{0.0}\NormalTok{),}
+  \CommentTok{\# Верхние границы параметров:}
+  \AttributeTok{up\_par   =} \FunctionTok{list}\NormalTok{(}\AttributeTok{Linf =} \DecValTok{165}\NormalTok{,        }\AttributeTok{K =} \FloatTok{0.35}\NormalTok{, }\AttributeTok{t\_anchor =} \FloatTok{1.0}\NormalTok{, }\AttributeTok{C =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{ts =} \FloatTok{1.0}\NormalTok{),}
+  \AttributeTok{SA\_time  =} \DecValTok{60}  \CommentTok{\# Время работы алгоритма (секунды)}
+\NormalTok{)}
+
+
+\CommentTok{\# Извлекаем оцененные параметры}
+\NormalTok{pars2 }\OtherTok{\textless{}{-}}\NormalTok{ res\_sa2}\SpecialCharTok{$}\NormalTok{par}
+
+\CommentTok{\# Рассчитываем дополнительные показатели:}
+\CommentTok{\# φ\textquotesingle{} (фи{-}prime) {-} индекс производительности роста}
+\NormalTok{phi\_prime }\OtherTok{\textless{}{-}} \FunctionTok{log10}\NormalTok{(pars2}\SpecialCharTok{$}\NormalTok{K) }\SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{log10}\NormalTok{(pars2}\SpecialCharTok{$}\NormalTok{Linf)}
+\CommentTok{\# Время достижения 95\% от L∞}
+\NormalTok{t95 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(K) }\SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}} \FloatTok{0.95}\NormalTok{)}\SpecialCharTok{/}\NormalTok{K}
+
+\CommentTok{\# Вывод результатов}
+\FunctionTok{cat}\NormalTok{(}\FunctionTok{sprintf}\NormalTok{(}\StringTok{"ELEFAN\_SA: L∞=\%.1f мм, K=\%.3f, C=\%.2f, ts=\%.2f, phi\textquotesingle{} = \%.3f, t95 = \%.1f лет}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{,}
+\NormalTok{            pars2}\SpecialCharTok{$}\NormalTok{Linf, pars2}\SpecialCharTok{$}\NormalTok{K, pars2}\SpecialCharTok{$}\NormalTok{C, pars2}\SpecialCharTok{$}\NormalTok{ts, phi\_prime, }\FunctionTok{t95}\NormalTok{(pars2}\SpecialCharTok{$}\NormalTok{K)))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Вывод
+результатов}\label{ux432ux44bux432ux43eux434-ux440ux435ux437ux443ux43bux44cux442ux430ux442ux43eux432}
+
+ELEFAN\_SA : \emph{L∞}=163.4 мм, \emph{K}=0.211, \emph{C}=0.07,
+\emph{ts}=0.17, \emph{phi'} = 3.750, \emph{t95} = 14.2 лет
+
+Интерпретация параметров:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \emph{L∞} = 163.4 мм • Асимптотическая длина --- максимальный
+  теоретический размер, которого могут достигать самцы краба-опилио. •
+  Реалистично: Для самцов опилио L∞ обычно лежит в диапазоне 150--170 мм
+  (по ширине карапакса). Ваш результат попадает точно в этот диапазон.
+\item
+  \emph{K} = 0.211 год⁻¹ • Коэффициент роста --- показывает, насколько
+  быстро особь приближается к \emph{L∞}. • Реалистично: Для опилио K
+  обычно находится в диапазоне 0.20--0.30 год⁻¹. Значение 0.211 ---
+  идеально подходит.
+\item
+  \emph{C} = 0.07 • Амплитуда сезонных колебаний роста. • Реалистично:
+  Значение очень низкое, что говорит о слабо выраженной сезонности
+  роста. • Это типично для демерсальных ракообразных в холодных водах,
+  где температура дна меняется незначительно в течение года. Рост
+  замедляется, но не останавливается. • Согласуется с данными Паули
+  (1987), где показано, что \emph{C} коррелирует с амплитудой колебаний
+  температуры среды. Для холодных вод --- \emph{C} близок к 0.
+\item
+  \emph{ts} = 0.17 • Сдвиг сезонных колебаний. Показывает, когда
+  начинается период замедленного роста. • \emph{ts} = 0.17 ≈ февраль
+  (0.17 * 12 ≈ 2 месяца). • Реалистично: Для северных популяций
+  замедление роста часто приходится на зимние месяцы (январь-февраль),
+  когда температура воды минимальна и/или пищи меньше.
+\item
+  \emph{φ'} = 3.750 • Индекс производительности роста. Комбинирует
+  \emph{L∞} и \emph{K}. • Для ракообразных \emph{φ'} обычно лежит в
+  диапазоне 3.5--4.0. Наш результат 3.750 --- идеален. • Показывает, что
+  вид имеет умеренно высокую скорость роста при крупном максимальном
+  размере --- типично для промысловых крабов.
+\item
+  \emph{t95} = 14.2 года • Возраст, в котором особь достигает 95\% от
+  \emph{L∞}. • Реалистично: Для самцов опилио t95 обычно составляет
+  12--15 лет. Наш результат 14.2 года --- биологически обоснован. • Это
+  не ошибка, а реальность для этого вида. Краб-стригун опилио ---
+  долгожитель по меркам ракообразных. Максимальный зарегистрированный
+  возраст --- до 18 лет. • Важно: \emph{t95} --- это не
+  продолжительность жизни, а возраст, к которому рост практически
+  прекращается. После этого особь может жить еще несколько лет, не
+  увеличиваясь в размере.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 4. СРАВНЕНИЕ РАСПРЕДЕЛЕНИЙ РАЗМЕРОВ СЪЕМКИ И ПРОМЫСЛА}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# График плотности распределений размеров}
+\NormalTok{p\_dens }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# Плотность распределения для данных съемки}
+  \FunctionTok{geom\_density}\NormalTok{(}\AttributeTok{data =}\NormalTok{ survey\_m, }\FunctionTok{aes}\NormalTok{(CARAPACE, }\AttributeTok{colour =} \StringTok{"Съёмка"}\NormalTok{), }\AttributeTok{bw =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Плотность распределения для данных промысла}
+  \FunctionTok{geom\_density}\NormalTok{(}\AttributeTok{data =}\NormalTok{ fish\_m,   }\FunctionTok{aes}\NormalTok{(CARAPACE, }\AttributeTok{colour =} \StringTok{"Промысел"}\NormalTok{), }\AttributeTok{bw =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Вертикальная линия, показывающая оценку L∞}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{Linf, }\AttributeTok{linetype =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Цветовая схема}
+  \FunctionTok{scale\_colour\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Съёмка"} \OtherTok{=} \StringTok{"steelblue"}\NormalTok{, }\StringTok{"Промысел"} \OtherTok{=} \StringTok{"tomato"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Ширина карапакса, мм"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Плотность"}\NormalTok{, }\AttributeTok{colour =} \ConstantTok{NULL}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Распределения по размерам; штрих — оценка L∞ (ELEFAN)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{)}
+
+\NormalTok{p\_dens }\CommentTok{\# Отображаем график}
+
+\CommentTok{\# Сохранение графика}
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"densities\_survey\_fishery\_Linf.png"}\NormalTok{, p\_dens, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =} \DecValTok{5}\NormalTok{, }\AttributeTok{dpi =} \DecValTok{200}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BERTA2.png}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 4.1 Визуализация "реструктурированных" распределений по длине (restructured counts)}
+\CommentTok{\# с наложенной оптимальной кривой роста, подобранной методом ELEFAN\_SA.}
+\CommentTok{\# =============================================================================}
+
+\NormalTok{restr }\OtherTok{\textless{}{-}} \FunctionTok{plot}\NormalTok{(res\_sa2, }\AttributeTok{Fname =} \StringTok{"rcounts"}\NormalTok{, }\AttributeTok{image.col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{,}\StringTok{"grey100"}\NormalTok{,}\StringTok{"green"}\NormalTok{))(}\DecValTok{21}\NormalTok{))}
+
+\NormalTok{restr  }\CommentTok{\# Отображаем график}
+
+\CommentTok{\# Сохранение графика}
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"restr.png"}\NormalTok{, restr, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =} \DecValTok{5}\NormalTok{, }\AttributeTok{dpi =} \DecValTok{200}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{images/BERTA3.png}
+\end{center}
+
+Визуализация ``реструктурированных'' распределений по длине
+(restructured counts) с наложенной оптимальной кривой роста, подобранной
+методом ELEFAN\_SA.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  restructured counts (rcounts) --- это ключевое понятие в методе
+  ELEFAN, подробно описанное в статье Паули (стр. 14--16, Fig. 4). • Это
+  не исходные гистограммы, а преобразованные данные, где: • Пики (моды)
+  выделены положительными значениями (зелёный цвет). • Впадины между
+  пиками --- отрицательными (красный цвет). • Фон (серый) ---
+  нейтральные зоны. • Цель --- ``очистить'' данные от шума и выделить
+  структуру, которую должна объяснить кривая роста.
+\item
+  Оптимальные кривые роста (пунктиры) --- это результат работы
+  ELEFAN\_SA, который максимизирует ESP/ASP (Explained Sum of Peaks /
+  Available Sum of Peaks) --- главный критерий качества подгонки в
+  ELEFAN (Pauly, 1987, стр. 15--16).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 5. ПОСТРОЕНИЕ КРИВОЙ РОСТА С ДОВЕРИТЕЛЬНЫМИ ИНТЕРВАЛАЛАМИ}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Функция сезонного уравнения роста Берталанфи}
+\CommentTok{\# t {-} возраст, Linf {-} асимптотическая длина, K {-} коэффициент роста,}
+\CommentTok{\# t0 {-} теоретический возраст при нулевой длине, C {-} амплитуда сезонных колебаний,}
+\CommentTok{\# ts {-} параметр сдвига сезонных колебаний}
+\NormalTok{seasonal\_vbgf }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(t, Linf, K, t0, C, ts) \{}
+\NormalTok{  term }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\NormalTok{K}\SpecialCharTok{*}\NormalTok{(t }\SpecialCharTok{{-}}\NormalTok{ t0) }\SpecialCharTok{+}\NormalTok{ (C}\SpecialCharTok{*}\NormalTok{K}\SpecialCharTok{/}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi)) }\SpecialCharTok{*} \FunctionTok{sin}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi}\SpecialCharTok{*}\NormalTok{(t }\SpecialCharTok{{-}}\NormalTok{ ts)) }\SpecialCharTok{{-}}\NormalTok{ (C}\SpecialCharTok{*}\NormalTok{K}\SpecialCharTok{/}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi)) }\SpecialCharTok{*} \FunctionTok{sin}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi}\SpecialCharTok{*}\NormalTok{(t0 }\SpecialCharTok{{-}}\NormalTok{ ts))}
+\NormalTok{  Lt }\OtherTok{\textless{}{-}}\NormalTok{ Linf }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}} \FunctionTok{exp}\NormalTok{(term))}
+  \FunctionTok{return}\NormalTok{(Lt)}
+\NormalTok{\}}
+
+\CommentTok{\# Функция для предсказания роста с учетом неопределенности параметров}
+\NormalTok{predict\_growth }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(ages, params, }\AttributeTok{n\_sim =} \DecValTok{1000}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.05}\NormalTok{) \{}
+  \CommentTok{\# Извлекаем точечные оценки параметров}
+\NormalTok{  Linf\_est }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{Linf}
+\NormalTok{  K\_est }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{K}
+\NormalTok{  t0\_est }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{t\_anchor}
+\NormalTok{  C\_est }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{C}
+\NormalTok{  ts\_est }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{ts}
+  
+  \CommentTok{\# Матрица для хранения симуляций}
+\NormalTok{  simulations }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\ConstantTok{NA}\NormalTok{, }\AttributeTok{nrow =}\NormalTok{ n\_sim, }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(ages))}
+  
+  \CommentTok{\# Симуляция возможных значений параметров на основе их неопределенности}
+  \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{  Linf\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =}\NormalTok{ Linf\_est, }\AttributeTok{sd =}\NormalTok{ Linf\_est }\SpecialCharTok{*} \FloatTok{0.05}\NormalTok{)  }\CommentTok{\# CV 5\%}
+\NormalTok{  K\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =}\NormalTok{ K\_est, }\AttributeTok{sd =}\NormalTok{ K\_est }\SpecialCharTok{*} \FloatTok{0.1}\NormalTok{)           }\CommentTok{\# CV 10\%}
+\NormalTok{  t0\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =}\NormalTok{ t0\_est, }\AttributeTok{sd =} \FloatTok{0.1}\NormalTok{)                 }\CommentTok{\# SD 0.1}
+\NormalTok{  C\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =}\NormalTok{ C\_est, }\AttributeTok{sd =} \FloatTok{0.05}\NormalTok{)                  }\CommentTok{\# SD 0.05}
+\NormalTok{  ts\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =}\NormalTok{ ts\_est, }\AttributeTok{sd =} \FloatTok{0.05}\NormalTok{)                }\CommentTok{\# SD 0.05}
+  
+  \CommentTok{\# Ограничение параметров физиологически реалистичными значениями}
+\NormalTok{  Linf\_sim }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(Linf\_sim, }\DecValTok{180}\NormalTok{), }\DecValTok{140}\NormalTok{)}
+\NormalTok{  K\_sim }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(K\_sim, }\FloatTok{0.5}\NormalTok{), }\FloatTok{0.05}\NormalTok{)}
+\NormalTok{  C\_sim }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(C\_sim, }\DecValTok{1}\NormalTok{), }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ts\_sim }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(ts\_sim, }\DecValTok{1}\NormalTok{), }\DecValTok{0}\NormalTok{)}
+  
+  \CommentTok{\# Расчет кривых роста для каждой симуляции}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_sim) \{}
+\NormalTok{    simulations[i, ] }\OtherTok{\textless{}{-}} \FunctionTok{seasonal\_vbgf}\NormalTok{(ages, Linf\_sim[i], K\_sim[i], }
+\NormalTok{                                      t0\_sim[i], C\_sim[i], ts\_sim[i])}
+\NormalTok{  \}}
+  
+  \CommentTok{\# Расчет доверительных интервалов}
+\NormalTok{  mean\_pred }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(simulations, }\DecValTok{2}\NormalTok{, mean)}
+\NormalTok{  lower\_ci }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(simulations, }\DecValTok{2}\NormalTok{, quantile, }\AttributeTok{probs =}\NormalTok{ alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  upper\_ci }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(simulations, }\DecValTok{2}\NormalTok{, quantile, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+  
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{Age =}\NormalTok{ ages,}
+    \AttributeTok{Length =}\NormalTok{ mean\_pred,}
+    \AttributeTok{Lower =}\NormalTok{ lower\_ci,}
+    \AttributeTok{Upper =}\NormalTok{ upper\_ci}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\CommentTok{\# Создаем данные для графика с доверительными интервалами}
+\NormalTok{ages }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{20}\NormalTok{, }\AttributeTok{by =} \FloatTok{0.1}\NormalTok{)  }\CommentTok{\# Возраст от 0 до 20 лет с шагом 0.1}
+\NormalTok{growth\_df }\OtherTok{\textless{}{-}} \FunctionTok{predict\_growth}\NormalTok{(ages, pars2, }\AttributeTok{n\_sim =} \DecValTok{1000}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.05}\NormalTok{)  }\CommentTok{\# 95\% ДИ}
+
+\CommentTok{\# Построение графика кривой роста}
+\NormalTok{p\_growth }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(growth\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length)) }\SpecialCharTok{+}
+  \CommentTok{\# Доверительные интервалы (заполненная область)}
+  \FunctionTok{geom\_ribbon}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{ymin =}\NormalTok{ Lower, }\AttributeTok{ymax =}\NormalTok{ Upper), }\AttributeTok{alpha =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{fill =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Средняя кривая роста}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Горизонтальная линия, показывающая L∞}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{Linf, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Возраст (лет)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Ширина карапакса (мм)"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Кривая роста (сезонный ВБГФ) с доверительными интервалами"}\NormalTok{,}
+       \AttributeTok{subtitle =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"L∞=\%.1f мм, K=\%.3f, C=\%.2f, ts=\%.2f, t95≈\%.1f лет"}\NormalTok{,}
+\NormalTok{                          pars2}\SpecialCharTok{$}\NormalTok{Linf, pars2}\SpecialCharTok{$}\NormalTok{K, pars2}\SpecialCharTok{$}\NormalTok{C, pars2}\SpecialCharTok{$}\NormalTok{ts, }\FunctionTok{t95}\NormalTok{(pars2}\SpecialCharTok{$}\NormalTok{K))) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{13}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(p\_growth)}
+\CommentTok{\# Сохранение графика}
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"seasonal\_VBGF\_with\_CI.png"}\NormalTok{, p\_growth, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =} \DecValTok{5}\NormalTok{, }\AttributeTok{dpi =} \DecValTok{200}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BERTA4.png}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================================================================}
+\CommentTok{\# 6. СОХРАНЕНИЕ РЕЗУЛЬТАТОВ}
+\CommentTok{\# =============================================================================}
+
+\CommentTok{\# Сохранение оцененных параметров роста в CSV{-}файл}
+\FunctionTok{write.csv}\NormalTok{(}\FunctionTok{tibble}\NormalTok{(}
+  \AttributeTok{Linf =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{Linf, }
+  \AttributeTok{K =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{K, }
+  \AttributeTok{C =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{C, }
+  \AttributeTok{ts =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{ts,}
+  \AttributeTok{t\_anchor =}\NormalTok{ pars2}\SpecialCharTok{$}\NormalTok{t\_anchor, }
+  \AttributeTok{phi\_prime =}\NormalTok{ phi\_prime, }
+  \AttributeTok{t95\_years =} \FunctionTok{t95}\NormalTok{(pars2}\SpecialCharTok{$}\NormalTok{K)}
+\NormalTok{), }\StringTok{"ELEFAN\_params\_constrained.csv"}\NormalTok{, }\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# Сообщение о завершении анализа}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Готово. Файлы: size\_ridges\_by\_year\_type\_M.png, densities\_survey\_fishery\_Linf.png, seasonal\_VBGF\_to15y.png, ELEFAN\_params\_constrained.csv}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Заключение}\label{ux437ux430ux43aux43bux44eux447ux435ux43dux438ux435-1}
+
+• По демонстрационному прогону для наших данных ELEFAN под ограничениями
+даёт реалистичный набор параметров для самцов опилио: \emph{L∞} в
+интервале 155--165 мм, \emph{K} порядка 0.20--0.25 год⁻¹, слабая
+сезонность (\emph{C} близка к 0), \emph{t95} ≈ 12--15 лет. Это
+согласуется с биологией вида и правым хвостом промысловых размеров. •
+Ключевые проверки качества: o Соответствие \emph{L∞} правому хвосту
+промысла по годам (\emph{Q99}, \emph{Lmax}). o \emph{t95} не выходит за
+пределы жизненного горизонта (для опилио --- порядка ≤15 лет). o Кривая
+в rcounts проходит через «зелёные» гребни мод, без систематических
+сдвигов. o Индекс \emph{φ′} лежит в ожидаемом для ракообразных диапазоне
+(ориентир 3.5--4.0). • Ограничения метода: o ELEFAN работает с модальной
+прогрессией длин, а не с истинным возрастом. Для ракообразных дискретные
+линьки и терминальная линька могут смещать \emph{K} вниз и \emph{L∞}
+вверх, если не ограничивать поиск. Интерпретируйте K как эффективный
+параметр, пригодный для length-based процедур, а не как «истинную»
+физиологическую константу. o Неполное внутригодовое покрытие (у вас ---
+август--ноябрь) усложняет оценку сезонности (**C\emph{, }ts*); при
+необходимости фиксируйте **C* ≈ 0. • Рекомендации по устойчивости: o
+Повторите оценку на поднаборах лет с хорошей выборкой; проверьте
+чувствительность к ширине бина (2--5 мм). o Проведите бутстреп по
+столбцам LFQ, чтобы получить доверительные интервалы для L∞ и K. o
+Разделите анализ по районам/стратам, если селективность и размерная
+структура различаются. • Что дальше в курсе: o Использовать получённые
+\emph{L∞}, *K** (и при необходимости \emph{M}/\emph{k}) как
+приоры/входные параметры в length-based методах для data limited (LBSPR,
+LBB, LIME). o Построить крабо специфичную модель линьки: вероятность
+линьки MP(L) и прирост MI(L) по межлиночным категориям; сверить
+«эффективный» рост из матрицы переходов с оценками ELEFAN. o Рассчитать
+индикаторы по длинам (Lopt, Pmat, Popt, Pmega) и сформировать набор
+управленческих ориентиров с явным учётом неопределённости. Итог: при
+аккуратной настройке и валидации ELEFAN даёт воспроизводимые и
+биологически согласованные оценки роста, достаточные для length based
+оценки состояния запаса и первичных управленческих выводов. Для
+ракообразных результаты ELEFAN следует трактовать совместно с моделью
+линьки и длиновыми индикаторами --- это повышает надёжность при принятии
+решений в условиях неполных данных.
 
 \bookmarksetup{startatroot}
 
