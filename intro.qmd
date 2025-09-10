@@ -1,5 +1,7 @@
 # Введение
 
+<meta name="google-site-verification" content="S5FHE7FMljkNlO1JCsUadgRh7WuuovQvfEnhJnJAeTQ" />
+
 ::: {style="text-align: right"}
 "How data treat you?" — Аристотель
 :::
