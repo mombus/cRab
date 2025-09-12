@@ -30,6 +30,7 @@ book:
     - chapter18.qmd
     - chapter19.qmd
     - chapter20.qmd
+    - chapter21.qmd
     - references.qmd
 
 bibliography: references.bib
