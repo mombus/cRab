@@ -1,6 +1,7 @@
 # Аннотация {.unnumbered}
 
 <meta name="google-site-verification" content="S5FHE7FMljkNlO1JCsUadgRh7WuuovQvfEnhJnJAeTQ" />
+<meta name="yandex-verification" content="5be9ae655e4d5b43" />
 
 **Баканев С. В. (2025) Оценка водных биоресурсов при недостатке данных в среде R (для начинающих). — Курс лекций и практических занятий, адрес доступа: https://mombus.github.io/cRab**
 
