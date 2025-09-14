@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>25&nbsp; III. DLM: LBSPR – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./chapter23.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter24.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">III. DLM: LBSPR</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Нейронные сети в экологии: практическое введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Съёмка: оптимизация маршрута</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Картография: повышение разрешения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">SDM: моделирование пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GMM кластеризация: Определение широкопалости самцов краба-стригуна</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Модели истощения Лесли и Делури</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">II. DLM: CATCH-ONLY METHODS (COM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Оценка параметров роста гидробионтов методом ELEFAN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Оценка естественной смертности</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter22.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Оценка селективности промысла</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter23.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Определение параметров зрелости краба-стригуна опилио: L50 и L95</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter24.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">III. DLM: LBSPR</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">25.1</span> Введение</a></li>
+  <li><a href="#что-делаем" id="toc-что-делаем" class="nav-link" data-scroll-target="#что-делаем"><span class="header-section-number">25.2</span> Что делаем</a></li>
+  <li><a href="#описание-работы-скрипта" id="toc-описание-работы-скрипта" class="nav-link" data-scroll-target="#описание-работы-скрипта"><span class="header-section-number">25.3</span> Описание работы скрипта</a></li>
+  <li><a href="#интерпретация-результатов" id="toc-интерпретация-результатов" class="nav-link" data-scroll-target="#интерпретация-результатов"><span class="header-section-number">25.4</span> Интерпретация результатов</a></li>
+  <li><a href="#скрипт-и-входные-данные" id="toc-скрипт-и-входные-данные" class="nav-link" data-scroll-target="#скрипт-и-входные-данные"><span class="header-section-number">25.5</span> Скрипт и входные данные</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">III. DLM: LBSPR</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="введение" class="level2" data-number="25.1">
+<h2 data-number="25.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">25.1</span> Введение</h2>
+<p>В рыбохозяйственных исследованиях часто возникает ситуация, когда данных катастрофически не хватает, но оценку запасов проводить необходимо. Вот здесь и приходят на помощь основанные на размерах (length-based) методы, которые извлекают максимум информации из минимального набора данных — по сути, пытаются восстановить скелет по нескольким костям. Эти методы работают с размерной структурой уловов, позволяя оценивать состояние запасов там, где традиционные подходы просто неприменимы.</p>
+<p>Возьмем LBSPR — метод, основанный на анализе репродуктивного потенциала через размерные показатели. Он требует знания биологических параметров вида, но зато дает оценку промысловой смертности и соотношения половозрелой части популяции. Это как пытаться определить возраст дерева по толщине ствола — приблизительно, но лучше чем ничего. Метод особенно полезен для видов с выраженным размерным диморфизмом, где размер четко коррелирует с половой зрелостью.</p>
+<p>LBB представляет собой еще более элегантное решение — он работает вообще без каких-либо предварительных данных о виде. Чистая байесовская (Bayesian) статистика, которая из одного лишь размерного состава улова извлекает оценки и промысловой смертности, и естественной смертности, и даже оптимального размера ячеи орудий лова. Это напоминает гадание на кофейной гуще, но статистически обоснованное — метод строит вероятностные распределения и показывает, какие параметры наиболее вероятны при имеющихся данных.</p>
+<p>LIME занимает промежуточное положение, позволяя интегрировать разрозненные данные за несколько лет и учитывать пространственную неоднородность. Он особенно полезен при мониторинге видов с выраженной межгодовой динамикой, где простое усреднение показателей может дать искаженную картину.</p>
+<p>Практическое применение этих методов сталкивается с неизбежными ограничениями. Все они предполагают, что размерный состав улова репрезентативен для всей популяции, что далеко не всегда соответствует действительности. Селективность орудий лова, пространственная неоднородность распределения, сезонные миграции — все это вносит искажения в данные. Для ракообразных, таких как краб-стригун, добавляются дополнительные сложности: дискретный рост во время линьки, сильно выраженный половой диморфизм, разные темпы роста самцов и самок.</p>
+<p>Тем не менее, эти методы остаются незаменимым инструментом для data-limited fisheries — ситуаций, когда данные ограничены, но управлять промыслом нужно. Они позволяют проводить оперативный мониторинг состояния запасов, оценивать эффективность мер регулирования и, что особенно важно, определять направления для более детальных исследований. Как говорят специалисты, лучше приблизительный ответ на правильный вопрос, чем точный ответ на неправильный.</p>
+<p>На практике рекомендуется использовать несколько методов параллельно — их сравнение позволяет оценить устойчивость результатов и выявить потенциальные проблемы с данными. LBSPR хорош для оценки репродуктивного потенциала, LBB — для оперативного мониторинга, LIME — для анализа многолетней динамики. Важно помнить, что все эти методы дают относительные оценки, а не абсолютные значения, и их сила в сравнении, а не в абсолютных цифрах.</p>
+<p>В конечном счете, искусство оценки запасов заключается не в применении самых сложных моделей, а в понимании того, какая информация действительно содержится в имеющихся данных — и length-based методы предоставляют для этого мощный и гибкий инструментарий.</p>
+</section>
+<section id="что-делаем" class="level2" data-number="25.2">
+<h2 data-number="25.2" class="anchored" data-anchor-id="что-делаем"><span class="header-section-number">25.2</span> Что делаем</h2>
+<p>LBSPR (Length-Based Spawning Potential Ratio) - это современный метод оценки состояния рыбных запасов, разработанный Hordyk et al.&nbsp;(2015, 2016). Метод позволяет оценить интенсивность промысла и состояние запаса, используя только данные о размерной структуре уловов и базовые биологические параметры.</p>
+<p><strong>Основная концепция SPR (Spawning Potential Ratio):</strong> - SPR показывает, какая доля репродуктивного потенциала популяции сохраняется при текущем уровне промысла по сравнению с неэксплуатируемой популяцией - SPR = 1.0 означает девственную популяцию (нет промысла) - SPR = 0.4 считается целевым уровнем для устойчивого промысла - SPR &lt; 0.2 указывает на критический перелов</p>
+<p><strong>Как работает LBSPR:</strong> 1. <strong>Моделирование равновесной популяции</strong>: Метод предполагает, что популяция находится в равновесном состоянии при текущем уровне промысловой смертности 2. <strong>Анализ формы размерного распределения</strong>: По соотношению мелких, средних и крупных особей в улове метод определяет: - Насколько интенсивен промысел (F/M - отношение промысловой к естественной смертности) - Какая часть репродуктивного потенциала сохраняется (SPR) 3. <strong>Использование модели GTG (Growth-Type-Group)</strong>: Учитывает индивидуальную изменчивость в росте особей, что делает оценки более реалистичными</p>
+</section>
+<section id="описание-работы-скрипта" class="level2" data-number="25.3">
+<h2 data-number="25.3" class="anchored" data-anchor-id="описание-работы-скрипта"><span class="header-section-number">25.3</span> Описание работы скрипта</h2>
+<ol type="1">
+<li>Подготовка данных (строки 1-100) <strong>Загрузка и обработка данных:</strong></li>
+</ol>
+<ul>
+<li>Загружаются 8 CSV файлов с данными о промысле, съемках, уловах, параметрах роста</li>
+<li>Данные фильтруются по полу (только самцы - “M”)</li>
+<li>Длины карапакса приводятся к числовому формату</li>
+<li>Определяются параметры:
+<ul>
+<li>Linf = 163.4 мм (асимптотическая длина)</li>
+<li>M/K = 1.085 (отношение естественной смертности к коэффициенту роста)</li>
+<li>L50 зрелости = 73 мм</li>
+<li>L50 селективности = 96 мм</li>
+</ul></li>
+</ul>
+<ol start="2" type="1">
+<li>Анализ методом LBSPR (строки 107-175) <strong>Процесс анализа:</strong> а. <strong>Создание размерных классов</strong>: Данные группируются в бины по 2 мм (от 40 до 220 мм) б. <strong>Формирование матрицы длинных композиций</strong>: Для каждого года (2013-2024) подсчитывается количество особей в каждом размерном классе в. <strong>Настройка параметров модели</strong>:
+<ul>
+<li>Параметры роста (Linf, M/K)</li>
+<li>Параметры зрелости (L50=73, L95=126 мм)</li>
+<li>Параметры селективности промысла (SL50=96, SL95=112 мм)</li>
+<li>Коэффициент вариации длины (CV=0.1) г. <strong>Запуск модели LBSPR</strong>: Итеративная подгонка модели к наблюдаемым данным для оценки SPR и F/M</li>
+</ul></li>
+<li>Расчет дополнительных индикаторов (строки 177-295)</li>
+</ol>
+<p><strong>Индикаторы по Froese (2004):</strong> - <strong>Pmat</strong> - доля половозрелых особей в улове - <strong>Popt</strong> - доля особей оптимального размера (&gt;0.9×Linf) - <strong>Pmega</strong> - доля мегаспаунеров (&gt;Linf)</p>
+<p><strong>Индикаторы размерной структуры:</strong> - <strong>Lmean/Linf</strong> - средняя длина относительно асимптотической - <strong>L95/Linf</strong> - 95-й процентиль длины - Анализ трендов за последние 5 лет</p>
+</section>
+<section id="интерпретация-результатов" class="level2" data-number="25.4">
+<h2 data-number="25.4" class="anchored" data-anchor-id="интерпретация-результатов"><span class="header-section-number">25.4</span> Интерпретация результатов</h2>
+<p>Результаты LBSPR</p>
+<p><strong>Ключевые показатели:</strong> - <strong>Средний SPR = 0.423</strong> (за весь период) - <strong>SPR в 2024 году = 0.353</strong> - <strong>F/M в 2024 году = 2.03</strong> <strong>Что это означает:</strong> - SPR = 0.353 &lt; 0.4 указывает на <strong>приближение к перелову</strong> - Только 35% репродуктивного потенциала сохраняется - F/M = 2.03 означает, что промысловая смертность в 2 раза выше естественной - это <strong>высокая интенсивность промысла</strong></p>
+<p>Анализ размерной структуры <strong>Индикаторы за 2022-2024 годы:</strong> - <strong>Lmean/Linf = 0.661</strong> - средний размер составляет только 66% от максимального - <strong>99.5% особей половозрелые</strong> - хорошая селективность, молодь защищена - <strong>0.1% крупных особей</strong> - практически нет особей оптимального размера - <strong>0% мегаспаунеров</strong> - полное отсутствие самых крупных производителей Тренды - Средняя длина <strong>снижается на 0.6 мм/год</strong> за последние 5 лет - Это негативный тренд, указывающий на усиление пресса промысла</p>
+<p>Сводная таблица результатов:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Индикатор</th>
+<th>Значение</th>
+<th>Целевой уровень</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SPR</td>
+<td>0.353</td>
+<td>≥0.40</td>
+<td><strong>Перелов</strong></td>
+</tr>
+<tr class="even">
+<td>F/M</td>
+<td>2.03</td>
+<td>≤1.0</td>
+<td><strong>Перелов</strong></td>
+</tr>
+<tr class="odd">
+<td>Lmean/Linf</td>
+<td>0.661</td>
+<td>≥0.70</td>
+<td><strong>Перелов</strong></td>
+</tr>
+<tr class="even">
+<td>% зрелых</td>
+<td>99.5%</td>
+<td>≥90%</td>
+<td>OK</td>
+</tr>
+<tr class="odd">
+<td>% оптимальных</td>
+<td>0.1%</td>
+<td>≥30%</td>
+<td><strong>Критически низкая</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Заключение</p>
+<p><strong>Состояние запаса: УМЕРЕННЫЙ ПЕРЕЛОВ с признаками ухудшения</strong> <strong>Основные проблемы:</strong></p>
+<ol type="1">
+<li><strong>Перелов крупных особей</strong> - в популяции практически отсутствуют крупные высокопродуктивные производители</li>
+<li><strong>Высокая промысловая смертность</strong> - F/M в 2 раза превышает рекомендуемый уровень</li>
+<li><strong>Снижение SPR ниже целевого уровня</strong> - репродуктивный потенциал под угрозой</li>
+<li><strong>Негативный тренд</strong> - средние размеры продолжают снижаться</li>
+</ol>
+<p><strong>Положительные моменты:</strong> - Хорошая селективность - молодь защищена от промысла - Большинство особей успевает достичь половой зрелости</p>
+<p>Рекомендации для управления</p>
+<ol type="1">
+<li><strong>Снизить интенсивность промысла</strong> для восстановления SPR до уровня ≥0.4</li>
+<li><strong>Защитить крупных производителей</strong> - рассмотреть введение максимального размера</li>
+<li><strong>Мониторинг тренда</strong> - если снижение средних размеров продолжится, необходимы срочные меры</li>
+<li><strong>Целевой ориентир</strong> - довести долю особей оптимального размера до 30%</li>
+</ol>
+<p>Данный анализ показывает, что запас находится в состоянии умеренного перелова с тенденцией к ухудшению, требются корректирующие меры управления для обеспечения устойчивости промысла.</p>
+</section>
+<section id="скрипт-и-входные-данные" class="level2" data-number="25.5">
+<h2 data-number="25.5" class="anchored" data-anchor-id="скрипт-и-входные-данные"><span class="header-section-number">25.5</span> Скрипт и входные данные</h2>
+<p><a href="https://mombus.github.io/cRab/data/LBSPR.R">Скрипт</a>.</p>
+<p>ВХОДНЫЕ ДАННЫЕ (должны быть в рабочей директории):</p>
+<ol type="1">
+<li>SURVEY &lt;- <a href="https://mombus.github.io/cRab/data/SURVEYDATA.csv">SURVEYDATA.csv</a></li>
+<li>FISHERY &lt;- <a href="https://mombus.github.io/cRab/data/FISHERYDATA.csv">FISHERYDATA.csv</a></li>
+<li>CATCH &lt;- <a href="https://mombus.github.io/cRab/data/CATCH.csv">CATCH.csv</a></li>
+<li>SINDEX &lt;- <a href="https://mombus.github.io/cRab/data/SURVEY_INDEX.csv">SURVEY_INDEX.csv</a></li>
+<li>GROWTH &lt;- <a href="https://mombus.github.io/cRab/data/ELEFAN_params_constrained.csv">ELEFAN_params_constrained.csv</a></li>
+<li>MK_PRI &lt;- <a href="https://mombus.github.io/cRab/data/MK_prior_summary.csv">MK_prior_summary.csv</a></li>
+<li>M_PRI &lt;- <a href="https://mombus.github.io/cRab/data/M_prior_summary.csv">M_prior_summary.csv</a></li>
+<li>LWCOEF &lt;- <a href="https://mombus.github.io/cRab/data/LW_coeffs.csv">LW_coeffs.csv</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter23.html" class="pagination-link" aria-label="Определение параметров зрелости краба-стригуна опилио: L50 и L95">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Определение параметров зрелости краба-стригуна опилио: L50 и L95</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
