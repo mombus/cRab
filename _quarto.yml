@@ -35,6 +35,7 @@ book:
     - chapter23.qmd
     - chapter24.qmd
     - chapter25.qmd
+    - chapter26.qmd
     - references.qmd
 
 bibliography: references.bib
