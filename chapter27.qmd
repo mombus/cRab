@@ -1,0 +1,346 @@
+---
+title: "Библиотека ggFishPlots: кривые роста, половозрелости, размерно-весовые соотношения"
+format: html
+---
+
+Это практическое занятие посвящено визуализации и расчетам некоторых параметров жизненного цикла гидробионтов с использованием небольшой библиотеки [ggFishPlots](https://deepwaterimr.github.io/ggFishPlots/), разработанной Микко Вихтакари из норвежского [Института морских исследований](https://www.hi.no/en). Пакет ggFishPlots для R позволяет быстро строить специализированные графики и рассчитывать параметры жизненного цикла, которые в последствии могут быть востребованы для моделей оценки запасов. Для построения графиков пакет использует ggplot2 , а для вычислений — пакеты tidyverse .
+
+Самую актуальную версию пакета всегда можно найти на [GitHub](https://github.com/DeepWaterIMR/ggFishPlots). Если версия CRAN не работает так, как показано в примерах на этом сайте, попробуйте установить версию GitHub. Это можно сделать с помощью пакетов devtools или remotes .
+
+```{r}
+#| output: false
+#| eval: false
+remotes::install_github("DeepWaterIMR/ggFishPlots")
+```
+
+У пакета есть [веб-сайт](https://deepwaterimr.github.io/ggFishPlots/). На момент написания статьи пакет создаёт четыре типа графиков: [кривые роста](https://deepwaterimr.github.io/ggFishPlots/#growth-curves), [графики зрелости](https://deepwaterimr.github.io/ggFishPlots/#maturity-plots),[графики зависимости длины от веса](https://deepwaterimr.github.io/ggFishPlots/#length-weight-relationships) и [кривые улова](https://deepwaterimr.github.io/ggFishPlots/#catch-curves-to-estimate-instantaneous-total-mortality-z). Каждая функция возвращает график ggplot2 и оценочные параметры в виде текстовой строки, которую можно использовать в приложениях Rmarkdown и Shiny, а также фрейм данных для дальнейшего использования параметров. Элементы возвращаются в виде списка. Пакет содержит примеры данных для иллюстрации функциональности.
+
+Скрипт [целиком](https://mombus.github.io/cRab/data/ScriptggFishPlots.R).
+
+**Кривые роста**
+
+Обратите внимание, что text и params возвращаются в виде списка вместе с plot.
+
+```{r}
+#| output: false
+#| eval: false
+library(ggFishPlots)
+
+data(survey_ghl) # example data
+
+head(survey_ghl)
+#> # A tibble: 6 × 5
+#>     age sex   length weight maturity
+#>   <dbl> <chr>  <dbl>  <dbl>    <int>
+#> 1    NA <NA>      35     NA        0
+#> 2    NA <NA>      43     NA        0
+#> 3    NA <NA>      51     NA        0
+#> 4    NA <NA>      31     NA        0
+#> 5    NA <NA>      32     NA        0
+#> 6    NA <NA>      32     NA        0
+
+plot_growth(survey_ghl, length = "length", age = "age")
+#> $plot
+```
+
+![](images/ggFishPlots1.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false
+#> 
+#> $text
+#> [1] "von Bertalanffy growth function coefficients:  \n Linf (asymptotic average length) = 91.2 cm +/- 88.3 - 94.6 (95% CIs)  \n K (growth rate coefficient) = 0.0633 +/- 0.059 - 0.068 (95% CIs)  \n t0 (age at length 0) = -3.04 (years) +/- -3.337 - -2.769 (95% CIs)  \n tmax (life span; t0 + 3/K) = 44.4 years  \n Number of included specimens = 10401  \n Total number of measured = 618779  \n Excluded (length or age missing):  \n Length = 0; age = 608378"
+#> 
+#> $params
+#> # A tibble: 3 × 7
+#>   term  estimate std.error statistic   p.value conf.low conf.high
+#>   <chr>    <dbl>     <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+#> 1 Sinf   91.2      1.51         60.3 0          88.3      94.6   
+#> 2 K       0.0633   0.00231      27.4 4.90e-160   0.0586    0.0680
+#> 3 t0     -3.04     0.139       -21.8 1.71e-103  -3.34     -2.77
+```
+
+Объект text можно отобразить в документах R markdown, используя results = 'asis' настройку в заголовке фрагмента кода (т. е. {r, results = 'asis'}) и cat() функцию после замены "\n" на "\\ n":
+
+```{r}
+#| output: false
+#| eval: false
+  htmlcat <- function(text){
+  cat(gsub(pattern = "\n", replacement = "  \n", x = text))
+}
+
+htmlcat(plot_growth(survey_ghl)$text)
+```
+
+Коэффициенты функции роста фон Берталанфи:
+
+*L~inf~* (асимптотическая средняя длина) = 91,2 см +/- 88,3 - 94,6 (95% ДИ)
+
+*K* (коэффициент скорости роста) = 0,0633 +/- 0,059 - 0,068 (95% ДИ)
+
+*t~0~* (возраст при длине 0) = -3,04 (лет) +/- -3,337 - -2,769 (95% ДИ)
+
+*t~max~* (продолжительность жизни; *t~0~* + 3/*K*) = 44,4 года
+
+Количество включенных особей = 10401
+
+Общее количество измеренных = 618779
+
+Исключено (длина или возраст отсутствуют): Длина = 0; возраст = 608378
+
+**Разделение по полу**
+
+Аргументы length, age и sex не указаны, поскольку они являются именами аргументов по умолчанию. Указание split.by.sex = TRUE возвращает разделение по полу.
+
+```{r}
+#| output: false
+#| eval: false
+plot_growth(survey_ghl, split.by.sex = TRUE)$plot
+```
+
+![](images/ggFishPlots2.PNG){fig-align="center" width="80%"}
+
+Пунктирные линии обозначают *L~inf~*. Данные, лежащие в основе кривых роста, по умолчанию отображаются в виде ящичных диаграмм. Можно отобразить данные в виде точек, задав boxplot = FALSE. Мы также можем принудительно ввести нулевую группу в кривые, если знаем её длину. Здесь предполагается 14 см. Сила воздействия нулевой группы по умолчанию составляет 10% от числа наблюдений и может быть скорректирована с помощью аргумента force.zero.group.strength.
+
+```{r}
+#| output: false
+#| eval: false
+plot_growth(survey_ghl, force.zero.group.length = 14, boxplot = FALSE)$plot
+```
+
+![](images/ggFishPlots3.PNG){fig-align="center" width="80%"}
+
+Графики половой зрелости 50%-ное половое созревание (*L50*) Логистическая функция с биномиальной структурой ошибок и логит-связью является стандартным способом оценки огив половой зрелости с использованием обобщенной линейной модели (family = binomial(link = "logit")) glm()). Семейство биномиальных функций используется для бинарных результатов (зрелый/незрелый), а логит-функция связи по умолчанию линеаризует связь между объясняющей переменной (например, возрастом или длиной) и вероятностью зрелости, что позволяет подобрать S-образную огиву половой зрелости .
+
+```{r}
+#| output: false
+#| eval: false
+plot_maturity(survey_ghl, length = "length", maturity = "maturity")
+#> $plot
+```
+
+![](images/ggFishPlots4.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false
+#> 
+#> $text
+#> [1] "50% maturity at length (L50) based on logit regressions:\n54.784 cm. 95% confidence intervals: 52.852 - 56.787\n  Number of specimens: 64265.\n Confidence intervals estimated from the glm object."
+#> 
+#> $params
+#>       mean   ci.min ci.max  sex intercept     slope     n
+#> 1 54.78361 52.85249 56.787 both -5.755492 0.1050587 64265
+```
+
+Планки погрешностей представляют собой 95%-ные доверительные интервалы, рассчитанные для объекта модели с помощью функции confint() и преобразованные обратно в исходную шкалу. Серая ступенчатая линия — это среднее значение, определяемое с помощью аргумента length.bin.width. Функция plot_maturity также позволяет использовать бутстреп для доверительных интервалов (ДИ), что позволит получить более узкие ДИ. Бутстреп, вероятно, является более корректным способом оценки ДИ в данном приложении. Для экономии времени обработки, при апробации, можно использовать всего 10 реплик, тогда как для финальных расчетов необходимо использовать не менее 1000.
+
+```{r}
+#| output: false
+#| eval: false
+plot_maturity(survey_ghl, bootstrap.n = 10)
+#> $plot
+```
+
+![](images/ggFishPlots5.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false
+#> 
+#> $text
+#> [1] "50% maturity at length (L50) based on logit regressions:\n54.812 cm. 95% confidence intervals: 54.584 - 54.924\n  Number of specimens: 64265\n\n Confidence intervals estimated using 10 bootstrap replicates."
+#> 
+#> $params
+#>       mean   ci.min   ci.max  sex intercept     slope     n
+#> 1 54.81204 54.58416 54.92397 both -5.755492 0.1050587 64265
+```
+
+**Разделение по полу**
+
+```{r}
+#| output: false
+#| eval: false
+plot_maturity(survey_ghl, split.by.sex = TRUE)$plot
+```
+
+![](images/ggFishPlots6.PNG){fig-align="center" width="80%"}
+
+Тот же принцип можно использовать для создания графических зависимостей половозрелости от возраста (возраст 50%-ного полового созревания):
+
+```{r}
+#| output: false
+#| eval: false
+  plot_maturity(survey_ghl, length = "age", length.unit = "years",
+              xlab = "Age", length.bin.width = 1, split.by.sex = TRUE)$plot
+```
+
+![](images/ggFishPlots7.PNG){fig-align="center" width="80%"}
+
+Функция plot_maturity() также позволяет добавлять молодь (нулевую группу рыб). Добавление молоди может потребоваться для достижения glm() сходимости, если в наборе данных мало мелких неполовозрелых рыб.
+
+```{r}
+#| output: false
+#| eval: false
+plot_maturity(survey_ghl, length = "age", length.unit = "years",
+              xlab = "Age", length.bin.width = 1, 
+              force.zero.group.length = 0,
+              force.zero.group.strength = 100,
+              split.by.sex = TRUE)$plot
+```
+
+![](images/ggFishPlots8.PNG){fig-align="center" width="80%"}
+
+**Соотношение длины и веса**
+
+В библиотеке ggFishPlots два способа визуализации соотношения длина-вес. Это простой график с использованием логарифмического преобразования и линейных моделей по умолчанию.
+
+```{r}
+#| output: false
+#| eval: false
+plot_lw(survey_ghl, length = "length", weight = "weight")
+#> $plot
+```
+
+![](images/ggFishPlots9.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false
+#> 
+#> $text
+#> [1] "Logarithm transformed linear length-weight model. Not splitted by sex:  \n a = 3.8236e-06 +/- 3.7869e-06 - 3.8606e-06 (95% CIs).  \n b = 3.221 +/- 3.22 - 3.22 (95% CIs).  \n Length in cm and weight in kg  \n Number of included specimens = 67457  \n Total number of measured = 618779  \n Excluded (data missing): \n Length = 0; weight = 551322; outlier = 0"
+#> 
+#> $params
+#> # A tibble: 2 × 14
+#>   term    estimate std.error statistic p.value   conf.low  conf.high r.squared
+#>   <chr>      <dbl>     <dbl>     <dbl>   <dbl>      <dbl>      <dbl>     <dbl>
+#> 1 a     0.00000382   0.00491    -2540.       0 0.00000379 0.00000386     0.989
+#> 2 b     3.22         0.00128     2519.       0 3.22       3.22           0.989
+#> # ℹ 6 more variables: AIC <dbl>, nobs <int>, length <chr>, length.unit <chr>,
+#> #   weight <chr>, weight.unit <chr>
+```
+
+Пунктирные линии представляют собой 95%-ные доверительные интервалы. Второй способ — это нелинейный метод наименьших квадратов:
+
+```{r}
+#| output: false
+#| eval: false
+  plot_lw(survey_ghl, use.nls = TRUE)
+#> $plot
+```
+
+![](images/ggFishPlots10.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false 
+#> 
+#> $text
+#> [1] "Nonlinear least squares length-weight model. Not splitted by sex:  \n a = 1.7268e-06 +/- 1.6962e-06 - 1.758e-06 (95% CIs).  \n b = 3.419 +/- 3.42 - 3.42 (95% CIs).  \n Length in cm and weight in kg  \n Number of included specimens = 67457  \n Total number of measured = 618779  \n Excluded (data missing): \n Length = 0; weight = 551322; outlier = 0"
+#> 
+#> $params
+#> # A tibble: 2 × 13
+#>   term    estimate  std.error statistic p.value conf.low conf.high     AIC  nobs
+#>   <chr>      <dbl>      <dbl>     <dbl>   <dbl>    <dbl>     <dbl>   <dbl> <int>
+#> 1 a     0.00000173    1.56e-8      110.       0  1.70e-6   1.76e-6 -27925. 67457
+#> 2 b     3.42          2.15e-3     1590.       0  3.42e+0   3.42e+0 -27925. 67457
+#> # ℹ 4 more variables: length <chr>, length.unit <chr>, weight <chr>,
+#> #   weight.unit <chr>
+```
+
+Положение десятичной точки в оценках *a* и *b* зависит от единиц измерения длины и веса. [FishBase](https://www.fishbase.se/manual/english/FishBaseThe_LENGTH_WEIGHT_Table.htm) использует сантиметры и граммы. Функция может корректировать единицы измерения по запросу (но параметры length.unit и weight.unit должны быть заданы корректно). Разделение по полу соотношения длина-вес представлено внизу.
+
+```{r}
+#| output: false
+#| eval: false
+plot_lw(survey_ghl, split.by.sex = TRUE, correct.units = TRUE)
+#> $plot
+```
+
+![](images/ggFishPlots11.PNG){fig-align="center" width="80%"}
+
+```{r}
+#| output: false
+#| eval: false 
+#> 
+#> $text
+#> [1] "Logarithm transformed linear length-weight model for females and males, respectively:  \n a = 0.0035 +/- 0.00344 - 0.00355 (95% CIs) and 0.00507 +/- 0.00497 - 0.00517 (95% CIs).  \n b = 3.247 +/- 3.24 - 3.25 (95% CIs) and 3.143 +/- 3.14 - 3.15 (95% CIs).  \n Length in cm and weight in g  \n Number of included specimens = 34889 and 30354  \n Total number of measured = 618779  \n Excluded (data missing): \n Length = 0; weight = 456891; sex = 96645; outlier = 0"
+#> 
+#> $params
+#> # A tibble: 4 × 15
+#> # Groups:   sex [2]
+#>   sex   term  estimate std.error statistic p.value conf.low conf.high r.squared
+#>   <chr> <chr>    <dbl>     <dbl>     <dbl>   <dbl>    <dbl>     <dbl>     <dbl>
+#> 1 F     a      0.00350   0.00765     -739.       0  0.00344   0.00355     0.988
+#> 2 F     b      3.25      0.00195     1666.       0  3.24      3.25        0.988
+#> 3 M     a      0.00507   0.0101      -525.       0  0.00497   0.00517     0.979
+#> 4 M     b      3.14      0.00265     1188.       0  3.14      3.15        0.979
+#> # ℹ 6 more variables: AIC <dbl>, nobs <int>, length <chr>, length.unit <chr>,
+#> #   weight <chr>, weight.unit <chr>
+```
+
+Вы также можете преобразовать параметры согласно формулам, приведенным в FishBase.
+
+```{r}
+#| output: false
+#| eval: false
+plot_lw(survey_ghl %>% dplyr::mutate(weight = weight*1000), weight.unit = "g")$params
+#> # A tibble: 2 × 14
+#>   term  estimate std.error statistic p.value conf.low conf.high r.squared
+#>   <chr>    <dbl>     <dbl>     <dbl>   <dbl>    <dbl>     <dbl>     <dbl>
+#> 1 a      0.00382   0.00491    -1133.       0  0.00379   0.00386     0.989
+#> 2 b      3.22      0.00128     2519.       0  3.22      3.22        0.989
+#> # ℹ 6 more variables: AIC <dbl>, nobs <int>, length <chr>, length.unit <chr>,
+#> #   weight <chr>, weight.unit <chr>
+```
+
+График с логарифмической осью для просмотра различий
+
+```{r}
+#| output: false
+#| eval: false
+plot_lw(survey_ghl, split.by.sex = TRUE, log.axes = TRUE)$plot
+```
+
+![](images/ggFishPlots12.PNG){fig-align="center" width="80%"}
+
+В функции plot_lw предусмотрено также удаление выбросов
+
+```{r}
+#| output: false
+#| eval: false
+plot_lw(survey_ghl, outlier.percentile = 99.5, annotate.coefficients = TRUE)$plot
+```
+
+![](images/ggFishPlots13.PNG){fig-align="center" width="80%"}
+
+**Цитаты и источники данных**
+
+Данные, использованные в пакете, являются собственностью [Института морских исследований](https://www.hi.no/en) и правительства Норвегии. Они распространяются по лицензиям Creative Commons ([CCBY](https://creativecommons.org/licenses/by/4.0/) или [NLOD](#0)), допускающим свободное использование при условии указания источника ([IMR](https://www.hi.no/en)). Мы просим всех пользователей ссылаться на пакет, если графики или оценки используются в отчётах или научных статьях. Актуальную информацию о цитировании см. по адресу:
+
+```{r}
+#| output: false
+#| eval: false
+citation("ggFishPlots")
+#> To cite package 'ggFishPlots' in publications use:
+#> 
+#>   Vihtakari M (2024). _ggFishPlots: Visualise and Calculate Life
+#>   History Parameters for Fisheries Science using 'ggplot2'_. R package
+#>   version 0.3.0, <https://deepwaterimr.github.io/ggFishPlots/>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {ggFishPlots: Visualise and Calculate Life History Parameters for Fisheries Science using 'ggplot2'},
+#>     author = {Mikko Vihtakari},
+#>     year = {2024},
+#>     note = {R package version 0.3.0},
+#>     url = {https://deepwaterimr.github.io/ggFishPlots/},
+#>   }
+```
+
+**Вклады**
+
+Любой вклад в разработку пакета будет приветствоваться. Свяжитесь с ответственным за пакет Микко Вихтакари ( [mikko.vihtakari\@hi.no](#0) ), чтобы обсудить ваши идеи по его улучшению. Сообщения об ошибках и исправления следует отправлять непосредственно на [сайт GitHub](#0). Пожалуйста, приложите [минимальный воспроизводимый пример](#0). Значительный вклад в разработку пакета будет отмечен указанием автора.
