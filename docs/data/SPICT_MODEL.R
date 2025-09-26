@@ -1,0 +1,481 @@
+# ===============================================================
+#     СКРИПТ 1: ОСНОВЫ МОДЕЛИРОВАНИЯ И ДИАГНОСТИКИ В SPiCT
+#     Курс: Оценка водных биоресурсов при недостатке данных в R
+#     Автор: Баканев С. В.
+#     Дата создания: 28.08.2025
+# ===============================================================
+
+# ======================= ВВЕДЕНИЕ =============================
+# SPiCT (Surplus Production model in Continuous Time) - это
+# стохастическая продукционная модель для оценки запасов рыбы
+# при ограниченных данных. Модель требует только временные ряды
+# уловов и индексов биомассы (например, CPUE или научные съемки)
+
+# ------------------- 1. ПОДГОТОВКА СРЕДЫ --------------------
+
+## 1.1 Очистка рабочей среды (удаляем все объекты)
+rm(list = ls())
+
+## 1.2 Загрузка необходимых библиотек
+library(spict)      # Основной пакет для SPiCT моделирования
+library(tidyverse)  # Для обработки данных и визуализации
+library(ggplot2)    # Дополнительные возможности построения графиков
+
+## 1.3 Установка рабочей директории
+# ВАЖНО: Измените путь на вашу рабочую папку
+setwd("C:/SPICT") 
+
+## 1.4 Настройка вывода чисел (опционально)
+options(scipen = 999)  # Отключение научной нотации
+options(digits = 4)    # Количество значащих цифр
+
+# ------------------- 2. ЗАГРУЗКА ДАННЫХ --------------------
+
+cat("\n========== ЗАГРУЗКА ДАННЫХ ==========\n")
+
+## 2.1 Временной ряд (годы наблюдений)
+# Период наблюдений с 2005 по 2024 год
+Year <- 2005:2024
+
+## 2.2 Данные по вылову (в тысячах тонн)
+# Представляют общий коммерческий вылов по годам
+# Обратите внимание на тренд: рост до 2014 г., затем снижение
+Catch <- c(5,  7,  6, 10, 14, 25, 28, 30, 32, 35,    # 2005-2014
+          25, 20, 15, 12, 10, 12, 10, 13, 11, 12)    # 2015-2024
+
+## 2.3 Индекс CPUE (улов на единицу усилия)
+# Промысловый индекс, отражающий относительную биомассу
+# Собирается в середине года (июль) во время промысла
+CPUEIndex <- c(27.427120, 26.775958, 16.811997, 22.979653, 29.048568, 
+               29.996072, 16.476301, 17.174455, 10.537272, 14.590435,
+                8.286352, 11.394168, 15.537878, 13.791166, 11.527548, 
+               15.336093, 12.154069, 15.568450, 16.221933, 13.421132)
+
+## 2.4 Индекс BESS (биомасса по научной съемке)
+# Независимая оценка биомассы из научных траловых съемок
+# Проводится в 4-м квартале года (октябрь)
+# NA в первый год означает отсутствие съемки
+BESSIndex <- c(       NA, 16.270375, 20.691355, 15.141784, 18.594620, 
+               15.975548, 13.792012, 13.328805, 11.659744, 11.753855,
+                9.309859,  7.104886,  7.963839,  9.161322, 10.271221, 
+                9.822960, 10.347376, 11.703610, 13.679876, 13.413696)
+
+## 2.5 Визуализация исходных данных
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+
+# График вылова
+plot(Year, Catch, type = "b", pch = 19, col = "red",
+     main = "Динамика вылова", xlab = "Год", ylab = "Вылов (тыс. т)")
+grid()
+
+# График CPUE
+plot(Year, CPUEIndex, type = "b", pch = 19, col = "blue",
+     main = "Индекс CPUE", xlab = "Год", ylab = "CPUE")
+grid()
+
+# График BESS
+plot(Year, BESSIndex, type = "b", pch = 19, col = "darkgreen",
+     main = "Индекс BESS", xlab = "Год", ylab = "BESS")
+grid()
+
+# График всех индексов (нормализованных)
+plot(Year, CPUEIndex/mean(CPUEIndex, na.rm = TRUE), type = "l", 
+     col = "blue", lwd = 2, ylim = c(0, 2),
+     main = "Сравнение индексов", xlab = "Год", ylab = "Отн. индекс")
+lines(Year, BESSIndex/mean(BESSIndex, na.rm = TRUE), col = "darkgreen", lwd = 2)
+legend("topright", c("CPUE", "BESS"), col = c("blue", "darkgreen"), lty = 1, lwd = 2)
+grid()
+
+par(mfrow = c(1, 1))
+
+# ------------------- 3. ФОРМАТИРОВАНИЕ ДАННЫХ ДЛЯ SPiCT --------------------
+
+cat("\n========== ПОДГОТОВКА ДАННЫХ ДЛЯ МОДЕЛИ ==========\n")
+
+## 3.1 Создание входного объекта для SPiCT
+# SPiCT требует специальный формат данных в виде списка
+input_data <- list(
+  
+  # Временной ряд вылова (обычно конец года)
+  timeC = Year,        
+  obsC = Catch,        
+  
+  # Временные ряды индексов
+  # ВАЖНО: время индексов должно отражать когда они собраны
+  timeI = list(
+    Year + 0.5,      # CPUE собирается в середине года (июль)
+    Year + 0.75      # BESS проводится в 4-м квартале (октябрь)
+  ),
+  
+  # Значения индексов (в том же порядке, что и timeI)
+  obsI = list(
+    CPUEIndex,       
+    BESSIndex        
+  )
+)
+
+## 3.2 Проверка и валидация входных данных
+# Функция check.inp выполняет базовую проверку данных
+# и удаляет нулевые, отрицательные и NA значения
+inp <- check.inp(input_data, verbose = TRUE)
+
+# Вывод структуры данных
+cat("\nСтруктура входных данных:\n")
+cat("Количество наблюдений вылова:", length(inp$obsC), "\n")
+cat("Количество индексов:", length(inp$obsI), "\n")
+cat("Годы наблюдений:", range(inp$timeC), "\n")
+
+# ------------------- 4. НАСТРОЙКА МОДЕЛИ --------------------
+
+cat("\n========== НАСТРОЙКА ПАРАМЕТРОВ МОДЕЛИ ==========\n")
+
+## 4.1 Установка априорных распределений (priors)
+
+### 4.1.1 Параметр формы продукционной кривой (n)
+# n = 2 соответствует модели Шефера (симметричная кривая)
+# Фиксируем n = 2, так как данных недостаточно для его оценки
+inp$priors$logn <- c(log(2), 0.1, 1)  # (среднее, SD, использовать?)
+inp$ini$logn <- log(2)                 # Начальное значение
+inp$phases$logn <- -1                  # -1 означает не оценивать
+
+### 4.1.2 Априор для несущей способности (K)
+# K - максимальная биомасса, которую может поддерживать среда
+# Используем информативный априор на основе экспертных оценок
+inp$priors$logK <- c(log(150), 0.7, 1)  # log(150) тыс. тонн, CV ≈ 70%
+
+### 4.1.3 Априор для начального состояния запаса
+# logbkfrac = log(B_начальное/K)
+# 0.75 означает, что в начале временного ряда запас был на 75% от K
+inp$priors$logbkfrac <- c(log(0.75), 0.25, 1)
+
+### 4.1.4 Априоры для параметров роста (опционально)
+# Если есть информация о темпе роста популяции
+# inp$priors$logr <- c(log(0.3), 0.5, 1)
+
+## 4.2 Настройка неопределенности данных
+
+### 4.2.1 Увеличение неопределенности для последних наблюдений
+# Последние данные часто предварительные и менее надежные
+inp$stdevfacC[length(inp$stdevfacC)] <- 2      # Удваиваем SD для последнего вылова
+inp$stdevfacI[[2]][length(inp$stdevfacI[[2]])] <- 2  # Для последнего BESS
+
+### 4.2.2 Установка минимальной неопределенности (опционально)
+# inp$stdevfacC <- pmax(inp$stdevfacC, 0.2)  # Минимум 20% CV
+
+## 4.3 Технические настройки модели
+
+### 4.3.1 Временной шаг для численного интегрирования
+# Меньшие значения = выше точность, но медленнее расчет
+inp$dteuler <- 1/16  # 16 шагов в году
+
+### 4.3.2 Включение расчета матрицы ковариации
+# Необходимо для оценки неопределенности и диагностики
+inp$getJointPrecision <- TRUE
+
+### 4.3.3 Робастность оценок (опционально)
+# inp$robflag <- TRUE  # Устойчивость к выбросам
+
+# ------------------- 5. ЗАПУСК МОДЕЛИ --------------------
+
+cat("\n========== ОЦЕНКА ПАРАМЕТРОВ МОДЕЛИ ==========\n")
+
+## 5.1 Настройка оптимизатора
+# Увеличиваем лимиты итераций для сложных случаев
+inp$optimiser.control = list(
+  iter.max = 1e5,    # Максимум итераций
+  eval.max = 1e5,    # Максимум вычислений функции
+  rel.tol = 1e-10    # Относительная точность
+)
+
+## 5.2 Подгонка модели
+# Основная функция для оценки параметров
+cat("Запуск оптимизации...\n")
+fit <- fit.spict(inp)
+
+## 5.3 Проверка сходимости
+if (fit$opt$convergence == 0) {
+  cat("✓ Модель успешно сошлась\n")
+} else {
+  cat("⚠ Проблемы со сходимостью. Код:", fit$opt$convergence, "\n")
+  cat("Сообщение:", fit$opt$message, "\n")
+}
+
+## 5.4 Добавление остатков OSA для диагностики
+# OSA (One-Step-Ahead) остатки используются для проверки модели
+fit <- calc.osa.resid(fit)
+
+## 5.5 Вывод основных результатов
+print(summary(fit))
+
+
+# ------------------- 6. ДИАГНОСТИКА МОДЕЛИ --------------------
+
+cat("\n========== ДИАГНОСТИКА МОДЕЛИ ==========\n")
+
+## 6.1 Проверка остатков
+
+### 6.1.1 Тест Шапиро-Уилка на нормальность
+cat("\n--- Тест на нормальность остатков (Shapiro-Wilk) ---\n")
+cat(sprintf("Уловы (C): p-value = %.4f %s\n", 
+            fit$diagn$shapiroC.p, 
+            ifelse(fit$diagn$shapiroC.p > 0.05, "✓", "⚠")))
+cat(sprintf("Индекс 1 (I1): p-value = %.4f %s\n", 
+            fit$diagn$shapiroI1.p, 
+            ifelse(fit$diagn$shapiroI1.p > 0.05, "✓", "⚠")))
+cat(sprintf("Индекс 2 (I2): p-value = %.4f %s\n", 
+            fit$diagn$shapiroI2.p, 
+            ifelse(fit$diagn$shapiroI2.p > 0.05, "✓", "⚠")))
+
+### 6.1.2 Проверка автокорреляции (Ljung-Box тест)
+cat("\n--- Проверка автокорреляции (Ljung-Box тест) ---\n")
+cat(sprintf("Уловы (C): p-value = %.4f %s\n", 
+            fit$diagn$LBoxC.p, 
+            ifelse(fit$diagn$LBoxC.p > 0.05, "✓", "⚠")))
+cat(sprintf("Индекс 1 (I1): p-value = %.4f %s\n", 
+            fit$diagn$LBoxI1.p, 
+            ifelse(fit$diagn$LBoxI1.p > 0.05, "✓", "⚠")))
+cat(sprintf("Индекс 2 (I2): p-value = %.4f %s\n", 
+            fit$diagn$LBoxI2.p, 
+            ifelse(fit$diagn$LBoxI2.p > 0.05, "✓", "⚠")))
+
+### 6.1.3 Дополнительные диагностические тесты
+cat("\n--- Дополнительная диагностика ---\n")
+cat(sprintf("Смещение уловов (biasC): p-value = %.4f %s\n", 
+            fit$diagn$biasC.p, 
+            ifelse(fit$diagn$biasC.p > 0.05, "✓", "⚠")))
+cat(sprintf("Автокорреляция уловов (acfC): p-value = %.4f %s\n", 
+            fit$diagn$acfC.p, 
+            ifelse(fit$diagn$acfC.p > 0.05, "✓", "⚠")))
+## 6.2 Визуальная диагностика
+# Создаем диагностические графики
+plotspict.diagnostic(fit)
+
+## 6.3 Ретроспективный анализ
+# Проверяет устойчивость оценок при удалении последних лет
+cat("\n--- Ретроспективный анализ ---\n")
+ret <- retro(fit, nretroyear = 5)
+plotspict.retro(ret)
+
+# Расчет ретро-смещения (Mohn's rho)
+rho <- mohns_rho(ret)
+cat("Mohn's rho для биомассы:", round(rho["BBmsy"], 4), "\n")
+cat("Mohn's rho для F:", round(rho["FFmsy"], 4), "\n")
+cat("Приемлемые значения: |rho| < 0.2\n")
+
+
+## 6.4 Анализ чувствительности к априорным распределениям
+cat("\n--- Анализ чувствительности ---\n")
+
+# Тест без априоров
+inp_no_prior <- inp
+inp_no_prior$priors <- list()
+fit_no_prior <- fit.spict(inp_no_prior)
+
+# Сравнение оценок
+cat("Изменение оценок без априоров:\n")
+cat("K:", round((exp(fit_no_prior$par.fixed["logK"]) - 
+               exp(fit$par.fixed["logK"])) / 
+               exp(fit$par.fixed["logK"]) * 100, 1), "%\n")
+
+## 6.5 Сравнение априорных и апостериорных распределений (Проверка профилей правдоподобия) 
+# Помогает оценить идентифицируемость параметров
+par(mfrow = c(2, 2))
+plotspict.priors(fit)
+par(mfrow = c(1, 1))
+
+# ------------------- 7. ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ --------------------
+
+cat("\n========== ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ ==========\n")
+
+## 7.1 Извлечение ключевых параметров
+get_estimate <- function(fit, param) {
+  val <- get.par(param, fit, exp = TRUE)
+  return(c(estimate = val[1], lower = val[2], upper = val[3]))
+}
+
+## 7.2 Параметры модели
+cat("\n--- Оценки параметров модели ---\n")
+r_est <- get_estimate(fit, "logr")
+cat(sprintf("r (темп роста): %.3f [%.3f - %.3f]\n", 
+            r_est[2], r_est[1], r_est[3]))
+
+K_est <- get_estimate(fit, "logK")
+cat(sprintf("K (несущая способность): %.1f [%.1f - %.1f] тыс. т\n", 
+            K_est[2], K_est[1], K_est[3]))
+
+## 7.3 Ориентиры управления (Референсные точки)
+cat("\n--- Ориентиры управления (MSY) ---\n")
+MSY <- get_estimate(fit, "logMSY")
+cat(sprintf("MSY: %.1f [%.1f - %.1f] тыс. т/год\n", 
+            MSY[2], MSY[1], MSY[3]))
+
+Bmsy <- get_estimate(fit, "logBmsy")
+cat(sprintf("Bmsy: %.1f [%.1f - %.1f] тыс. т\n", 
+            Bmsy[2], Bmsy[1], Bmsy[3]))
+
+Fmsy <- get_estimate(fit, "logFmsy")
+cat(sprintf("Fmsy: %.3f [%.3f - %.3f] год⁻¹\n", 
+            Fmsy[2], Fmsy[1], Fmsy[3]))
+
+## 7.4 Текущее состояние запаса
+cat("\n--- Текущее состояние запаса (последний год) ---\n")
+current_year <- max(inp$timeC)
+
+B_current <- get_estimate(fit, "logB")
+cat(sprintf("Биомасса: %.1f [%.1f - %.1f] тыс. т\n", 
+            B_current[2], B_current[1], B_current[3]))
+
+F_current <- get_estimate(fit, "logF")
+cat(sprintf("F: %.3f [%.3f - %.3f] год⁻¹\n", 
+            F_current[2], F_current[1], F_current[3]))
+
+# Относительные показатели
+B_Bmsy <- get_estimate(fit, "logBBmsy")
+cat(sprintf("B/Bmsy: %.2f [%.2f - %.2f]\n", 
+            B_Bmsy[2], B_Bmsy[1], B_Bmsy[3]))
+
+F_Fmsy <- get_estimate(fit, "logFFmsy")
+cat(sprintf("F/Fmsy: %.2f [%.2f - %.2f]\n", 
+            F_Fmsy[2], F_Fmsy[1], F_Fmsy[3]))
+
+# Интерпретация состояния
+if (B_Bmsy[1] > 1 && F_Fmsy[1] < 1) {
+  cat("\n✓ Запас в хорошем состоянии (зеленая зона)\n")
+} else if (B_Bmsy[1] < 0.5) {
+  cat("\n⚠ Запас истощен (красная зона)\n")
+} else if (F_Fmsy[1] > 1) {
+  cat("\n⚠ Происходит перелов (желтая зона)\n")
+} else {
+  cat("\n⚠ Запас в переходном состоянии\n")
+}
+
+# ------------------- 8. ГРАФИЧЕСКАЯ ВИЗУАЛИЗАЦИЯ --------------------
+
+#cat("\n========== СОЗДАНИЕ ГРАФИКОВ ==========\n")
+
+## 8.1 Стандартные графики SPiCT
+#pdf("SPiCT_results.pdf", width = 12, height = 10)
+
+# График 1: Сводка результатов
+plot(fit)
+
+# График 2: Временные ряды
+plotspict.biomass(fit)
+plotspict.f(fit)
+plotspict.catch(fit)
+
+# График 3: Фазовая диаграмма Кобе
+plotspict.fb(fit)
+
+# График 4: Продукционная кривая
+plotspict.production(fit)
+
+#dev.off()
+#cat("Графики сохранены в файл 'SPiCT_results.pdf'\n")
+
+## 8.2 Альтернативный подход - детальные графики
+
+# Функция для извлечения временных рядов из SPiCT
+extract_time_series <- function(fit, param_name) {
+  # Получаем оценки параметра
+  param_values <- get.par(param_name, fit, exp = TRUE)
+  
+  # Временные точки
+  time_points <- fit$inp$time
+  
+  # Создаем dataframe
+  df <- data.frame(
+    time = time_points,
+    estimate = param_values[, "est"],
+    lower = param_values[, "ll"],
+    upper = param_values[, "ul"]
+  )
+  
+  return(df)
+}
+
+# Извлекаем все нужные временные ряды
+df_B <- extract_time_series(fit, "logB")
+df_F <- extract_time_series(fit, "logF")
+df_BBmsy <- extract_time_series(fit, "logBBmsy")
+df_FFmsy <- extract_time_series(fit, "logFFmsy")
+
+# Создаем панель графиков
+library(gridExtra)
+
+# График 1: Биомасса
+g1 <- ggplot(df_B, aes(x = time)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "blue") +
+  geom_line(aes(y = estimate), color = "darkblue", size = 1.2) +
+  geom_hline(yintercept = Bmsy[1], linetype = "dashed", color = "red") +
+  labs(title = "A. Биомасса", x = "Год", y = "Биомасса (тыс. т)") +
+  theme_minimal()
+
+# График 2: Промысловая смертность
+g2 <- ggplot(df_F, aes(x = time)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "orange") +
+  geom_line(aes(y = estimate), color = "darkorange", size = 1.2) +
+  geom_hline(yintercept = Fmsy[1], linetype = "dashed", color = "red") +
+  labs(title = "B. Промысловая смертность", x = "Год", y = "F (год⁻¹)") +
+  theme_minimal()
+
+# График 3: B/Bmsy
+g3 <- ggplot(df_BBmsy, aes(x = time)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "green") +
+  geom_line(aes(y = estimate), color = "darkgreen", size = 1.2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 0.5, linetype = "dotted", color = "orange") +
+  labs(title = "C. Относительная биомасса", x = "Год", y = "B/Bmsy") +
+  theme_minimal()
+
+# График 4: F/Fmsy
+g4 <- ggplot(df_FFmsy, aes(x = time)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "purple") +
+  geom_line(aes(y = estimate), color = "darkviolet", size = 1.2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+  labs(title = "D. Относительная смертность", x = "Год", y = "F/Fmsy") +
+  theme_minimal()
+
+# Объединяем графики
+grid_plot <- grid.arrange(g1, g2, g3, g4, ncol = 2,
+                         top = "Временные ряды ключевых параметров")
+
+# Сохраняем
+ggsave("SPiCT_time_series.png", grid_plot, width = 12, height = 10, dpi = 300)
+cat("График временных рядов сохранен как 'SPiCT_time_series.png'\n")
+# ------------------- 9. СОХРАНЕНИЕ РЕЗУЛЬТАТОВ --------------------
+
+cat("\n========== СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ==========\n")
+
+## 9.1 Сохранение объекта модели
+saveRDS(fit, "spict_model_fit.rds")
+cat("Модель сохранена в 'spict_model_fit.rds'\n")
+
+## 9.2 Экспорт таблицы с результатами
+results_table <- data.frame(
+  Parameter = c("r", "K", "MSY", "Bmsy", "Fmsy", 
+                "B_current", "F_current", "B/Bmsy", "F/Fmsy"),
+  Estimate = c(r_est[1], K_est[1], MSY[1], Bmsy[1], Fmsy[1],
+               B_current[1], F_current[1], B_Bmsy[1], F_Fmsy[1]),
+  Lower_CI = c(r_est[2], K_est[2], MSY[2], Bmsy[2], Fmsy[2],
+               B_current[2], F_current[2], B_Bmsy[2], F_Fmsy[2]),
+  Upper_CI = c(r_est[3], K_est[3], MSY[3], Bmsy[3], Fmsy[3],
+               B_current[3], F_current[3], B_Bmsy[3], F_Fmsy[3])
+)
+
+write.csv(results_table, "spict_results.csv", row.names = FALSE)
+cat("Таблица результатов сохранена в 'spict_results.csv'\n")
+
+## 9.3 Создание отчета
+cat("\n========== ИТОГОВЫЙ ОТЧЕТ ==========\n")
+cat("Дата анализа:", format(Sys.Date(), "%d.%m.%Y"), "\n")
+cat("Версия SPiCT:", packageVersion("spict"), "\n")
+cat("Период данных:", min(inp$timeC), "-", max(inp$timeC), "\n")
+cat("Количество наблюдений:", length(inp$obsC), "\n")
+cat("Сходимость модели:", ifelse(fit$opt$convergence == 0, "Да", "Нет"), "\n")
+cat("\nОСНОВНЫЕ ВЫВОДЫ:\n")
+cat("1. Текущая биомасса составляет", round(B_Bmsy[1]*100), "% от Bmsy\n")
+cat("2. Промысловая смертность составляет", round(F_Fmsy[1]*100), "% от Fmsy\n")
+cat("3. Рекомендуемый вылов (при F=Fmsy):", round(Fmsy[1] * B_current[1], 1), "тыс. т\n")
+
+cat("\n=============== КОНЕЦ АНАЛИЗА ===============\n")
