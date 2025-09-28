@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.29">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>30&nbsp; Фильтр Калмана – Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./chapter28.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter29.html"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Фильтр Калмана</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Аннотация</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Анализ и визуализация данных улова</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Нейронные сети в экологии: практическое введение</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">sdmTMB - оценка и визуализация индекса обилия по съемке</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продукционная модель SPiCT</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Продукционная модель JABBA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Прогноз пополнения: от факторов до ансамбля</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Модель Catch-Survey Analysis (CSA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Стандартизация CPUE: GLM, GAM, GAMM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Съёмка: оптимизация маршрута</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Картография: повышение разрешения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">SDM: моделирование пространственного распределения видов</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">I. SPiCT: МОДЕЛЬ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">II. SPiCT: ПРП и ОДУ</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">III. SPiCT: MSE - оценка стратегии управления</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">I. DLM: Введение в методы анализа при очень ограниченных данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GMM кластеризация: Определение широкопалости самцов краба-стригуна</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Модели истощения Лесли и Делури</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">II. DLM: CATCH-ONLY METHODS (COM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Оценка параметров роста гидробионтов методом ELEFAN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Оценка естественной смертности</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter22.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Оценка селективности промысла</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter23.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Определение параметров зрелости краба-стригуна опилио: L50 и L95</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter24.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">III. DLM: LBSPR</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter25.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Моделирование дрейфа личинок</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter26.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Картография: круговые диаграммы</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter27.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Библиотека ggFishPlots: кривые роста, половозрелости, размерно-весовые соотношения</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter28.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Байесовский подход</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter29.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Фильтр Калмана</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение"><span class="header-section-number">30.1</span> Введение</a></li>
+  <li><a href="#что-делаем" id="toc-что-делаем" class="nav-link" data-scroll-target="#что-делаем"><span class="header-section-number">30.2</span> Что делаем?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Фильтр Калмана</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="введение" class="level2" data-number="30.1">
+<h2 data-number="30.1" class="anchored" data-anchor-id="введение"><span class="header-section-number">30.1</span> Введение</h2>
+<p>Это занятие — про то, как перестать путать «то, что мы меряем», с «тем, что в системе происходит на самом деле». В промысловой статистике CPUE — это не запас, а мутный его отпечаток: одновременно в нём “сидят” и изъятие, и миграции, и случайные колебания наблюдений. Фильтр Калмана — это рекурсивный метод оценивания скрытых состояний динамической системы, в которой сама динамика и измерения зашумлены. Он раздельно учитывает две неопределённости — в процессах и в наблюдениях, на каждом шаге строит прогноз состояния, сравнивает его с новым фактом и корректирует оценку, оптимально взвешивая доверие к модели и данным. В гидробиологии и рыбохозяйственной науке эта логика особенно полезна там, где прямых наблюдений запаса нет, а есть индексы и оперативная промысловая информация: по временным рядам CPUE и выловов можно последовательно восстанавливать траектории численности/биомассы, пополнения, миграции и улавливаемости; объединять несколько источников данных с разной точностью; устойчиво проходить через пропуски и нерегулярные наблюдения; получать не только оценки, но и их дисперсии и доверительные интервалы. Именно поэтому фильтр Калмана может стать рабочей лошадкой для задач локальных открытых запасов, анализа истощения, последовательных моделей по возрасту/длине, а также структурных временных рядов, где есть медленно меняющиеся «скрытые» факторы продуктивности.</p>
+<p>Ключевое препятствие классическим регрессионным моделям истощения в реальных промысловых ситуациях — открытость локальных запасов и шумность индексов. Когда через границы полигона идут разнонаправленные миграции, а наблюдения CPUE подвержены дополнительной вариабельности, наклон «линии Лесли» становится неустойчивым и плохо интерпретируемым, а в формулировке Де Лури добавляется ещё и методическая смещённость из‑за лог-линеаризации. В такой постановке нельзя честно отделить влияние вылова от неучтённых факторов и ошибок измерений.</p>
+<p>Эту методическую развилку аккуратно разобрал Александр Аркадьевич Михеев в работе «Приложение модели открытой эксплуатируемой популяции к оценке локальных запасов» (Труды ВНИРО, 2014, т. 151: 95–108). Он показал, что регрессионные методы не позволяют корректно оценивать открытый локальный запас, и предложил обобщённую модель Лесли с фильтром Калмана (ОМЛ ФК) как диагностическую модель для периода промысла.</p>
+<p>Суть обобщения проста и физически прозрачна. Запас <span class="math inline">\(N_t\)</span> эволюционирует согласно балансовому уравнению:</p>
+<p><span class="math display">\[
+N_t = N_{t-1} - C_t + m_{t-1} + \varepsilon_t,
+\]</span></p>
+<p>где: - <span class="math inline">\(C_t\)</span> — известный вылов в момент времени <span class="math inline">\(t\)</span>, - <span class="math inline">\(m_t\)</span> — скрытый результирующий приток/отток (включающий миграции, неучтённый вылов и прочие неизмеряемые эффекты), - <span class="math inline">\(\varepsilon_t\)</span> — случайная ошибка процесса.</p>
+<p>Динамика скрытого компонента <span class="math inline">\(m_t\)</span> задаётся как процесс с затухающей памятью:</p>
+<p><span class="math display">\[
+m_t = a\, m_{t-1} + \delta_t, \qquad |a| &lt; 1,
+\]</span></p>
+<p>где <span class="math inline">\(a\)</span> — коэффициент автокорреляции, а <span class="math inline">\(\delta_t\)</span> — белый шум.</p>
+<p>Наблюдения представляют собой зашумлённый индекс биомассы:</p>
+<p><span class="math display">\[
+y_t = q\, N_t + w_t,
+\]</span></p>
+<p>где <span class="math inline">\(q\)</span> — коэффициент улавливаемости (catchability), а <span class="math inline">\(w_t\)</span> — шум измерения.</p>
+<p>В формализме <strong>пространства состояний</strong> такая модель естественным образом обрабатывается <strong>фильтром Калмана</strong>: на каждом шаге последовательно вычисляются: - инновации (ошибки прогноза), - их дисперсии, - коэффициент усиления (Kalman gain).</p>
+<p>Параметры системы (<span class="math inline">\(a\)</span>, <span class="math inline">\(q\)</span>) и характеристики шумов (<span class="math inline">\(\mathrm{Var}(\varepsilon_t)\)</span>, <span class="math inline">\(\mathrm{Var}(\delta_t)\)</span>, <span class="math inline">\(\mathrm{Var}(w_t)\)</span>) оцениваются методом <strong>максимального правдоподобия</strong>, используя разложение логарифмической функции правдоподобия по ошибкам предсказания.</p>
+<p>Отдельно отметим вклад Александра Аркадьевича: он показал, что попытка оценить вклад вылова и неучтённых факторов с помощью <strong>множественной регрессии</strong> на накопленные величины <span class="math inline">\(K_t = \sum_{s=1}^t C_s\)</span> и <span class="math inline">\(M_t = \sum_{s=1}^t m_s\)</span> обречена на неудачу из‑за <strong>сильной мультиколлинеарности</strong> между регрессорами. Введение скрытого состояния <span class="math inline">\(m_t\)</span> позволяет корректно разделить влияние управляемого вылова <span class="math inline">\(C_t\)</span> и неуправляемых экзогенных факторов, обеспечивая как идентифицируемость, так и интерпретируемость модели.</p>
+<p>Практически важная часть его работы — обработка нерегулярных промысловых рядов: регуляризация времени через весовые матрицы для ежедневной шкалы, что позволяет фильтру корректно работать с «рваными» данными ловушечных промыслов. В приложении автор выводит уравнения фильтра для конкретной модели, даёт интерпретацию оценок в шкале наблюдений через статистические веса, связывает их с усилением Калмана и доказывает теорему об эффективности оценок для ОМЛ ФК. На эмпирических примерах из Сахалино‑Курильского региона он демонстрирует, что ОМЛ ФК возвращает более узкие и менее смещённые оценки по сравнению с классической Лесли, устойчиво работает при иммиграции/эмиграции и позволяет явно оценивать величину «скрытого» потока и погрешность наблюдений; именно эта модель легла в основу метода полигонов при подготовке оперативных прогнозов для беспозвоночных. В рамках нашей практики мы будем исходить из этой логики: трактовать CPUE как шумный отпечаток скрытого состояния, отделять процесс от измерения, последовательно обновлять знание о запасе и миграции и опираться на проверяемые статистические предпосылки.</p>
+</section>
+<section id="что-делаем" class="level2" data-number="30.2">
+<h2 data-number="30.2" class="anchored" data-anchor-id="что-делаем"><span class="header-section-number">30.2</span> Что делаем?</h2>
+<p>Скрипт <a href="https://mombus.github.io/cRab/data/KALMAN.R">целиком</a>.</p>
+<p>Мы идём от генерации учебных данных к классической регрессии Лесли и далее к фильтру Калмана в постановке обобщённой модели Лесли, последовательно рассчитываем оценки состояний и сравниваем подходы на одних и тех же рядах. Сначала подготавливаем окружение и подключаем пакеты для визуализации и манипуляций с данными. Далее создаём синтетический «мир», в котором известна истинная траектория запаса, чтобы наглядно видеть, что из неё восстанавливают разные методы. Для этого фиксируем генератор случайных чисел set.seed(123) ради воспроизводимости и задаём временную шкалу из 20 последовательных дней. Истинный запас формируем как комбинацию экспоненциального спада от стартового уровня 1000 с коэффициентом 0.08 в день, добавляем шаблон миграционных всплесков и оттоков и добавляем белый шум rnorm с дисперсией 25^2, символизирующий непросчитанные факторы процесса. Миграционный шаблон задан вектором, в котором сначала идёт спокойный период, затем три положительных всплеска, снова спокойный отрезок и три отрицательных импульса, затем ещё несколько нулей. Обратите внимание: в примере длина migration_pattern равна 19 при 20 днях, поэтому R предупреждает о неполном кратном «переразмножении» вектора и рециклирует его, что порождает предупреждение; чтобы его избежать, длину шаблона следует сделать ровно 20, добавив один ноль в конец. На основе истинного запаса формируем наблюдаемые промысловые ряды. Суточный вылов задаём как 2–5% от текущего запаса: для каждого дня генерируется коэффициент из равномерного распределения runif(0.02, 0.05), перемножается на true_stock, результат округляется и обрезается снизу pmax(…, 0), чтобы исключить отрицательные величины. CPUE, наш «индекс обилия», создаём как линейную функция от запаса с коэффициентом улавливаемости 0.002 и добавочным шумом измерений rnorm(sd = 0.1); это важно, потому что дальше в фильтре Калмана мы будем использовать тот же q, и таким образом обеспечиваем согласование шкал. Сразу выводим простейшие описательные характеристики: средний CPUE, суммарный вылов и диапазон суточного вылова, чтобы понимать порядок величин. Визуализируем исходные данные на одном графике с двумя шкалами: столбцами показываем суточный вылов, масштабированный делением на 50 для совместимости по оси Y с CPUE, точки и пунктирная линия — это наблюдения CPUE. Вторичная ось возвращает масштаб выловов умножением на 50, подписи и аккуратная тема помогают мгновенно считывать структуру рядов.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРАКТИКУМ: ФИЛЬТР КАЛМАНА ДЛЯ ОЦЕНКИ ЗАПАСА ГИДРОБИОНТОВ</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================================================================</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Автор: Баканев С.В. Для курса "Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Цель: Показать преимущества фильтра Калмана перед классическими методами</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================================================================</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ЧАСТЬ 1: ГЕНЕРАЦИЯ И ВИЗУАЛИЗАЦИЯ СИНТЕТИЧЕСКИХ ДАННЫХ</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ======================================================</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># В реальных условиях мы не знаем истинного состояния запаса,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># но для демонстрации методов создадим синтетические данные</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== ЧАСТЬ 1: ГЕНЕРАЦИЯ И ВИЗУАЛИЗАЦИЯ ДАННЫХ ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Устанавливаем seed для воспроизводимости результатов</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>  <span class="co"># 20 дней наблюдений</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># СОЗДАЕМ РЕАЛИСТИЧНУЮ ДИНАМИКУ ЗАПАСА:</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Экспоненциальное снижение (естественная смертность + вылов)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Миграционные всплески (приток/отток особей)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Случайные колебания (неучтенные факторы)</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Создание модели истинного запаса...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>migration_pattern <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="dv">50</span>, <span class="dv">80</span>, <span class="dv">30</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="sc">-</span><span class="dv">40</span>, <span class="sc">-</span><span class="dv">60</span>, <span class="sc">-</span><span class="dv">20</span>, <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">3</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>true_stock <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.08</span> <span class="sc">*</span> days) <span class="sc">+</span> migration_pattern <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">25</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Генерация данных промысла...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Создаем dataframe с данными наблюдений</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">Day =</span> days,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Суточный вылов (2-5% от текущего запаса)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">Catch =</span> <span class="fu">pmax</span>(<span class="fu">round</span>(true_stock <span class="sc">*</span> <span class="fu">runif</span>(<span class="dv">20</span>, <span class="fl">0.02</span>, <span class="fl">0.05</span>)), <span class="dv">0</span>),</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># CPUE (Catch Per Unit Effort) - основной наблюдаемый показатель</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># В реальности зависит от множества факторов, здесь - линейная зависимость + шум</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">CPUE =</span> true_stock <span class="sc">*</span> <span class="fl">0.002</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">20</span>, <span class="at">sd =</span> <span class="fl">0.1</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># БАЗОВАЯ СТАТИСТИКА ДАННЫХ</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Средний улов на усилие (CPUE):"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(data<span class="sc">$</span>CPUE), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Общий вылов за период:"</span>, <span class="fu">sum</span>(data<span class="sc">$</span>Catch), <span class="st">"условных единиц</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Максимальный суточный вылов:"</span>, <span class="fu">max</span>(data<span class="sc">$</span>Catch), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Минимальный суточный вылов:"</span>, <span class="fu">min</span>(data<span class="sc">$</span>Catch), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co"># ВИЗУАЛИЗАЦИЯ ИСХОДНЫХ ДАННЫХ</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Построение графика исходных данных...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>plot_raw_data <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> Day)) <span class="sc">+</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Столбцы - суточный вылов (масштабируем для совмещения с CPUE)</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> Catch<span class="sc">/</span><span class="dv">50</span>), <span class="at">fill =</span> <span class="st">"lightblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Точки и линия - наблюдения CPUE</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> CPUE), <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> CPUE), <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Две оси Y для разных масштабов</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Улов на усилие (CPUE)"</span>,</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span> . <span class="sc">*</span> <span class="dv">50</span>, <span class="at">name =</span> <span class="st">"Суточный улов (особи)"</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Исходные данные промысла"</span>,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Красные точки/линия - CPUE (индекс обилия), синие столбцы - уловы"</span>,</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"CPUE используется как прокси-переменная для оценки запаса"</span>) <span class="sc">+</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_raw_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/KALMAN1.PNG" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>Далее демонстрируем классический «линейный» взгляд на истощение через модель Лесли в её регрессионной версии на время: строим прямую CPUE ~ Day с помощью lm, сохраняем предсказания в таблицу и печатаем ключевые статистики — наклон, R^2 и p-значение. Такая формулировка намеренно упрощённая по сравнению с канонической регрессией на накопленный вылов, но она хорошо иллюстрирует идею «одной линии по шумным точкам», о которой говорилось во введении. Строим отдельный график, где на исходные точки CPUE накладываем линию предсказаний регрессии и её стандартную полосу через geom_smooth(method = “lm”), чтобы визуально увидеть, как прямая «усредняет» колебания.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ЧАСТЬ 2: КЛАССИЧЕСКАЯ МОДЕЛЬ ЛЕСЛИ</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ===================================</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Модель Лесли - традиционный подход для оценки динамики популяций</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Предполагает линейное изменение CPUE во времени</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== ЧАСТЬ 2: КЛАССИЧЕСКАЯ МОДЕЛЬ ЛЕСЛИ ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Линейная регрессия CPUE от времени</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Построение линейной регрессии CPUE ~ Day...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>lm_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(CPUE <span class="sc">~</span> Day, <span class="at">data =</span> data)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавляем предсказания модели в dataframe</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>LM_Prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_model)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ВЫВОД РЕЗУЛЬТАТОВ РЕГРЕССИИ</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"РЕЗУЛЬТАТЫ ЛИНЕЙНОЙ РЕГРЕССИИ:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Наклон (темп снижения CPUE):"</span>, <span class="fu">round</span>(<span class="fu">coef</span>(lm_model)[<span class="dv">2</span>], <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (доля объясненной дисперсии):"</span>, <span class="fu">round</span>(<span class="fu">summary</span>(lm_model)<span class="sc">$</span>r.squared, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-значение:"</span>, <span class="fu">round</span>(<span class="fu">summary</span>(lm_model)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>], <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ВИЗУАЛИЗАЦИЯ МОДЕЛИ ЛЕСЛИ</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Визуализация результатов линейной модели...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plot_leslie <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> CPUE)) <span class="sc">+</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> LM_Prediction), <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">size =</span> <span class="fl">1.2</span>, </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">"solid"</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"blue"</span>, </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Классическая модель Лесли: линейная регрессия CPUE"</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Наклон ="</span>, <span class="fu">round</span>(<span class="fu">coef</span>(lm_model)[<span class="dv">2</span>], <span class="dv">4</span>), </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                       <span class="st">", R² ="</span>, <span class="fu">round</span>(<span class="fu">summary</span>(lm_model)<span class="sc">$</span>r.squared, <span class="dv">3</span>)),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"День промысла"</span>, </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Улов на усилие (CPUE)"</span>) <span class="sc">+</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_leslie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/KALMAN2.PNG" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>После этого переходим к центральной части — фильтру Калмана для оценки скрытых состояний «запас N» и «миграция m» в линейной гауссовой модели состояния. Настройки фильтра задаются явно. Коэффициент улавливаемости q фиксируем равным 0.002, тем самым связывая шкалу CPUE и запаса: модель наблюдения имеет вид <span class="math inline">\(y_t = q N_t + w_t\)</span>. Дисперсии шумов задаём как <span class="math inline">\(sigma_N = 30\)</span> для процесса запаса и <span class="math inline">\(sigma_m = 20\)</span> для процесса миграции; это стандартные отклонения, а в матрицу процесса Q входят их квадраты, так что фактические вариации по состояниям — 900 и 400 соответственно. Измерительная ошибка CPUE задаётся через <span class="math inline">\(sigma_y = 0.08\)</span>, а в матрице R фигурирует квадрат 0.0064. Начальное состояние оцениваем из первого наблюдения CPUE простым пересчётом <span class="math inline">\(N_0 ≈ CPUE_1 / q\)</span>, что эквивалентно «жёсткой» априорной информации о q и отсутствии смещения в первом измерении; начальную миграцию полагаем нулевой <span class="math inline">\(m_0 = 0\)</span>. Начальную ковариацию ошибок оценивания <span class="math inline">\(P_0\)</span> берём диагональной с элементами 100 и 100, что означает умеренную начальную неопределённость по обеим компонентам; по сравнению с процессными дисперсиями это не слишком «жёсткое» начальное доверие, но и не полностью неинформативное. Этот выбор влияет на первые шаги фильтра: чем меньше <span class="math inline">\(P_0\)</span>, тем сильнее фильтр доверяет стартовым значениям и плавнее сходитится к устойчивому режиму, чем больше — тем быстрее «подхватывает» структуру шума из Q и данных.</p>
+<p>Основной цикл фильтра проходит по всем дням. На этапе прогноза мы обновляем состояния по уравнениям процесса: запас прогнозируется как <em>N<sub>pred</sub> = N<sub>est</sub> − Catch<sub>t</sub> + m<sub>est</sub></em>, что реализует баланс Лесли с учётом миграции, а миграция ведёт себя как авторегрессия первого порядка <em>m<sub>pred</sub> = 0.9m<sub>est</sub></em>, где 0.9 — это коэффициент затухания <em>a</em>, означающий, что миграционные импульсы затухают с временем, но не мгновенно. Одновременно формируем матрицу перехода <em>F = [[1, 1], [0, 0.9]]</em> и матрицу процессного шума <em>Q = diag(sigma<sub>N</sub>^2, sigma<sub>m</sub>^2)</em> и рассчитываем прогнозную ковариацию <em>P<sub>pred</sub> = F P F^T + Q</em>, которая накапливает неопределённость от процесса. На этапе коррекции связываем состояния с наблюдением через матрицу <em>H = [q, 0]</em>, поскольку в CPUE напрямую «виден» только запас. Прогноз измерения есть <em>y<sub>pred</sub> = q N<sub>pred</sub></em>; сравнивая его с фактом <em>CPUE<sub>t</sub></em>, получаем инновацию <em>innovation = CPUE<sub>t</sub> − y<sub>pred</sub></em> и её дисперсию <em>S = H P<sub>pred</sub> H^T + sigma<sub>y</sub>^2</em>; именно S задаёт, сколько «шума» мы ожидаем в обновляющем процессе и от модели, и от наблюдения одновременно. Коэффициент усиления Калмана <em>K = P<sub>pred</sub> H^T S^{-1}</em> вычисляет оптимальные веса для обновления: если модельная неопределённость велика, а измерение точное, <em>K</em> «тянет» оценку к факту, и наоборот. Далее выполняем обновление состояния: прибавляем к прогнозу вектор приращений <em>state<sub>update</sub> = K × innovation</em>, тем самым получаем <em>N<sub>est</sub></em> и <em>m<sub>est</sub></em> уже с учётом наблюдения, и обновляем ковариацию ошибок оценивания по формуле <em>P = (I − K H) P<sub>pred</sub></em>, что уменьшает неопределённость там, где поступила новая информация. На каждом шаге складываем в результирующую таблицу день, наблюдённый CPUE, фильтровые оценки запаса и миграции и предсказанный <em>CPUE y<sub>pred</sub></em>. Важно понимать, что в столбец <em>CPUE<sub>Estimated</sub></em> сохраняется именно одношаговый прогноз <em>y<sub>pred</sub></em> до коррекции, то есть это линия «что ожидала модель перед тем, как увидеть факт». Если нужно визуализировать «отфильтрованный» CPUE, соответствующий уже обновлённой оценке состояния, логичнее использовать <em>q × N<sub>est</sub></em> после коррекции; оба варианта корректны, но выражают разные величины — прогноз и фильтровую оценку.</p>
+<p>После завершения цикла объединяем исходные данные и результаты фильтра в один датафрейм для удобства анализа. Дальше подводим оперативные итоги: печатаем оценку начального и конечного запаса, абсолютное и относительное снижение за период, среднюю миграцию и экстремальные значения миграционного потока. Эти величины непосредственно поступают из траекторий <em>N<sub>est</sub></em> и <em>m<sub>est</sub></em>, и по знаку миграции легко интерпретировать периоды чистого притока и оттока. Строим три графика. Первый сравнивает три линии в шкале CPUE: точки фактического CPUE, пунктир классической регрессии Лесли и сплошную линию одношаговых прогнозов фильтра; здесь удобно видеть, как фильтр, учитывая вылов, миграцию и неопределённости, «ведёт» свою линию мимо краткоживущих всплесков, тогда как прямая по определению усредняет всё линейно. Второй график показывает динамику оценённого запаса и миграции на одной картинке: чтобы совместить масштабы, миграция умножается на 10 и сдвигается вверх на 400 единиц, а на правой оси задана обратная трансформация; это чисто визуальный приём, сдвиг не имеет биологического смысла, он лишь помогает видеть оба процесса одновременно. Третий график детализирует миграцию во времени с разметкой по знакам, подчёркивая, в какие дни фильтр «видел» преобладание иммиграции, а в какие — эмиграции.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ЧАСТЬ 3: ФИЛЬТР КАЛМАНА ДЛЯ ОЦЕНКИ ЗАПАСА И МИГРАЦИИ</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ====================================================</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Фильтр Калмана позволяет оценивать ненаблюдаемые состояния системы</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (запас, миграцию) на основе зашумленных наблюдений (CPUE)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== ЧАСТЬ 3: ФИЛЬТР КАЛМАНА ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ПАРАМЕТРЫ ФИЛЬТРА КАЛМАНА</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Инициализация параметров фильтра Калмана...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>q <span class="ot">&lt;-</span> <span class="fl">0.002</span>      <span class="co"># Коэффициент улавливаемости (связь между запасом и CPUE)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>sigma_N <span class="ot">&lt;-</span> <span class="dv">30</span>   <span class="co"># Шум процесса для запаса (неопределенность в динамике запаса)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sigma_m <span class="ot">&lt;-</span> <span class="dv">20</span>   <span class="co"># Шум процесса для миграции (неопределенность в миграции)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>sigma_y <span class="ot">&lt;-</span> <span class="fl">0.08</span> <span class="co"># Шум измерений для CPUE (ошибка наблюдений)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># НАЧАЛЬНЫЕ УСЛОВИЯ</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>N_est <span class="ot">&lt;-</span> data<span class="sc">$</span>CPUE[<span class="dv">1</span>] <span class="sc">/</span> q  <span class="co"># Начальная оценка запаса из первого наблюдения CPUE</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>m_est <span class="ot">&lt;-</span> <span class="dv">0</span>                 <span class="co"># Начальная оценка миграции (предполагаем 0)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>), <span class="at">nrow =</span> <span class="dv">2</span>)  <span class="co"># Начальная матрица ковариации ошибок</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ДЛЯ ХРАНЕНИЯ РЕЗУЛЬТАТОВ</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Day =</span> <span class="fu">integer</span>(),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">CPUE_Observed =</span> <span class="fu">numeric</span>(),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Stock_Estimate =</span> <span class="fu">numeric</span>(),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">Migration_Estimate =</span> <span class="fu">numeric</span>(),</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">CPUE_Estimated =</span> <span class="fu">numeric</span>()</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Запуск основного цикла фильтра Калмана...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ОСНОВНОЙ ЦИКЛ ФИЛЬТРА КАЛМАНА (для каждого дня наблюдений)</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(data)) {</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># █████ ШАГ 1: ПРОГНОЗ (PREDICTION STEP) █████</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Прогнозируем состояние системы на следующий день</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Уравнения состояния:</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  N_pred <span class="ot">&lt;-</span> N_est <span class="sc">-</span> data<span class="sc">$</span>Catch[t] <span class="sc">+</span> m_est  <span class="co"># Запас: предыдущий - вылов + миграция</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  m_pred <span class="ot">&lt;-</span> <span class="fl">0.9</span> <span class="sc">*</span> m_est                    <span class="co"># Миграция: авторегрессия 1-го порядка</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Матрица перехода состояний (описывает динамику системы)</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  F_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>,     <span class="co"># Влияние миграции на запас</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">0</span>, <span class="fl">0.9</span>),  <span class="co"># Авторегрессия для миграции</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Матрица ковариации шума процесса</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sigma_N<span class="sc">^</span><span class="dv">2</span>, <span class="dv">0</span>, </span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span>, sigma_m<span class="sc">^</span><span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Прогноз ковариации ошибок</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  P_pred <span class="ot">&lt;-</span> F_matrix <span class="sc">%*%</span> P <span class="sc">%*%</span> <span class="fu">t</span>(F_matrix) <span class="sc">+</span> Q</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># █████ ШАГ 2: КОРРЕКЦИЯ (UPDATE STEP) █████</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Обновляем прогноз на основе новых наблюдений</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Матрица измерений (связь состояний с наблюдениями)</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  H <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(q, <span class="dv">0</span>), <span class="at">nrow =</span> <span class="dv">1</span>)  <span class="co"># Только запас влияет на CPUE</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Прогнозируемое значение CPUE</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  y_pred <span class="ot">&lt;-</span> q <span class="sc">*</span> N_pred</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Инновация (невязка) - разница между наблюдением и прогнозом</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  innovation <span class="ot">&lt;-</span> data<span class="sc">$</span>CPUE[t] <span class="sc">-</span> y_pred</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ковариация инноваций</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> H <span class="sc">%*%</span> P_pred <span class="sc">%*%</span> <span class="fu">t</span>(H) <span class="sc">+</span> sigma_y<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Коэффициент усиления Калмана (оптимальные веса для обновления)</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">&lt;-</span> P_pred <span class="sc">%*%</span> <span class="fu">t</span>(H) <span class="sc">%*%</span> <span class="fu">solve</span>(S)</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ОБНОВЛЕНИЕ ОЦЕНОК СОСТОЯНИЙ</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  state_update <span class="ot">&lt;-</span> K <span class="sc">%*%</span> innovation</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  N_est <span class="ot">&lt;-</span> N_pred <span class="sc">+</span> state_update[<span class="dv">1</span>,<span class="dv">1</span>]  <span class="co"># Обновляем оценку запаса</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  m_est <span class="ot">&lt;-</span> m_pred <span class="sc">+</span> state_update[<span class="dv">2</span>,<span class="dv">1</span>]  <span class="co"># Обновляем оценку миграции</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ОБНОВЛЕНИЕ КОВАРИАЦИИ ОШИБОК</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> (<span class="fu">diag</span>(<span class="dv">2</span>) <span class="sc">-</span> K <span class="sc">%*%</span> H) <span class="sc">%*%</span> P_pred</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="co"># СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ДЛЯ ЭТОГО ДНЯ</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results, <span class="fu">data.frame</span>(</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">Day =</span> t,</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">CPUE_Observed =</span> data<span class="sc">$</span>CPUE[t],</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">Stock_Estimate =</span> N_est,</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">Migration_Estimate =</span> m_est,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">CPUE_Estimated =</span> y_pred</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Фильтр Калмана успешно завершил работу!</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="co"># ОБЪЕДИНЕНИЕ ВСЕХ ДАННЫХ ДЛЯ АНАЛИЗА</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>final_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data, results[, <span class="fu">c</span>(<span class="st">"Stock_Estimate"</span>, <span class="st">"Migration_Estimate"</span>, <span class="st">"CPUE_Estimated"</span>)])</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># ЧАСТЬ 4: ЗАКЛЮЧИТЕЛЬНАЯ АНАЛИТИКА И ВИЗУАЛИЗАЦИЯ</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># ================================================</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== ЧАСТЬ 4: СРАВНИТЕЛЬНЫЙ АНАЛИЗ РЕЗУЛЬТАТОВ ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co"># ОСНОВНЫЕ РЕЗУЛЬТАТЫ ФИЛЬТРА КАЛМАНА</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"ОЦЕНКИ ФИЛЬТРА КАЛМАНА:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Начальный запас:"</span>, <span class="fu">round</span>(results<span class="sc">$</span>Stock_Estimate[<span class="dv">1</span>], <span class="dv">1</span>), <span class="st">"особей</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Конечный запас:"</span>, <span class="fu">round</span>(results<span class="sc">$</span>Stock_Estimate[<span class="dv">20</span>], <span class="dv">1</span>), <span class="st">"особей</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Снижение запаса за период:"</span>, </span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(results<span class="sc">$</span>Stock_Estimate[<span class="dv">1</span>] <span class="sc">-</span> results<span class="sc">$</span>Stock_Estimate[<span class="dv">20</span>], <span class="dv">1</span>), </span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>    <span class="st">"особей ("</span>, </span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>((results<span class="sc">$</span>Stock_Estimate[<span class="dv">1</span>] <span class="sc">-</span> results<span class="sc">$</span>Stock_Estimate[<span class="dv">20</span>]) <span class="sc">/</span> results<span class="sc">$</span>Stock_Estimate[<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>    <span class="st">"%)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Средняя миграция:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(results<span class="sc">$</span>Migration_Estimate), <span class="dv">1</span>), <span class="st">"особей/день</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Максимальный приток:"</span>, <span class="fu">round</span>(<span class="fu">max</span>(results<span class="sc">$</span>Migration_Estimate), <span class="dv">1</span>), <span class="st">"особей/день</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Максимальный отток:"</span>, <span class="fu">round</span>(<span class="fu">min</span>(results<span class="sc">$</span>Migration_Estimate), <span class="dv">1</span>), <span class="st">"особей/день</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="co"># ГРАФИК 1: СРАВНЕНИЕ МЕТОДОВ ОЦЕНКИ CPUE</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Построение сравнительных графиков...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>plot_comparison <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(final_data) <span class="sc">+</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Наблюдения</span></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> CPUE, <span class="at">color =</span> <span class="st">"Наблюдения CPUE"</span>), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Модель Лесли</span></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> LM_Prediction, <span class="at">color =</span> <span class="st">"Модель Лесли"</span>), </span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Фильтр Калмана</span></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> CPUE_Estimated, <span class="at">color =</span> <span class="st">"Фильтр Калмана"</span>), </span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Настройки графика</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Сравнение методов оценки динамики запаса"</span>,</span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Фильтр Калмана vs Классическая модель Лесли"</span>,</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"День промысла"</span>, </span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Улов на усилие (CPUE)"</span>,</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Метод"</span>) <span class="sc">+</span></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Наблюдения CPUE"</span> <span class="ot">=</span> <span class="st">"darkred"</span>,</span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Модель Лесли"</span> <span class="ot">=</span> <span class="st">"darkblue"</span>, </span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Фильтр Калмана"</span> <span class="ot">=</span> <span class="st">"darkgreen"</span></span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_comparison)</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="co"># ГРАФИК 2: ДИНАМИКА ЗАПАСА И МИГРАЦИИ</span></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>plot_stock_migration <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(final_data) <span class="sc">+</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Оценка запаса</span></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> Stock_Estimate, <span class="at">color =</span> <span class="st">"Оценка запаса"</span>), </span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Миграционный поток (масштабируем для визуализации)</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> Migration_Estimate <span class="sc">*</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">400</span>, </span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">"Миграция (x10)"</span>), <span class="at">size =</span> <span class="fl">1.1</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Две оси Y</span></span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Оценка запаса (особи)"</span>,</span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span> (. <span class="sc">-</span> <span class="dv">400</span>) <span class="sc">/</span> <span class="dv">10</span>, <span class="at">name =</span> <span class="st">"Миграционный поток (особи/день)"</span>)</span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Динамика запаса и миграционного потока"</span>,</span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Результаты работы фильтра Калмана"</span>,</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"День промысла"</span>,</span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Переменные"</span>) <span class="sc">+</span></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Оценка запаса"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Миграция (x10)"</span> <span class="ot">=</span> <span class="st">"orange"</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_stock_migration)</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="co"># ГРАФИК 3: ДЕТАЛЬНЫЙ АНАЛИЗ МИГРАЦИИ</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>plot_migration_detail <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(final_data, <span class="fu">aes</span>(<span class="at">x =</span> Day, <span class="at">y =</span> Migration_Estimate)) <span class="sc">+</span></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">size =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(Migration_Estimate <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"Иммиграция"</span>, <span class="st">"Эмиграция"</span>)), </span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Оценка миграционного потока фильтром Калмана"</span>,</span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Положительные значения - приток, отрицательные - отток"</span>,</span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"День промысла"</span>, </span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Чистый миграционный поток (особи/день)"</span>,</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Тип миграции"</span>) <span class="sc">+</span></span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Иммиграция"</span> <span class="ot">=</span> <span class="st">"green4"</span>, <span class="st">"Эмиграция"</span> <span class="ot">=</span> <span class="st">"red3"</span>)) <span class="sc">+</span></span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plot_migration_detail)</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a><span class="co"># ТАБЛИЦА РЕЗУЛЬТАТОВ</span></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== ТАБЛИЦА РЕЗУЛЬТАТОВ (первые 10 дней) ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">head</span>(final_data[, <span class="fu">c</span>(<span class="st">"Day"</span>, <span class="st">"Catch"</span>, <span class="st">"CPUE"</span>, <span class="st">"Stock_Estimate"</span>, <span class="st">"Migration_Estimate"</span>)], <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">1</span>))</span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results_table)</span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a><span class="co"># СТАТИСТИКА КАЧЕСТВА ОЦЕНОК</span></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== СТАТИСТИКА КАЧЕСТВА ОЦЕНОК ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a><span class="co"># Среднеквадратичные ошибки</span></span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a>mse_leslie <span class="ot">&lt;-</span> <span class="fu">mean</span>((final_data<span class="sc">$</span>CPUE <span class="sc">-</span> final_data<span class="sc">$</span>LM_Prediction)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>mse_kalman <span class="ot">&lt;-</span> <span class="fu">mean</span>((final_data<span class="sc">$</span>CPUE <span class="sc">-</span> final_data<span class="sc">$</span>CPUE_Estimated)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"СРЕДНЕКВАДРАТИЧНЫЕ ОШИБКИ (MSE):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Модель Лесли:"</span>, <span class="fu">round</span>(mse_leslie, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Фильтр Калмана:"</span>, <span class="fu">round</span>(mse_kalman, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Улучшение:"</span>, <span class="fu">round</span>((mse_leslie <span class="sc">-</span> mse_kalman) <span class="sc">/</span> mse_leslie <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a><span class="co"># ЗАКЛЮЧЕНИЕ</span></span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== ВЫВОДЫ И РЕКОМЕНДАЦИИ ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. Фильтр Калмана позволяет оценивать ненаблюдаемые параметры (запас, миграцию)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. Учитывает не только наблюдения, но и знания о динамике системы</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Обеспечивает более точные оценки по сравнению с классическими методами</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"4. Особенно полезен при наличии миграционных процессов</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"5. Требует тщательной настройки параметров шумов</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Анализ завершен! Для углубленного изучения рекомендуется:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Экспериментировать с параметрами шумов (sigma_N, sigma_m, sigma_y)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Добавить сезонные компоненты в модель</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"• Рассмотреть нелинейные версии фильтра Калмана</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/KALMAN3.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:80.0%"> <img src="images/KALMAN4.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:80.0%"> <img src="images/KALMAN5.PNG" class="img-fluid quarto-figure quarto-figure-center" style="width:80.0%"> Чтобы увязать качество подгонки в шкале наблюдений, считаем среднеквадратические ошибки для регрессии Лесли и для линии <em>CPUE<sub>Estimated</sub></em>. В данном прогоне MSE (Mean Squared Error) фильтра близка к MSE регрессии и может быть чуть хуже, что нормально, поскольку мы сравниваем не «подогнанную линию» к факту, а одношаговые прогнозы, которые по определению не используют нынешнее измерение. Если вместо прогноза использовать <em>q × N<sub>est</sub></em> после обновления, MSE обычно снижается и становится сопоставимой или лучшей, а настройка шума измерений <em>sigma<sub>y</sub></em> и процессных шумов <em>sigma<sub>N</sub></em> и <em>sigma<sub>m</sub></em> позволяет управлять балансом доверия между моделью и данными. Финальные текстовые выводы подчёркивают ключевую практическую мысль: фильтр Калмана позволяет оценивать ненаблюдаемые компоненты баланса (запас и миграцию), опираясь одновременно на физику процесса и на данные; он особенно полезен при наличии миграций и шумных индексов и требует аккуратного выбора дисперсий, что в прикладных задачах делается по максимальному правдоподобию инноваций, как это реализовано в ОМЛ ФК по Михееву. В этом учебном скрипте параметры заданы вручную ради прозрачности, шаг контроля «пропусков» не демонстрируется, поскольку синтетический ряд полный; однако та же схема фильтра устойчиво работает и при отсутствующих наблюдениях, если на таких шагах пропускать блок коррекции и не менять P_pred формулой обновления.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chapter28.html" class="pagination-link" aria-label="Байесовский подход">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Байесовский подход</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
