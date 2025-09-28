@@ -18626,14 +18626,14 @@ Saved: monitor_summary.csv
  $ YEAR               : num  NA NA NA NA NA NA NA NA NA NA ...
  $ #Vectors to monitor: chr  "x[1]<-M" "x[2]<-q1" "x[3]<-q2" "x[4]<-q3" ...
  $ node               : chr  "x[1]" "x[2]" "x[3]" "x[4]" ...
- $ mean               : num  0.178 0.403 0.715 0.935 0.315 ...
- $ sd                 : num  0.0634 0.0932 0.1371 0.0599 0.0413 ...
- $ MC error           : num  0.001968 0.006709 0.009679 0.001494 0.000584 ...
- $ 2.50%              : num  0.0523 0.2522 0.463 0.7821 0.2452 ...
- $ 25.00%             : num  0.135 0.337 0.615 0.908 0.286 ...
- $ median             : num  0.178 0.391 0.708 0.952 0.312 ...
- $ 75.00%             : num  0.221 0.459 0.819 0.979 0.34 ...
- $ 97.50%             : num  0.301 0.615 0.975 0.998 0.407 ...
+ $ mean               : num  0.171 0.423 0.744 0.934 0.315 ...
+ $ sd                 : num  0.0644 0.0964 0.1353 0.061 0.0413 ...
+ $ MC error           : num  0.002016 0.007279 0.00935 0.001539 0.000603 ...
+ $ 2.50%              : num  0.0454 0.2651 0.4893 0.7747 0.2446 ...
+ $ 25.00%             : num  0.127 0.355 0.645 0.906 0.285 ...
+ $ median             : num  0.172 0.411 0.743 0.951 0.311 ...
+ $ 75.00%             : num  0.214 0.481 0.846 0.98 0.34 ...
+ $ 97.50%             : num  0.299 0.639 0.982 0.998 0.405 ...
 \end{verbatim}
 
 \begin{Shaded}
@@ -29586,16 +29586,16 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 Simple feature collection with 4 features and 4 fields
 Geometry type: LINESTRING
 Dimension:     XY
-Bounding box:  xmin: 36.74194 ymin: 68.50017 xmax: 47.81553 ymax: 74.35046
+Bounding box:  xmin: 36.84528 ymin: 68.49845 xmax: 47.77922 ymax: 74.41682
 Geodetic CRS:  WGS 84
 # A tibble: 4 x 5
 # Groups:   Вариант [4]
   Вариант     `Количество тралений` `Длина маршрута (км)` Площадь полигона (км~1
   <fct>                       <dbl>                 <dbl>                  <dbl>
-1 Original                      137                 3705.                 63101.
-2 Expanded_x~                   137                 4091                  99791.
-3 Expanded_x2                   137                 4955.                135352.
-4 Expanded_x3                   137                 6277                 207066.
+1 Original                      137                 3710.                 63101.
+2 Expanded_x~                   137                 4324                  99791.
+3 Expanded_x2                   137                 5029                 135352.
+4 Expanded_x3                   137                 6547.                207066.
 # i abbreviated name: 1: `Площадь полигона (км2)`
 # i 1 more variable: geometry <LINESTRING [arc_degree]>
 \end{verbatim}
@@ -35319,34 +35319,34 @@ Selected scenario(s):  currentCatch, currentF, Fmsy, noF, reduceF25, increaseF25
 SPiCT timeline:
                                                   
       Observations              Management        
-    2005.00 - 2025.00        2025.00 - 2026.00    
+    2017.00 - 2026.00        2026.00 - 2027.00    
  |-----------------------| ----------------------|
 
-Management evaluation: 2026.00
+Management evaluation: 2027.00
 
 Predicted catch for management period and states at management evaluation time:
 
                             C B/Bmsy F/Fmsy
-1. Keep current catch    11.8   1.31   0.52
-2. Keep current F        12.5   1.30   0.55
-3. Fish at Fmsy          22.0   1.20   1.00
-4. No fishing             0.0   1.42   0.00
-5. Reduce F by 25%        9.5   1.33   0.41
-6. Increase F by 25%     15.4   1.27   0.68
-7. MSY hockey-stick rule 22.0   1.20   1.00
-8. ICES advice rule      19.8   1.23   0.90
+1. Keep current catch    12.2   1.23   0.74
+2. Keep current F        12.6   1.23   0.76
+3. Fish at Fmsy          16.3   1.18   1.00
+4. No fishing             0.0   1.40   0.00
+5. Reduce F by 25%        9.6   1.27   0.57
+6. Increase F by 25%     15.5   1.19   0.95
+7. MSY hockey-stick rule 16.3   1.18   1.00
+8. ICES advice rule      14.9   1.20   0.91
 
 95% confidence intervals for states:
 
                          B/Bmsy.lo B/Bmsy.hi F/Fmsy.lo F/Fmsy.hi
-1. Keep current catch         1.12      1.52      0.23      1.15
-2. Keep current F             1.11      1.51      0.25      1.22
-3. Fish at Fmsy               1.00      1.44      0.45      2.23
-4. No fishing                 1.25      1.63      0.00      0.00
-5. Reduce F by 25%            1.15      1.54      0.18      0.92
-6. Increase F by 25%          1.08      1.49      0.31      1.53
-7. MSY hockey-stick rule      1.00      1.44      0.45      2.23
-8. ICES advice rule           1.03      1.46      0.40      2.00
+1. Keep current catch         0.58      2.64      0.09      5.99
+2. Keep current F             0.57      2.64      0.09      6.20
+3. Fish at Fmsy               0.53      2.65      0.12      8.15
+4. No fishing                 0.73      2.67      0.00      0.01
+5. Reduce F by 25%            0.61      2.64      0.07      4.65
+6. Increase F by 25%          0.54      2.65      0.12      7.74
+7. MSY hockey-stick rule      0.53      2.65      0.12      8.15
+8. ICES advice rule           0.54      2.65      0.11      7.42
 \end{verbatim}
 
 \begin{Shaded}
@@ -36740,7 +36740,7 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 \end{Shaded}
 
 \begin{verbatim}
-Текущая биомасса: 103 тыс. т
+Текущая биомасса: 26.9 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -36760,7 +36760,7 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 \end{Shaded}
 
 \begin{verbatim}
-Bpa: 54.9 тыс. т
+Bpa: 14.2 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -36770,7 +36770,7 @@ Bpa: 54.9 тыс. т
 \end{Shaded}
 
 \begin{verbatim}
-Blim: 39.2 тыс. т
+Blim: 10.1 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -36780,7 +36780,7 @@ Blim: 39.2 тыс. т
 \end{Shaded}
 
 \begin{verbatim}
-Fpa: 0.123 
+Fpa: 0.025 
 \end{verbatim}
 
 \begin{Shaded}
@@ -36790,7 +36790,7 @@ Fpa: 0.123
 \end{Shaded}
 
 \begin{verbatim}
-Рекомендованная F: 0.123 
+Рекомендованная F: 0.025 
 \end{verbatim}
 
 \begin{Shaded}
@@ -36800,7 +36800,7 @@ Fpa: 0.123
 \end{Shaded}
 
 \begin{verbatim}
-Рекомендованный TAC: 12.7 тыс. т
+Рекомендованный TAC: 9.6 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -36918,7 +36918,7 @@ Fpa: 0.123
 \end{Shaded}
 
 \begin{verbatim}
-Рекомендованная F: 0.109 
+Рекомендованная F: 0.022 
 \end{verbatim}
 
 \begin{Shaded}
@@ -36928,7 +36928,7 @@ Fpa: 0.123
 \end{Shaded}
 
 \begin{verbatim}
-Рекомендованный вылов: 11.2 тыс. т
+Рекомендованный вылов: 0.6 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -37562,24 +37562,24 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 \begin{verbatim}
 
 F = Fmsy:
-  TAC (медиана): 14.9 тыс. т
-  TAC (95% CI): [15.0 - 15.1] тыс. т
-  TAC (предосторожный): 15.0 тыс. т
+  TAC (медиана): 0.8 тыс. т
+  TAC (95% CI): [0.8 - 0.8] тыс. т
+  TAC (предосторожный): 0.8 тыс. т
 
 F = 0.75*Fmsy:
-  TAC (медиана): 11.2 тыс. т
-  TAC (95% CI): [11.3 - 11.3] тыс. т
-  TAC (предосторожный): 11.3 тыс. т
+  TAC (медиана): 0.6 тыс. т
+  TAC (95% CI): [0.6 - 0.6] тыс. т
+  TAC (предосторожный): 0.6 тыс. т
 
 F = 0.5*Fmsy:
-  TAC (медиана): 7.4 тыс. т
-  TAC (95% CI): [7.5 - 7.6] тыс. т
-  TAC (предосторожный): 7.5 тыс. т
+  TAC (медиана): 0.4 тыс. т
+  TAC (95% CI): [0.4 - 0.4] тыс. т
+  TAC (предосторожный): 0.4 тыс. т
 
 F = 1.25*Fmsy:
-  TAC (медиана): 18.6 тыс. т
-  TAC (95% CI): [18.8 - 18.9] тыс. т
-  TAC (предосторожный): 18.8 тыс. т
+  TAC (медиана): 1.0 тыс. т
+  TAC (95% CI): [1.0 - 1.0] тыс. т
+  TAC (предосторожный): 1.0 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -37675,37 +37675,37 @@ F = 1.25*Fmsy:
 
 \begin{verbatim}
    Year            Strategy F_multiplier F_target Expected_B Expected_B_Bmsy
-1     1 Устойчивый промысел            1     0.14        103             1.3
-2     2 Устойчивый промысел            1     0.14         98             1.3
-3     3 Устойчивый промысел            1     0.14         94             1.2
-4     4 Устойчивый промысел            1     0.14         91             1.2
-5     5 Устойчивый промысел            1     0.14         89             1.2
-6     6 Устойчивый промысел            1     0.14         87             1.1
-7     7 Устойчивый промысел            1     0.14         85             1.1
-8     8 Устойчивый промысел            1     0.14         84             1.1
-9     9 Устойчивый промысел            1     0.14         83             1.1
-10   10 Устойчивый промысел            1     0.14         82             1.1
-11   11 Устойчивый промысел            1     0.14         81             1.1
-12   12 Устойчивый промысел            1     0.14         80             1.0
-13   13 Устойчивый промысел            1     0.14         80             1.0
-14   14 Устойчивый промысел            1     0.14         79             1.0
-15   15 Устойчивый промысел            1     0.14         79             1.0
-   TAC
-1   15
-2   14
-3   14
-4   13
-5   13
-6   13
-7   12
-8   12
-9   12
-10  12
-11  12
-12  12
-13  12
-14  11
-15  11
+1     1 Устойчивый промысел            1     0.03         27             1.4
+2     2 Устойчивый промысел            1     0.03         27             1.3
+3     3 Устойчивый промысел            1     0.03         26             1.3
+4     4 Устойчивый промысел            1     0.03         26             1.3
+5     5 Устойчивый промысел            1     0.03         26             1.3
+6     6 Устойчивый промысел            1     0.03         26             1.3
+7     7 Устойчивый промысел            1     0.03         26             1.3
+8     8 Устойчивый промысел            1     0.03         26             1.3
+9     9 Устойчивый промысел            1     0.03         25             1.3
+10   10 Устойчивый промысел            1     0.03         25             1.3
+11   11 Устойчивый промысел            1     0.03         25             1.3
+12   12 Устойчивый промысел            1     0.03         25             1.3
+13   13 Устойчивый промысел            1     0.03         25             1.3
+14   14 Устойчивый промысел            1     0.03         25             1.2
+15   15 Устойчивый промысел            1     0.03         25             1.2
+    TAC
+1  0.80
+2  0.79
+3  0.79
+4  0.78
+5  0.78
+6  0.77
+7  0.77
+8  0.76
+9  0.76
+10 0.75
+11 0.75
+12 0.74
+13 0.74
+14 0.74
+15 0.73
 \end{verbatim}
 
 \begin{Shaded}
@@ -38572,7 +38572,7 @@ i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all confl
 \end{Shaded}
 
 \begin{verbatim}
-r (темп роста): 0.289 год<U+207B><U+00B9>
+r (темп роста): 0.065 год<U+207B><U+00B9>
 \end{verbatim}
 
 \begin{Shaded}
@@ -38582,7 +38582,7 @@ r (темп роста): 0.289 год<U+207B><U+00B9>
 \end{Shaded}
 
 \begin{verbatim}
-K (ёмкость средыь): 153.8 тыс. т
+K (ёмкость средыь): 40.2 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -38592,7 +38592,7 @@ K (ёмкость средыь): 153.8 тыс. т
 \end{Shaded}
 
 \begin{verbatim}
-Bmsy: 76.9 тыс. т
+Bmsy: 19.8 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -38602,7 +38602,7 @@ Bmsy: 76.9 тыс. т
 \end{Shaded}
 
 \begin{verbatim}
-Fmsy: 0.145 год<U+207B><U+00B9>
+Fmsy: 0.030 год<U+207B><U+00B9>
 \end{verbatim}
 
 \begin{Shaded}
@@ -38612,7 +38612,7 @@ Fmsy: 0.145 год<U+207B><U+00B9>
 \end{Shaded}
 
 \begin{verbatim}
-Текущая биомасса: 103.0 тыс. т
+Текущая биомасса: 26.9 тыс. т
 \end{verbatim}
 
 \begin{Shaded}
@@ -38622,7 +38622,7 @@ Fmsy: 0.145 год<U+207B><U+00B9>
 \end{Shaded}
 
 \begin{verbatim}
-Текущее B/Bmsy: 1.34
+Текущее B/Bmsy: 1.36
 \end{verbatim}
 
 \begin{Shaded}
@@ -38632,7 +38632,7 @@ Fmsy: 0.145 год<U+207B><U+00B9>
 \end{Shaded}
 
 \begin{verbatim}
-Текущее F/Fmsy: 0.13
+Текущее F/Fmsy: 0.54
 \end{verbatim}
 
 \begin{Shaded}
@@ -40357,50 +40357,50 @@ CV ошибки реализации: 10%
 СТРАТЕГИЯ: ICES Advice Rule
 ---------------------------------------- 
 Биологические риски:
-  P(перелов): 8.3%
-  P(истощение): 0.2%
-  P(коллапс): 0.0%
-  P(зеленая зона): 57.6%
+  P(перелов): 7.0%
+  P(истощение): 7.5%
+  P(коллапс): 0.1%
+  P(зеленая зона): 49.3%
 Экономические показатели:
-  Средний вылов: 10.3 тыс. т
-  Стабильность: 0.95
-  Межгодовая изменчивость: 1.3%
+  Средний вылов: 0.5 тыс. т
+  Стабильность: 0.88
+  Межгодовая изменчивость: 1.5%
 Итоговые оценки:
-  Биологический индекс: 0.85
-  Экономический индекс: 0.97
-  ОБЩИЙ ИНДЕКС: 0.90
+  Биологический индекс: 0.80
+  Экономический индекс: 0.92
+  ОБЩИЙ ИНДЕКС: 0.85
 
 СТРАТЕГИЯ: MSY Hockey-stick
 ---------------------------------------- 
 Биологические риски:
-  P(перелов): 46.3%
-  P(истощение): 3.7%
-  P(коллапс): 0.0%
-  P(зеленая зона): 20.2%
+  P(перелов): 40.6%
+  P(истощение): 18.1%
+  P(коллапс): 1.1%
+  P(зеленая зона): 21.8%
 Экономические показатели:
-  Средний вылов: 10.5 тыс. т
-  Стабильность: 0.92
+  Средний вылов: 0.6 тыс. т
+  Стабильность: 0.83
   Межгодовая изменчивость: 1.1%
 Итоговые оценки:
-  Биологический индекс: 0.61
-  Экономический индекс: 0.97
-  ОБЩИЙ ИНДЕКС: 0.75
+  Биологический индекс: 0.57
+  Экономический индекс: 0.95
+  ОБЩИЙ ИНДЕКС: 0.72
 
 СТРАТЕГИЯ: Fish at Fmsy
 ---------------------------------------- 
 Биологические риски:
   P(перелов): 48.5%
-  P(истощение): 4.7%
-  P(коллапс): 0.0%
-  P(зеленая зона): 20.0%
+  P(истощение): 20.3%
+  P(коллапс): 2.6%
+  P(зеленая зона): 21.3%
 Экономические показатели:
-  Средний вылов: 10.5 тыс. т
-  Стабильность: 0.92
+  Средний вылов: 0.6 тыс. т
+  Стабильность: 0.82
   Межгодовая изменчивость: 1.0%
 Итоговые оценки:
-  Биологический индекс: 0.60
-  Экономический индекс: 0.97
-  ОБЩИЙ ИНДЕКС: 0.75
+  Биологический индекс: 0.54
+  Экономический индекс: 0.94
+  ОБЩИЙ ИНДЕКС: 0.70
 \end{verbatim}
 
 \begin{Shaded}
@@ -46209,7 +46209,7 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 
 \begin{verbatim}
 Запас находится на уровне B/Bmsy >= 1. Восстановление не требуется.
-Текущее состояние: B/Bmsy = 1.34
+Текущее состояние: B/Bmsy = 1.36
 \end{verbatim}
 
 \begin{Shaded}
@@ -46257,11 +46257,11 @@ Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
 Fish at Fmsy:
   Частота закрытия: 0.0%
 ICES Advice Rule:
-  Частота закрытия: 1.1%
-  Средняя продолжительность закрытия: 2.3 лет
+  Частота закрытия: 9.7%
+  Средняя продолжительность закрытия: 4.7 лет
 MSY Hockey-stick:
-  Частота закрытия: 0.0%
-  Средняя продолжительность закрытия: 2.0 лет
+  Частота закрытия: 1.4%
+  Средняя продолжительность закрытия: 4.3 лет
 \end{verbatim}
 
 \begin{Shaded}
@@ -55785,6 +55785,1277 @@ Commons (\href{https://creativecommons.org/licenses/by/4.0/}{CCBY} или
 непосредственно на \hyperref[0]{сайт GitHub}. Пожалуйста, приложите
 \hyperref[0]{минимальный воспроизводимый пример}. Значительный вклад в
 разработку пакета будет отмечен указанием автора.
+
+\bookmarksetup{startatroot}
+
+\chapter{Байесовский
+подход}\label{ux431ux430ux439ux435ux441ux43eux432ux441ux43aux438ux439-ux43fux43eux434ux445ux43eux434}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-22}
+
+Если частотная статистика --- это формальная наука о том, \emph{что
+говорят данные}, то байесовский подход --- это искусство ведения диалога
+между данными и нашими предварительными ``априорными'' знаниями.
+Байесовская философия радикально проста: мы начинаем не с чистого листа,
+а с формализованного опыта --- \emph{априорного распределения}. Затем
+данные вносят свои коррективы, и мы получаем \emph{апостериорное
+распределение} --- обновлённые знания, которые уже учитывают и
+экспертизу, и наблюдения. Фундаментальное соотношение байесовского
+вывода задаётся формулой Байеса:
+
+\[
+P(\theta \mid D) = \frac{P(D \mid \theta) \cdot P(\theta)}{P(D)}
+\]
+
+где:
+
+\begin{itemize}
+\tightlist
+\item
+  \(P(\theta)\) --- \textbf{априорная вероятность}, отражающая наши
+  знания или убеждения о параметре \(\theta\) \emph{до} наблюдения
+  данных;
+\item
+  \(P(D \mid \theta)\) --- \textbf{правдоподобие}, то есть вероятность
+  наблюдать данные \(D\) при заданном значении параметра \(\theta\);
+\item
+  \(P(\theta \mid D)\) --- \textbf{апостериорная вероятность},
+  представляющая обновлённые знания о \(\theta\) \emph{после} учёта
+  данных \(D\);
+\item
+  \(P(D)\) --- нормировочная константа (маргинальное правдоподобие),
+  обеспечивающая, чтобы апостериорное распределение интегрировалось к
+  единице.
+\end{itemize}
+
+На практике часто используют пропорциональную форму, так как \(P(D)\) не
+зависит от \(\theta\):
+
+\[
+P(\theta \mid D) \propto P(D \mid \theta) \cdot P(\theta)
+\] В контексте оценки, например, роста рыб это означает: мы можем
+использовать знания о похожих видах, предыдущие исследования или даже
+экспертные оценки (``байки бывалых ихтиологов'') , чтобы задать более
+или менее реалистичные ожидания для параметров уравнения Берталанфи ---
+до того, как увидим первую точку данных.
+
+В практике оценки водных биоресурсов мы редко сталкиваемся с полными,
+сбалансированными и «чистыми» данными. Чаще всего перед нами ---
+разрозненные уловы, фрагментарные съёмки, практически полное отсутствие
+возрастной структуры, неточная методика сбора и, как следствие, высокая
+неопределённость. В таких условиях классические частотные методы ---
+опирающиеся на идею «единственной истинной оценки» --- часто дают
+иллюзию точности, скрывая за красивыми p‑значениями хрупкость выводов.
+
+Байесовский подход предлагает иной путь --- \textbf{не бороться с
+неопределённостью, а моделировать её явно}. Его суть лежит не столько в
+формулах, сколько в мировоззрении:
+
+\begin{quote}
+«Все знания условны. Мы начинаем с того, что знаем (априорное знание),
+обновляем это знание по мере поступления данных (правдоподобие) и
+получаем то, что знаем теперь (апостериорное знание)».
+\end{quote}
+
+Это особенно важно в гидробиологии, где экспертные суждения ихтиологов,
+данные по близкородственным видам, исторические аналоги и даже здравый
+смысл часто содержат больше информации, чем несколько десятков
+наблюдений. Байесовский формализм позволяет \textbf{превратить
+субъективное мнение в количественную гипотезу}, которую можно проверить,
+скорректировать и объединить с эмпирическими данными.
+
+\section{\texorpdfstring{\textbf{Почему именно байесовский подход в
+оценке
+роста?}}{Почему именно байесовский подход в оценке роста?}}\label{ux43fux43eux447ux435ux43cux443-ux438ux43cux435ux43dux43dux43e-ux431ux430ux439ux435ux441ux43eux432ux441ux43aux438ux439-ux43fux43eux434ux445ux43eux434-ux432-ux43eux446ux435ux43dux43aux435-ux440ux43eux441ux442ux430}
+
+Уравнение фон Берталанффи --- классический инструмент описания роста
+рыб, но его параметры (\emph{L∞} и \emph{K}) чрезвычайно чувствительны к
+структуре данных. При малом числе возрастных групп или смещённой выборке
+(например, только молодые особи) классическая нелинейная регрессия может
+выдать биологически неправдоподобные оценки: \emph{L∞} = 200 см у трески
+или \emph{K} = 0.01 у короткоживущей сельди. Байесовский подход решает
+эту проблему через \textbf{ограничение пространства поиска} с помощью
+априорных распределений, основанных на биологических знаниях.
+
+Например, если эксперт говорит: «У этого вида предельная длина, скорее
+всего, около 55 см, но может колебаться от 40 до 70 см», мы не
+игнорируем это как «ненаучное», а записываем в виде нормального
+распределения \emph{L∞ \textasciitilde{} N(55, 10)}. Это не догма ---
+это \textbf{рабочая гипотеза}, которую данные могут усилить, ослабить
+или полностью опровергнуть.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{curve}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(x, }\DecValTok{55}\NormalTok{, }\DecValTok{10}\NormalTok{), }\DecValTok{10}\NormalTok{, }\DecValTok{100}\NormalTok{, }
+       \AttributeTok{xlab =} \StringTok{"K"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Плотность"}\NormalTok{,}
+       \AttributeTok{main =} \StringTok{"Прайер для Linf"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BAYES1.PNG}
+\end{center}
+
+\textbf{Что даёт байесовский подход на практике?}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Количественная оценка неопределённости.}\\
+  Вместо одного числа (например, \emph{L∞ = 62.2 см}) мы получаем
+  \textbf{полное распределение вероятностей}, из которого можно извлечь
+  доверительные интервалы, стандартные ошибки и даже вероятность того,
+  что \emph{L∞ \textgreater{} 70 см}. Это важно при управлении запасами:
+  если 95\% интервал для \emph{L∞} включает значения, при которых MSY
+  падает на 30\%, это сигнал к осторожности (в моделях оценки
+  \emph{L\textsubscript{opt}}).
+\item
+  \textbf{Устойчивость при малых выборках.}\\
+  Даже при 4--6 наблюдениях байесовская модель не «ломается», а выдаёт
+  обоснованную оценку, основанную на компромиссе между данными и
+  априором. Это делает её идеальной для редких, труднодоступных или
+  недавно осваиваемых видов.
+\item
+  \textbf{Прозрачность допущений.}\\
+  Все исходные предположения --- о диапазоне \emph{K}, форме
+  распределения ошибок, степени корреляции параметров --- задаются явно.
+  Это позволяет легко проводить \textbf{анализ чувствительности}: что
+  изменится, если эксперт ошибся на 10\%? Как повлияет изменение формы
+  прайера (априора)?
+\item
+  \textbf{Интеграция разных источников информации.}\\
+  Байесовский каркас естественно объединяет данные съёмок, промысла,
+  лабораторных экспериментов и литературных обзоров в единую модель. Это
+  особенно ценно в условиях Data-Limited Fisheries, где каждый фрагмент
+  информации на вес золота.
+\end{enumerate}
+
+\textbf{Байес как мост между наукой и управлением}
+
+Управленческие решения в рыболовстве редко принимаются в условиях полной
+определённости. Регуляторы хотят знать не только «какой ОДУ (общий
+допустимый улов) установить», но и \textbf{«с какой вероятностью мы не
+переловим при таком ОДУ»}. Байесовский подход отвечает на этот вопрос
+напрямую: он даёт распределение возможных траекторий запаса, а не одну
+«среднюю» линию. Это позволяет строить \textbf{предосторожные
+стратегии}, учитывающие худший, средний и лучший сценарии.
+
+Кроме того, байесовские результаты легко интерпретировать даже для
+нестатистиков:
+
+\begin{quote}
+«С вероятностью 90\% предельная длина находится между 58 и 66 см» ---
+это понятнее, чем «коэффициент значим при p \textless{} 0.05».
+\end{quote}
+
+\textbf{Дисциплина скромности}
+
+Байесовский подход --- это не просто набор формул, а
+\textbf{интеллектуальная дисциплина}. Он заставляет нас признать:
+
+\begin{itemize}
+\item
+  Мы не знаем всего.
+\item
+  Наши данные неполны.
+\item
+  Наши модели --- упрощения реальности.
+\end{itemize}
+
+Но вместо того чтобы скрывать эти ограничения, байесовский анализ делает
+их частью процесса. Он учит нас \textbf{думать вероятностно}, принимать
+решения, устойчивые к неопределённости, и честно сообщать о границах
+нашего знания.
+
+В этом практическом занятии мы не просто «прогоним скрипт», а пройдём
+полный цикл байесовского анализа: от формализации экспертного мнения до
+визуализации апостериорных распределений и интерпретации результатов в
+контексте устойчивого управления. Мы увидим, как даже скудные данные, в
+сочетании с биологическим смыслом, позволяют построить надёжную оценку
+параметров роста --- и, что важнее, \textbf{понять, насколько этой
+оценке можно доверять}.
+
+\section{\texorpdfstring{\textbf{Что
+делаем?}}{Что делаем?}}\label{ux447ux442ux43e-ux434ux435ux43bux430ux435ux43c-1}
+
+Скрипт \href{https://mombus.github.io/cRab/data/BAYES.R}{целиком}.
+
+Практическое занятие посвящено байесовскому подходу в оценке параметров
+роста рыбы на примере уравнения фон Берталанффи в условиях ограниченных
+данных. Основная цель --- наглядно продемонстрировать, как априорные
+знания эксперта, объединенные с небольшим набором наблюдений, формируют
+уточненное апостериорное знание о биологических параметрах.
+Биологическая задача заключается в оценке параметров \emph{L∞} или
+\emph{L\textsubscript{inf}} (предельная длина) и \emph{K} (константа
+роста) для гипотетического вида рыбы при очень скудной выборке измерений
+длины и возраста. Уравнение роста используется в упрощенной форме без
+учета \emph{t\textsubscript{0}}: \emph{L\textsubscript{age}} =
+\emph{L\textsubscript{inf}} × (1 - exp(-\emph{K} × age)).
+
+Ключевая идея байесовского подхода выражается формулой: апостериорное
+распределение пропорционально правдоподобию данных, умноженному на
+априорное распределение. Это означает, что мы начинаем не с чистого
+листа, а с формализованного опыта, который затем корректируется
+наблюдаемыми данными. Для реализации подхода в R используются пакеты
+\texttt{ggplot2} для визуализации, \texttt{dplyr} для манипуляций с
+данными и \texttt{MASS} для вспомогательных статистических функций.
+
+На первом этапе создается искусственная ``истинная'' популяция с
+параметрами \emph{L\textsubscript{inf}} = 60 см и \emph{K} = 0.27/год,
+чтобы иметь эталон для сравнения или чтобы понимать, к чему мы стремимся
+в оценке. Генерируется полная кривая роста для возрастов от 1 до 15 лет,
+которая визуализируется как эталонный образец. Затем моделируется
+реальная ситуация недостатка данных --- шесть промеров ``реальной''
+рыбы. Выбираются всего шесть возрастов (1, 2, 4, 6, 10 и 14 лет), для
+которых генерируются ``наблюдаемые'' данные с добавлением случайной
+ошибки измерения (стандартное отклонение 2 см). Визуализация показывает,
+насколько ограниченные данные не позволяют точно восстановить истинную
+кривую роста классическими методами.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ПРАКТИЧЕСКОЕ ЗАНЯТИЕ: БАЙЕСОВСКИЙ ПОДХОД }
+\CommentTok{\# Оценка параметров роста рыбы по уравнению фон Берталанффи при недостатке данных}
+
+\CommentTok{\# Установка и загрузка необходимых пакетов}
+\NormalTok{required\_packages }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"dplyr"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"gridExtra"}\NormalTok{, }\StringTok{"MASS"}\NormalTok{)}
+\NormalTok{new\_packages }\OtherTok{\textless{}{-}}\NormalTok{ required\_packages[}\SpecialCharTok{!}\NormalTok{(required\_packages }\SpecialCharTok{\%in\%} \FunctionTok{installed.packages}\NormalTok{()[,}\StringTok{"Package"}\NormalTok{])]}
+\ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(new\_packages)) }\FunctionTok{install.packages}\NormalTok{(new\_packages)}
+
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(gridExtra)}
+\FunctionTok{library}\NormalTok{(MASS)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 1: ГЕНЕРАЦИЯ ДАННЫХ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{175}\NormalTok{)}
+
+\CommentTok{\# Истинные параметры}
+\NormalTok{true\_Linf }\OtherTok{\textless{}{-}} \FloatTok{60.0}
+\NormalTok{true\_K }\OtherTok{\textless{}{-}} \FloatTok{0.27}
+\NormalTok{true\_sigma }\OtherTok{\textless{}{-}} \FloatTok{6.0}
+
+\CommentTok{\# Уравнение фон Берталанффи}
+\NormalTok{von\_bertalanffy }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(age, Linf, K) \{}
+\NormalTok{  Linf }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{K }\SpecialCharTok{*}\NormalTok{ age))}
+\NormalTok{\}}
+
+\CommentTok{\# Генерация данных}
+\NormalTok{ages\_full }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{15}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{100}\NormalTok{)}
+\NormalTok{lengths\_true }\OtherTok{\textless{}{-}} \FunctionTok{von\_bertalanffy}\NormalTok{(ages\_full, true\_Linf, true\_K)}
+
+\NormalTok{sample\_ages }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{14}\NormalTok{)}
+\NormalTok{sample\_lengths }\OtherTok{\textless{}{-}} \FunctionTok{von\_bertalanffy}\NormalTok{(sample\_ages, true\_Linf, true\_K) }\SpecialCharTok{+} 
+  \FunctionTok{rnorm}\NormalTok{(}\FunctionTok{length}\NormalTok{(sample\_ages), }\DecValTok{0}\NormalTok{, true\_sigma)}
+
+\NormalTok{full\_data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Age =}\NormalTok{ ages\_full, }\AttributeTok{Length =}\NormalTok{ lengths\_true)}
+\NormalTok{observed\_data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Age =}\NormalTok{ sample\_ages, }\AttributeTok{Length =}\NormalTok{ sample\_lengths)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 2: ВИЗУАЛИЗАЦИЯ ПРОБЛЕМЫ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\NormalTok{plot\_data }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ full\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length, }\AttributeTok{color =} \StringTok{"Истинная кривая"}\NormalTok{), }
+            \AttributeTok{linewidth =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ observed\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length, }\AttributeTok{color =} \StringTok{"Наблюдения"}\NormalTok{), }
+             \AttributeTok{size =} \DecValTok{4}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Истинная кривая"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Наблюдения"} \OtherTok{=} \StringTok{"\#FF4444"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ПРОБЛЕМА НЕДОСТАТКА ДАННЫХ"}\NormalTok{,}
+       \AttributeTok{subtitle =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Всего"}\NormalTok{, }\FunctionTok{length}\NormalTok{(sample\_ages), }\StringTok{"наблюдений для оценки кривой роста"}\NormalTok{),}
+       \AttributeTok{y =} \StringTok{"Длина тела (см)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Возраст (лет)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{""}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray40"}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(plot\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BAYES2.PNG}
+\end{center}
+
+Экспертные знания формализуются в виде априорных распределений: для
+\emph{L\textsubscript{inf}} задается нормальное распределение с средним
+55 см и стандартным отклонением 10 см, для \emph{K} --- нормальное
+распределение с средним 0.25/год и стандартным отклонением 0.08/год. Эти
+прайеры (априоры или priors) отражают знания гидробиолога о похожих
+видах в данном водоеме или более ранние сообщения о поимках крупных
+особей этого же вида ``бывалыми'' ихтиологами. Создается сетка возможных
+значений параметров (150 × 150 точек), на которой вычисляются плотности
+априорных распределений. Визуализация включает маргинальные
+распределения для каждого параметра и совместное распределение, где
+отмечаются истинные значения параметров и мнение эксперта.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 3: АПРИОРНЫЕ РАСПРЕДЕЛЕНИЯ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Знания эксперта{-}ихтиолога о похожих видах}
+\NormalTok{expert\_Linf\_mean }\OtherTok{\textless{}{-}} \DecValTok{55}    \CommentTok{\# Ожидаемая предельная длина}
+\NormalTok{expert\_Linf\_sd }\OtherTok{\textless{}{-}} \DecValTok{10}      \CommentTok{\# Неопределенность оценки}
+\NormalTok{expert\_K\_mean }\OtherTok{\textless{}{-}} \FloatTok{0.25}      \CommentTok{\# Ожидаемая константа роста  }
+\NormalTok{expert\_K\_sd }\OtherTok{\textless{}{-}} \FloatTok{0.08}       \CommentTok{\# Неопределенность оценки}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"ЭКСПЕРТНЫЕ ЗНАНИЯ ДЛЯ ОБОИХ ПАРАМЕТРОВ:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Linf \textasciitilde{} N(mean ="}\NormalTok{, expert\_Linf\_mean, }\StringTok{", sd ="}\NormalTok{, expert\_Linf\_sd, }\StringTok{")}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• K \textasciitilde{} N(mean ="}\NormalTok{, expert\_K\_mean, }\StringTok{", sd ="}\NormalTok{, expert\_K\_sd, }\StringTok{")}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Истинные значения: Linf ="}\NormalTok{, true\_Linf, }\StringTok{", K ="}\NormalTok{, true\_K, }\StringTok{"}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Создаем сетку параметров}
+\NormalTok{param\_grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}
+  \AttributeTok{Linf =} \FunctionTok{seq}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{70}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{150}\NormalTok{),}
+  \AttributeTok{K =} \FunctionTok{seq}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\FloatTok{0.4}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{150}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# Априорные распределения (нормальные)}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{prior }\OtherTok{\textless{}{-}} \FunctionTok{dnorm}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{Linf, expert\_Linf\_mean, expert\_Linf\_sd) }\SpecialCharTok{*}
+                   \FunctionTok{dnorm}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{K, expert\_K\_mean, expert\_K\_sd)}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{prior }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{prior }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{prior)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 4: ВИЗУАЛИЗАЦИЯ АПРИОРОВ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Маргинальные распределения {-} Linf}
+\NormalTok{prior\_linf\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{x =} \FunctionTok{seq}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{70}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{100}\NormalTok{)), }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{dnorm}\NormalTok{(x, expert\_Linf\_mean, expert\_Linf\_sd)), }
+            \AttributeTok{fill =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{dnorm}\NormalTok{(x, expert\_Linf\_mean, expert\_Linf\_sd)), }
+            \AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ true\_Linf, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ expert\_Linf\_mean, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ true\_Linf, }\AttributeTok{y =} \FloatTok{0.03}\NormalTok{, }\AttributeTok{label =} \StringTok{"Истинное значение"}\NormalTok{, }
+           \AttributeTok{hjust =} \SpecialCharTok{{-}}\FloatTok{0.1}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ expert\_Linf\_mean, }\AttributeTok{y =} \FloatTok{0.025}\NormalTok{, }\AttributeTok{label =} \StringTok{"Мнение эксперта"}\NormalTok{, }
+           \AttributeTok{hjust =} \FloatTok{1.1}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"АПРИОРНОЕ РАСПРЕДЕЛЕНИЕ: Linf"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Предельная длина тела"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Плотность вероятности"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Linf (см)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+
+\CommentTok{\# Маргинальные распределения {-} K (ИСПРАВЛЕНО: добавлена линия мнения эксперта)}
+\NormalTok{prior\_k\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{x =} \FunctionTok{seq}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\FloatTok{0.4}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{100}\NormalTok{)), }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{dnorm}\NormalTok{(x, expert\_K\_mean, expert\_K\_sd)), }
+            \AttributeTok{fill =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{dnorm}\NormalTok{(x, expert\_K\_mean, expert\_K\_sd)), }
+            \AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ true\_K, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ expert\_K\_mean, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# ДОБАВЛЕНО}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ true\_K, }\AttributeTok{y =} \FloatTok{4.5}\NormalTok{, }\AttributeTok{label =} \StringTok{"Истинное значение"}\NormalTok{, }
+           \AttributeTok{hjust =} \SpecialCharTok{{-}}\FloatTok{0.1}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ expert\_K\_mean, }\AttributeTok{y =} \FloatTok{4.0}\NormalTok{, }\AttributeTok{label =} \StringTok{"Мнение эксперта"}\NormalTok{, }
+           \AttributeTok{hjust =} \FloatTok{1.1}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# ДОБАВЛЕНО}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"АПРИОРНОЕ РАСПРЕДЕЛЕНИЕ: K"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Константа роста"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Плотность вероятности"}\NormalTok{, }\AttributeTok{x =} \StringTok{"K (1/год)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+
+\CommentTok{\# Совместное распределение}
+\NormalTok{joint\_prior\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(param\_grid, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ K)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_raster}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ prior), }\AttributeTok{interpolate =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_contour}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{z =}\NormalTok{ prior), }\AttributeTok{color =} \StringTok{"white"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ true\_Linf, }\AttributeTok{y =}\NormalTok{ true\_K, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{shape =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ expert\_Linf\_mean, }\AttributeTok{y =}\NormalTok{ expert\_K\_mean, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{shape =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#E6F2FF"}\NormalTok{, }\AttributeTok{high =} \StringTok{"\#003366"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Плотность"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"СОВМЕСТНОЕ АПРИОРНОЕ РАСПРЕДЕЛЕНИЕ"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Синий круг {-} мнение эксперта, Красный крест {-} истинные значения"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"K (1/год)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Linf (см)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+
+\FunctionTok{grid.arrange}\NormalTok{(prior\_linf\_plot, prior\_k\_plot, joint\_prior\_plot, }
+             \AttributeTok{layout\_matrix =} \FunctionTok{rbind}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{)),}
+             \AttributeTok{top =} \StringTok{"БАЙЕСОВСКИЙ ПОДХОД: АПРИОРНЫЕ ЗНАНИЯ ЭКСПЕРТА ДЛЯ ОБОИХ ПАРАМЕТРОВ"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{images/BAYES3.PNG}
+\end{center}
+
+Функция правдоподобия вычисляется на основе нормального распределения
+ошибок наблюдений с стандартным отклонением 2.5. Для каждой комбинации
+параметров сетки рассчитывается логарифм правдоподобия, который затем
+преобразуется в шкалу вероятностей. Визуализация правдоподобия
+показывает, какие комбинации параметров лучше всего объясняют
+наблюдаемые данные. Важно отметить, что из-за малого количества данных
+функция правдоподобия довольно широкая, что отражает высокую
+неопределенность оценок.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 5: ФУНКЦИЯ ПРАВДОПОДОБИЯ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\NormalTok{calculate\_likelihood }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(Linf, K, sigma) \{}
+\NormalTok{  predicted }\OtherTok{\textless{}{-}} \FunctionTok{von\_bertalanffy}\NormalTok{(sample\_ages, Linf, K)}
+  \FunctionTok{sum}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(sample\_lengths, predicted, sigma, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+
+\NormalTok{sigma\_prior }\OtherTok{\textless{}{-}} \FloatTok{2.5}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{log\_likelihood }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(param\_grid, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(row) \{}
+  \FunctionTok{calculate\_likelihood}\NormalTok{(row[}\StringTok{"Linf"}\NormalTok{], row[}\StringTok{"K"}\NormalTok{], sigma\_prior)}
+\NormalTok{\})}
+
+\CommentTok{\# Преобразуем в likelihood}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{likelihood }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{log\_likelihood }\SpecialCharTok{{-}} \FunctionTok{max}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{log\_likelihood))}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{likelihood }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{likelihood }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{likelihood, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Визуализация правдоподобия}
+\NormalTok{likelihood\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(param\_grid, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ K)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_raster}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ likelihood), }\AttributeTok{interpolate =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_contour}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{z =}\NormalTok{ likelihood), }\AttributeTok{color =} \StringTok{"white"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ true\_Linf, }\AttributeTok{y =}\NormalTok{ true\_K, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{shape =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ expert\_Linf\_mean, }\AttributeTok{y =}\NormalTok{ expert\_K\_mean, }\AttributeTok{color =} \StringTok{"\#3366CC"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{shape =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# ДОБАВЛЕНО}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#E6FFE6"}\NormalTok{, }\AttributeTok{high =} \StringTok{"\#006600"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Правдоподобие"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ФУНКЦИЯ ПРАВДОПОДОБИЯ"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Вероятность наблюдать данные при заданных параметрах}\SpecialCharTok{\textbackslash{}n}\StringTok{Красный крест {-} истинные значения, Синий круг {-} мнение эксперта"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"K (1/год)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Linf (см)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+
+\FunctionTok{print}\NormalTok{(likelihood\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BAYES4.PNG}
+\end{center}
+
+Апостериорное распределение вычисляется как произведение априорного
+распределения и правдоподобия с последующей нормализацией. Визуализация
+апостериорного распределения демонстрирует, как сочетание априорных
+знаний и данных сужает область вероятных значений параметров.
+Маргинализация позволяет получить распределения для каждого параметра в
+отдельности, на которых хорошо видно смещение оценок в сторону как
+априорных ожиданий, так и наблюдаемых данных.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 6: АПОСТЕРИОРНОЕ РАСПРЕДЕЛЕНИЕ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Удаляем NA значения}
+\NormalTok{param\_grid }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid[}\FunctionTok{complete.cases}\NormalTok{(param\_grid), ]}
+
+\CommentTok{\# Вычисляем апостериорное распределение}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{posterior }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{prior }\SpecialCharTok{*}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{likelihood}
+\NormalTok{param\_grid}\SpecialCharTok{$}\NormalTok{posterior }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{posterior, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Визуализация апостериорного распределения}
+\NormalTok{posterior\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(param\_grid, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ K)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_raster}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ posterior), }\AttributeTok{interpolate =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_contour}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{z =}\NormalTok{ posterior), }\AttributeTok{color =} \StringTok{"white"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{annotate}\NormalTok{(}\StringTok{"point"}\NormalTok{, }\AttributeTok{x =}\NormalTok{ true\_Linf, }\AttributeTok{y =}\NormalTok{ true\_K, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{shape =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#FFE6E6"}\NormalTok{, }\AttributeTok{high =} \StringTok{"\#CC0000"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Плотность"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"АПОСТЕРИОРНОЕ РАСПРЕДЕЛЕНИЕ"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Обновленные знания после учета данных"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"K (1/год)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Linf (см)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+
+\FunctionTok{print}\NormalTok{(posterior\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BAYES5.PNG}
+\end{center}
+
+Рассчитываются точечные оценки параметров как средние апостериорные
+значения: \emph{L\textsubscript{inf}} = 62.2 см (истинное значение 60
+см), \emph{K} = 0.263/год (истинное значение 0.27/год). Стандартные
+отклонения апостериорных распределений составляют 2.3 см для
+\emph{L\textsubscript{inf}} и 0.026/год для \emph{K}. Методом
+сэмплирования строятся 95\% доверительные интервалы: для
+\emph{L\textsubscript{inf}} от 57.9 до 67.0 см, для \emph{K} от 0.215 до
+0.317/год. Эти интервалы количественно характеризуют неопределенность
+оценок.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 7: МАРГИНАЛЬНЫЕ РАСПРЕДЕЛЕНИЯ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Маргинализация}
+\NormalTok{marginal\_linf }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Linf) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{prior =} \FunctionTok{sum}\NormalTok{(prior),}
+            \AttributeTok{posterior =} \FunctionTok{sum}\NormalTok{(posterior))}
+
+\NormalTok{marginal\_k }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(K) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{prior =} \FunctionTok{sum}\NormalTok{(prior),}
+            \AttributeTok{posterior =} \FunctionTok{sum}\NormalTok{(posterior))}
+
+\CommentTok{\# Графики маргинальных распределений}
+\NormalTok{marginal\_linf\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(marginal\_linf) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ prior, }\AttributeTok{fill =} \StringTok{"Априорное"}\NormalTok{), }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ prior, }\AttributeTok{color =} \StringTok{"Априорное"}\NormalTok{), }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ posterior, }\AttributeTok{fill =} \StringTok{"Апостериорное"}\NormalTok{), }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Linf, }\AttributeTok{y =}\NormalTok{ posterior, }\AttributeTok{color =} \StringTok{"Апостериорное"}\NormalTok{), }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ true\_Linf, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Априорное"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Апостериорное"} \OtherTok{=} \StringTok{"\#CC0000"}\NormalTok{), }
+                    \AttributeTok{name =} \StringTok{"Распределение"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Априорное"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Апостериорное"} \OtherTok{=} \StringTok{"\#CC0000"}\NormalTok{), }
+                     \AttributeTok{name =} \StringTok{"Распределение"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"МАРГИНАЛЬНОЕ РАСПРЕДЕЛЕНИЕ: Linf"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Плотность вероятности"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Linf (см)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{)  }\CommentTok{\# Скрываем легенду у первого графика}
+
+\NormalTok{marginal\_k\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(marginal\_k) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ K, }\AttributeTok{y =}\NormalTok{ prior, }\AttributeTok{fill =} \StringTok{"Априорное"}\NormalTok{), }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ K, }\AttributeTok{y =}\NormalTok{ prior, }\AttributeTok{color =} \StringTok{"Априорное"}\NormalTok{), }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_area}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ K, }\AttributeTok{y =}\NormalTok{ posterior, }\AttributeTok{fill =} \StringTok{"Апостериорное"}\NormalTok{), }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ K, }\AttributeTok{y =}\NormalTok{ posterior, }\AttributeTok{color =} \StringTok{"Апостериорное"}\NormalTok{), }\AttributeTok{linewidth =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ true\_K, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#FF4444"}\NormalTok{, }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Априорное"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Апостериорное"} \OtherTok{=} \StringTok{"\#CC0000"}\NormalTok{), }
+                    \AttributeTok{name =} \StringTok{"Распределение"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Априорное"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Апостериорное"} \OtherTok{=} \StringTok{"\#CC0000"}\NormalTok{), }
+                     \AttributeTok{name =} \StringTok{"Распределение"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"МАРГИНАЛЬНОЕ РАСПРЕДЕЛЕНИЕ: K"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Плотность вероятности"}\NormalTok{, }\AttributeTok{x =} \StringTok{"K (1/год)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)  }\CommentTok{\# Размещаем легенду внизу у второго графика}
+
+\CommentTok{\# Объединяем графики}
+\FunctionTok{grid.arrange}\NormalTok{(marginal\_linf\_plot, marginal\_k\_plot, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{images/BAYES6.PNG}
+\end{center}
+
+Финальная визуализация показывает 150 случайных кривых роста,
+сгенерированных из апостериорного распределения. Тонкие красные линии
+иллюстрируют неопределенность оценки, темно-красная линия показывает
+среднюю апостериорную кривую, синяя линия --- истинную кривую, а зеленые
+точки --- наблюдаемые данные. Такой подход наглядно демонстрирует
+байесовскую философию: мы получаем не единственную ``лучшую'' кривую, а
+целое семейство возможных кривых с соответствующими вероятностями, что
+позволяет адекватно оценивать неопределенность прогнозов.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 8: РАСЧЕТ СТАТИСТИК {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Точечные оценки}
+\NormalTok{posterior\_mean\_linf }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{Linf }\SpecialCharTok{*}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{posterior\_mean\_k }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{K }\SpecialCharTok{*}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Стандартные отклонения}
+\NormalTok{posterior\_sd\_linf }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{posterior }\SpecialCharTok{*}\NormalTok{ (param\_grid}\SpecialCharTok{$}\NormalTok{Linf }\SpecialCharTok{{-}}\NormalTok{ posterior\_mean\_linf)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{posterior\_sd\_k }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{posterior }\SpecialCharTok{*}\NormalTok{ (param\_grid}\SpecialCharTok{$}\NormalTok{K }\SpecialCharTok{{-}}\NormalTok{ posterior\_mean\_k)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 95\% доверительные интервалы}
+\NormalTok{linf\_samples }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{Linf, }\AttributeTok{size =} \DecValTok{10000}\NormalTok{, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior)}
+\NormalTok{k\_samples }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(param\_grid}\SpecialCharTok{$}\NormalTok{K, }\AttributeTok{size =} \DecValTok{10000}\NormalTok{, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior)}
+
+\NormalTok{linf\_quantiles }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(linf\_samples, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\NormalTok{k\_quantiles }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(k\_samples, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+
+\CommentTok{\# Вывод результатов}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"РЕЗУЛЬТАТЫ БАЙЕСОВСКОГО АНАЛИЗА:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"================================}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"ТОЧЕЧНЫЕ ОЦЕНКИ:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Linf:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(posterior\_mean\_linf, }\DecValTok{1}\NormalTok{), }\StringTok{"см (истинное:"}\NormalTok{, true\_Linf, }\StringTok{"см)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• K:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(posterior\_mean\_k, }\DecValTok{3}\NormalTok{), }\StringTok{"/год (истинное:"}\NormalTok{, true\_K, }\StringTok{"/год)}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"НЕОПРЕДЕЛЕННОСТЬ ОЦЕНОК:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• SD(Linf):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(posterior\_sd\_linf, }\DecValTok{1}\NormalTok{), }\StringTok{"см}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• SD(K):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(posterior\_sd\_k, }\DecValTok{3}\NormalTok{), }\StringTok{"/год}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"95\% ДОВЕРИТЕЛЬНЫЕ ИНТЕРВАЛЫ:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Linf: ["}\NormalTok{, }\FunctionTok{round}\NormalTok{(linf\_quantiles[}\DecValTok{1}\NormalTok{], }\DecValTok{1}\NormalTok{), }\StringTok{","}\NormalTok{, }\FunctionTok{round}\NormalTok{(linf\_quantiles[}\DecValTok{2}\NormalTok{], }\DecValTok{1}\NormalTok{), }\StringTok{"] см}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• K: ["}\NormalTok{, }\FunctionTok{round}\NormalTok{(k\_quantiles[}\DecValTok{1}\NormalTok{], }\DecValTok{3}\NormalTok{), }\StringTok{","}\NormalTok{, }\FunctionTok{round}\NormalTok{(k\_quantiles[}\DecValTok{2}\NormalTok{], }\DecValTok{3}\NormalTok{), }\StringTok{"] /год}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} ЧАСТЬ 9: ФИНАЛЬНАЯ ВИЗУАЛИЗАЦИЯ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+\CommentTok{\# Генерируем кривые роста на основе апостериорного распределения}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{456}\NormalTok{)}
+\NormalTok{n\_curves }\OtherTok{\textless{}{-}} \DecValTok{150}
+\NormalTok{sample\_indices }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(param\_grid), n\_curves, }\AttributeTok{prob =}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{posterior)}
+
+\NormalTok{curve\_data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_curves) \{}
+\NormalTok{  idx }\OtherTok{\textless{}{-}}\NormalTok{ sample\_indices[i]}
+\NormalTok{  curve }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{Age =}\NormalTok{ ages\_full,}
+    \AttributeTok{Length =} \FunctionTok{von\_bertalanffy}\NormalTok{(ages\_full, param\_grid}\SpecialCharTok{$}\NormalTok{Linf[idx], param\_grid}\SpecialCharTok{$}\NormalTok{K[idx]),}
+    \AttributeTok{Curve =}\NormalTok{ i}
+\NormalTok{  )}
+\NormalTok{  curve\_data }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(curve\_data, curve)}
+\NormalTok{\}}
+
+\NormalTok{final\_plot }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ curve\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length, }\AttributeTok{group =}\NormalTok{ Curve), }
+            \AttributeTok{color =} \StringTok{"\#FF6666"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.08}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ full\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length, }\AttributeTok{color =} \StringTok{"Истинная кривая"}\NormalTok{), }
+            \AttributeTok{linewidth =} \DecValTok{2}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.9}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ observed\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length, }\AttributeTok{color =} \StringTok{"Наблюдения"}\NormalTok{), }
+             \AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.9}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{stat\_summary}\NormalTok{(}\AttributeTok{data =}\NormalTok{ curve\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ Length), }
+               \AttributeTok{fun =}\NormalTok{ mean, }\AttributeTok{geom =} \StringTok{"line"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#CC0000"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{1.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Истинная кривая"} \OtherTok{=} \StringTok{"\#3366CC"}\NormalTok{, }\StringTok{"Наблюдения"} \OtherTok{=} \StringTok{"\#00AA00"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"БАЙЕСОВСКАЯ ОЦЕНКА КРИВОЙ РОСТА"}\NormalTok{,}
+       \AttributeTok{subtitle =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Красные линии {-} возможные кривые (n ="}\NormalTok{, n\_curves, }\StringTok{")}\SpecialCharTok{\textbackslash{}n}\StringTok{Темно{-}красная {-} средняя апостериорная оценка"}\NormalTok{),}
+       \AttributeTok{y =} \StringTok{"Длина тела (см)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Возраст (лет)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{""}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{color =} \StringTok{"gray40"}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(final\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/BAYES7.PNG}
+\end{center}
+
+Заключение подчеркивает преимущества байесовского подхода: эффективное
+сочетание экспертных знаний с ограниченными данными, количественную
+оценку неопределенности и интерпретируемость результатов в терминах
+вероятностей. В условиях малых выборок, типичных для гидробиологических
+исследований, такой подход позволяет получать более реалистичные и
+надежные оценки параметров роста рыб.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{ЗАКЛЮЧЕНИЕ:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"==========}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Байесовский подход позволяет эффективно сочетать:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Экспертные знания (априорные распределения)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Ограниченные данные наблюдений (правдоподобие)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Количественную оценку неопределенности}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Интерпретируемые результаты в терминах вероятностей}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\chapter{Фильтр
+Калмана}\label{ux444ux438ux43bux44cux442ux440-ux43aux430ux43bux43cux430ux43dux430}
+
+\section{Введение}\label{ux432ux432ux435ux434ux435ux43dux438ux435-23}
+
+Это занятие --- про то, как перестать путать «то, что мы меряем», с
+«тем, что в системе происходит на самом деле». В промысловой статистике
+CPUE --- это не запас, а мутный его отпечаток: одновременно в нём
+``сидят'' и изъятие, и миграции, и случайные колебания наблюдений.
+Фильтр Калмана --- это рекурсивный метод оценивания скрытых состояний
+динамической системы, в которой сама динамика и измерения зашумлены. Он
+раздельно учитывает две неопределённости --- в процессах и в
+наблюдениях, на каждом шаге строит прогноз состояния, сравнивает его с
+новым фактом и корректирует оценку, оптимально взвешивая доверие к
+модели и данным. В гидробиологии и рыбохозяйственной науке эта логика
+особенно полезна там, где прямых наблюдений запаса нет, а есть индексы и
+оперативная промысловая информация: по временным рядам CPUE и выловов
+можно последовательно восстанавливать траектории численности/биомассы,
+пополнения, миграции и улавливаемости; объединять несколько источников
+данных с разной точностью; устойчиво проходить через пропуски и
+нерегулярные наблюдения; получать не только оценки, но и их дисперсии и
+доверительные интервалы. Именно поэтому фильтр Калмана может стать
+рабочей лошадкой для задач локальных открытых запасов, анализа
+истощения, последовательных моделей по возрасту/длине, а также
+структурных временных рядов, где есть медленно меняющиеся «скрытые»
+факторы продуктивности.
+
+Ключевое препятствие классическим регрессионным моделям истощения в
+реальных промысловых ситуациях --- открытость локальных запасов и
+шумность индексов. Когда через границы полигона идут разнонаправленные
+миграции, а наблюдения CPUE подвержены дополнительной вариабельности,
+наклон «линии Лесли» становится неустойчивым и плохо интерпретируемым, а
+в формулировке Де Лури добавляется ещё и методическая смещённость из‑за
+лог-линеаризации. В такой постановке нельзя честно отделить влияние
+вылова от неучтённых факторов и ошибок измерений.
+
+Эту методическую развилку аккуратно разобрал Александр Аркадьевич Михеев
+в работе «Приложение модели открытой эксплуатируемой популяции к оценке
+локальных запасов» (Труды ВНИРО, 2014, т. 151: 95--108). Он показал, что
+регрессионные методы не позволяют корректно оценивать открытый локальный
+запас, и предложил обобщённую модель Лесли с фильтром Калмана (ОМЛ ФК)
+как диагностическую модель для периода промысла.
+
+Суть обобщения проста и физически прозрачна. Запас \(N_t\)
+эволюционирует согласно балансовому уравнению:
+
+\[
+N_t = N_{t-1} - C_t + m_{t-1} + \varepsilon_t,
+\]
+
+где: - \(C_t\) --- известный вылов в момент времени \(t\), - \(m_t\) ---
+скрытый результирующий приток/отток (включающий миграции, неучтённый
+вылов и прочие неизмеряемые эффекты), - \(\varepsilon_t\) --- случайная
+ошибка процесса.
+
+Динамика скрытого компонента \(m_t\) задаётся как процесс с затухающей
+памятью:
+
+\[
+m_t = a\, m_{t-1} + \delta_t, \qquad |a| < 1,
+\]
+
+где \(a\) --- коэффициент автокорреляции, а \(\delta_t\) --- белый шум.
+
+Наблюдения представляют собой зашумлённый индекс биомассы:
+
+\[
+y_t = q\, N_t + w_t,
+\]
+
+где \(q\) --- коэффициент улавливаемости (catchability), а \(w_t\) ---
+шум измерения.
+
+В формализме \textbf{пространства состояний} такая модель естественным
+образом обрабатывается \textbf{фильтром Калмана}: на каждом шаге
+последовательно вычисляются: - инновации (ошибки прогноза), - их
+дисперсии, - коэффициент усиления (Kalman gain).
+
+Параметры системы (\(a\), \(q\)) и характеристики шумов
+(\(\mathrm{Var}(\varepsilon_t)\), \(\mathrm{Var}(\delta_t)\),
+\(\mathrm{Var}(w_t)\)) оцениваются методом \textbf{максимального
+правдоподобия}, используя разложение логарифмической функции
+правдоподобия по ошибкам предсказания.
+
+Отдельно отметим вклад Александра Аркадьевича: он показал, что попытка
+оценить вклад вылова и неучтённых факторов с помощью
+\textbf{множественной регрессии} на накопленные величины
+\(K_t = \sum_{s=1}^t C_s\) и \(M_t = \sum_{s=1}^t m_s\) обречена на
+неудачу из‑за \textbf{сильной мультиколлинеарности} между регрессорами.
+Введение скрытого состояния \(m_t\) позволяет корректно разделить
+влияние управляемого вылова \(C_t\) и неуправляемых экзогенных факторов,
+обеспечивая как идентифицируемость, так и интерпретируемость модели.
+
+Практически важная часть его работы --- обработка нерегулярных
+промысловых рядов: регуляризация времени через весовые матрицы для
+ежедневной шкалы, что позволяет фильтру корректно работать с «рваными»
+данными ловушечных промыслов. В приложении автор выводит уравнения
+фильтра для конкретной модели, даёт интерпретацию оценок в шкале
+наблюдений через статистические веса, связывает их с усилением Калмана и
+доказывает теорему об эффективности оценок для ОМЛ ФК. На эмпирических
+примерах из Сахалино‑Курильского региона он демонстрирует, что ОМЛ ФК
+возвращает более узкие и менее смещённые оценки по сравнению с
+классической Лесли, устойчиво работает при иммиграции/эмиграции и
+позволяет явно оценивать величину «скрытого» потока и погрешность
+наблюдений; именно эта модель легла в основу метода полигонов при
+подготовке оперативных прогнозов для беспозвоночных. В рамках нашей
+практики мы будем исходить из этой логики: трактовать CPUE как шумный
+отпечаток скрытого состояния, отделять процесс от измерения,
+последовательно обновлять знание о запасе и миграции и опираться на
+проверяемые статистические предпосылки.
+
+\section{Что
+делаем?}\label{ux447ux442ux43e-ux434ux435ux43bux430ux435ux43c-2}
+
+Скрипт \href{https://mombus.github.io/cRab/data/KALMAN.R}{целиком}.
+
+Мы идём от генерации учебных данных к классической регрессии Лесли и
+далее к фильтру Калмана в постановке обобщённой модели Лесли,
+последовательно рассчитываем оценки состояний и сравниваем подходы на
+одних и тех же рядах. Сначала подготавливаем окружение и подключаем
+пакеты для визуализации и манипуляций с данными. Далее создаём
+синтетический «мир», в котором известна истинная траектория запаса,
+чтобы наглядно видеть, что из неё восстанавливают разные методы. Для
+этого фиксируем генератор случайных чисел set.seed(123) ради
+воспроизводимости и задаём временную шкалу из 20 последовательных дней.
+Истинный запас формируем как комбинацию экспоненциального спада от
+стартового уровня 1000 с коэффициентом 0.08 в день, добавляем шаблон
+миграционных всплесков и оттоков и добавляем белый шум rnorm с
+дисперсией 25\^{}2, символизирующий непросчитанные факторы процесса.
+Миграционный шаблон задан вектором, в котором сначала идёт спокойный
+период, затем три положительных всплеска, снова спокойный отрезок и три
+отрицательных импульса, затем ещё несколько нулей. Обратите внимание: в
+примере длина migration\_pattern равна 19 при 20 днях, поэтому R
+предупреждает о неполном кратном «переразмножении» вектора и рециклирует
+его, что порождает предупреждение; чтобы его избежать, длину шаблона
+следует сделать ровно 20, добавив один ноль в конец. На основе истинного
+запаса формируем наблюдаемые промысловые ряды. Суточный вылов задаём как
+2--5\% от текущего запаса: для каждого дня генерируется коэффициент из
+равномерного распределения runif(0.02, 0.05), перемножается на
+true\_stock, результат округляется и обрезается снизу pmax(\ldots, 0),
+чтобы исключить отрицательные величины. CPUE, наш «индекс обилия»,
+создаём как линейную функция от запаса с коэффициентом улавливаемости
+0.002 и добавочным шумом измерений rnorm(sd = 0.1); это важно, потому
+что дальше в фильтре Калмана мы будем использовать тот же q, и таким
+образом обеспечиваем согласование шкал. Сразу выводим простейшие
+описательные характеристики: средний CPUE, суммарный вылов и диапазон
+суточного вылова, чтобы понимать порядок величин. Визуализируем исходные
+данные на одном графике с двумя шкалами: столбцами показываем суточный
+вылов, масштабированный делением на 50 для совместимости по оси Y с
+CPUE, точки и пунктирная линия --- это наблюдения CPUE. Вторичная ось
+возвращает масштаб выловов умножением на 50, подписи и аккуратная тема
+помогают мгновенно считывать структуру рядов.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ПРАКТИКУМ: ФИЛЬТР КАЛМАНА ДЛЯ ОЦЕНКИ ЗАПАСА ГИДРОБИОНТОВ}
+\CommentTok{\# =====================================================================================================================}
+\CommentTok{\# Автор: Баканев С.В. Для курса "Оценка водных биоресурсов при недостатке данных в среде R (для начинающих)"}
+\CommentTok{\# Цель: Показать преимущества фильтра Калмана перед классическими методами}
+\CommentTok{\# =====================================================================================================================}
+
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+
+\CommentTok{\# ЧАСТЬ 1: ГЕНЕРАЦИЯ И ВИЗУАЛИЗАЦИЯ СИНТЕТИЧЕСКИХ ДАННЫХ}
+\CommentTok{\# ======================================================}
+\CommentTok{\# В реальных условиях мы не знаем истинного состояния запаса,}
+\CommentTok{\# но для демонстрации методов создадим синтетические данные}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"=== ЧАСТЬ 1: ГЕНЕРАЦИЯ И ВИЗУАЛИЗАЦИЯ ДАННЫХ ===}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Устанавливаем seed для воспроизводимости результатов}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{days }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\DecValTok{20}  \CommentTok{\# 20 дней наблюдений}
+
+\CommentTok{\# СОЗДАЕМ РЕАЛИСТИЧНУЮ ДИНАМИКУ ЗАПАСА:}
+\CommentTok{\# 1. Экспоненциальное снижение (естественная смертность + вылов)}
+\CommentTok{\# 2. Миграционные всплески (приток/отток особей)}
+\CommentTok{\# 3. Случайные колебания (неучтенные факторы)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Создание модели истинного запаса...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{migration\_pattern }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{5}\NormalTok{), }\DecValTok{50}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{30}\NormalTok{, }\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{5}\NormalTok{), }\SpecialCharTok{{-}}\DecValTok{40}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{60}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{20}\NormalTok{, }\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\NormalTok{true\_stock }\OtherTok{\textless{}{-}} \DecValTok{1000} \SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.08} \SpecialCharTok{*}\NormalTok{ days) }\SpecialCharTok{+}\NormalTok{ migration\_pattern }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{20}\NormalTok{, }\AttributeTok{sd =} \DecValTok{25}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Генерация данных промысла...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\CommentTok{\# Создаем dataframe с данными наблюдений}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Day =}\NormalTok{ days,}
+  \CommentTok{\# Суточный вылов (2{-}5\% от текущего запаса)}
+  \AttributeTok{Catch =} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{round}\NormalTok{(true\_stock }\SpecialCharTok{*} \FunctionTok{runif}\NormalTok{(}\DecValTok{20}\NormalTok{, }\FloatTok{0.02}\NormalTok{, }\FloatTok{0.05}\NormalTok{)), }\DecValTok{0}\NormalTok{),}
+  \CommentTok{\# CPUE (Catch Per Unit Effort) {-} основной наблюдаемый показатель}
+  \CommentTok{\# В реальности зависит от множества факторов, здесь {-} линейная зависимость + шум}
+  \AttributeTok{CPUE =}\NormalTok{ true\_stock }\SpecialCharTok{*} \FloatTok{0.002} \SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{20}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.1}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# БАЗОВАЯ СТАТИСТИКА ДАННЫХ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Средний улов на усилие (CPUE):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{CPUE), }\DecValTok{3}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Общий вылов за период:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Catch), }\StringTok{"условных единиц}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Максимальный суточный вылов:"}\NormalTok{, }\FunctionTok{max}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Catch), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Минимальный суточный вылов:"}\NormalTok{, }\FunctionTok{min}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Catch), }\StringTok{"}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ВИЗУАЛИЗАЦИЯ ИСХОДНЫХ ДАННЫХ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Построение графика исходных данных...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{plot\_raw\_data }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day)) }\SpecialCharTok{+}
+  \CommentTok{\# Столбцы {-} суточный вылов (масштабируем для совмещения с CPUE)}
+  \FunctionTok{geom\_col}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Catch}\SpecialCharTok{/}\DecValTok{50}\NormalTok{), }\AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Точки и линия {-} наблюдения CPUE}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ CPUE), }\AttributeTok{color =} \StringTok{"darkred"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ CPUE), }\AttributeTok{color =} \StringTok{"darkred"}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Две оси Y для разных масштабов}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"Улов на усилие (CPUE)"}\NormalTok{,}
+    \AttributeTok{sec.axis =} \FunctionTok{sec\_axis}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ . }\SpecialCharTok{*} \DecValTok{50}\NormalTok{, }\AttributeTok{name =} \StringTok{"Суточный улов (особи)"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Исходные данные промысла"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Красные точки/линия {-} CPUE (индекс обилия), синие столбцы {-} уловы"}\NormalTok{,}
+       \AttributeTok{caption =} \StringTok{"CPUE используется как прокси{-}переменная для оценки запаса"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(plot\_raw\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KALMAN1.PNG}
+\end{center}
+
+Далее демонстрируем классический «линейный» взгляд на истощение через
+модель Лесли в её регрессионной версии на время: строим прямую CPUE
+\textasciitilde{} Day с помощью lm, сохраняем предсказания в таблицу и
+печатаем ключевые статистики --- наклон, R\^{}2 и p-значение. Такая
+формулировка намеренно упрощённая по сравнению с канонической регрессией
+на накопленный вылов, но она хорошо иллюстрирует идею «одной линии по
+шумным точкам», о которой говорилось во введении. Строим отдельный
+график, где на исходные точки CPUE накладываем линию предсказаний
+регрессии и её стандартную полосу через geom\_smooth(method = ``lm''),
+чтобы визуально увидеть, как прямая «усредняет» колебания.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ЧАСТЬ 2: КЛАССИЧЕСКАЯ МОДЕЛЬ ЛЕСЛИ}
+\CommentTok{\# ===================================}
+\CommentTok{\# Модель Лесли {-} традиционный подход для оценки динамики популяций}
+\CommentTok{\# Предполагает линейное изменение CPUE во времени}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{=== ЧАСТЬ 2: КЛАССИЧЕСКАЯ МОДЕЛЬ ЛЕСЛИ ===}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Линейная регрессия CPUE от времени}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Построение линейной регрессии CPUE \textasciitilde{} Day...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(CPUE }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Day, }\AttributeTok{data =}\NormalTok{ data)}
+
+\CommentTok{\# Добавляем предсказания модели в dataframe}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{LM\_Prediction }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model)}
+
+\CommentTok{\# ВЫВОД РЕЗУЛЬТАТОВ РЕГРЕССИИ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"РЕЗУЛЬТАТЫ ЛИНЕЙНОЙ РЕГРЕССИИ:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Наклон (темп снижения CPUE):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{coef}\NormalTok{(lm\_model)[}\DecValTok{2}\NormalTok{], }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"R² (доля объясненной дисперсии):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared, }\DecValTok{3}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"p{-}значение:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{], }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ВИЗУАЛИЗАЦИЯ МОДЕЛИ ЛЕСЛИ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Визуализация результатов линейной модели...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{plot\_leslie }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ CPUE)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{color =} \StringTok{"darkred"}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ LM\_Prediction), }\AttributeTok{color =} \StringTok{"darkblue"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }
+            \AttributeTok{linetype =} \StringTok{"solid"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{, }
+              \AttributeTok{fill =} \StringTok{"lightblue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Классическая модель Лесли: линейная регрессия CPUE"}\NormalTok{,}
+       \AttributeTok{subtitle =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Наклон ="}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{coef}\NormalTok{(lm\_model)[}\DecValTok{2}\NormalTok{], }\DecValTok{4}\NormalTok{), }
+                       \StringTok{", R² ="}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared, }\DecValTok{3}\NormalTok{)),}
+       \AttributeTok{x =} \StringTok{"День промысла"}\NormalTok{, }
+       \AttributeTok{y =} \StringTok{"Улов на усилие (CPUE)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(plot\_leslie)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KALMAN2.PNG}
+\end{center}
+
+После этого переходим к центральной части --- фильтру Калмана для оценки
+скрытых состояний «запас N» и «миграция m» в линейной гауссовой модели
+состояния. Настройки фильтра задаются явно. Коэффициент улавливаемости q
+фиксируем равным 0.002, тем самым связывая шкалу CPUE и запаса: модель
+наблюдения имеет вид \(y_t = q N_t + w_t\). Дисперсии шумов задаём как
+\(sigma_N = 30\) для процесса запаса и \(sigma_m = 20\) для процесса
+миграции; это стандартные отклонения, а в матрицу процесса Q входят их
+квадраты, так что фактические вариации по состояниям --- 900 и 400
+соответственно. Измерительная ошибка CPUE задаётся через
+\(sigma_y = 0.08\), а в матрице R фигурирует квадрат 0.0064. Начальное
+состояние оцениваем из первого наблюдения CPUE простым пересчётом
+\(N_0 ≈ CPUE_1 / q\), что эквивалентно «жёсткой» априорной информации о
+q и отсутствии смещения в первом измерении; начальную миграцию полагаем
+нулевой \(m_0 = 0\). Начальную ковариацию ошибок оценивания \(P_0\)
+берём диагональной с элементами 100 и 100, что означает умеренную
+начальную неопределённость по обеим компонентам; по сравнению с
+процессными дисперсиями это не слишком «жёсткое» начальное доверие, но и
+не полностью неинформативное. Этот выбор влияет на первые шаги фильтра:
+чем меньше \(P_0\), тем сильнее фильтр доверяет стартовым значениям и
+плавнее сходитится к устойчивому режиму, чем больше --- тем быстрее
+«подхватывает» структуру шума из Q и данных.
+
+Основной цикл фильтра проходит по всем дням. На этапе прогноза мы
+обновляем состояния по уравнениям процесса: запас прогнозируется как
+\emph{N\textsubscript{pred} = N\textsubscript{est} −
+Catch\textsubscript{t} + m\textsubscript{est}}, что реализует баланс
+Лесли с учётом миграции, а миграция ведёт себя как авторегрессия первого
+порядка \emph{m\textsubscript{pred} = 0.9m\textsubscript{est}}, где 0.9
+--- это коэффициент затухания \emph{a}, означающий, что миграционные
+импульсы затухают с временем, но не мгновенно. Одновременно формируем
+матрицу перехода \emph{F = {[}{[}1, 1{]}, {[}0, 0.9{]}{]}} и матрицу
+процессного шума \emph{Q = diag(sigma\textsubscript{N}\^{}2,
+sigma\textsubscript{m}\^{}2)} и рассчитываем прогнозную ковариацию
+\emph{P\textsubscript{pred} = F P F\^{}T + Q}, которая накапливает
+неопределённость от процесса. На этапе коррекции связываем состояния с
+наблюдением через матрицу \emph{H = {[}q, 0{]}}, поскольку в CPUE
+напрямую «виден» только запас. Прогноз измерения есть
+\emph{y\textsubscript{pred} = q N\textsubscript{pred}}; сравнивая его с
+фактом \emph{CPUE\textsubscript{t}}, получаем инновацию \emph{innovation
+= CPUE\textsubscript{t} − y\textsubscript{pred}} и её дисперсию \emph{S
+= H P\textsubscript{pred} H\^{}T + sigma\textsubscript{y}\^{}2}; именно
+S задаёт, сколько «шума» мы ожидаем в обновляющем процессе и от модели,
+и от наблюдения одновременно. Коэффициент усиления Калмана \emph{K =
+P\textsubscript{pred} H\^{}T S\^{}\{-1\}} вычисляет оптимальные веса для
+обновления: если модельная неопределённость велика, а измерение точное,
+\emph{K} «тянет» оценку к факту, и наоборот. Далее выполняем обновление
+состояния: прибавляем к прогнозу вектор приращений
+\emph{state\textsubscript{update} = K × innovation}, тем самым получаем
+\emph{N\textsubscript{est}} и \emph{m\textsubscript{est}} уже с учётом
+наблюдения, и обновляем ковариацию ошибок оценивания по формуле \emph{P
+= (I − K H) P\textsubscript{pred}}, что уменьшает неопределённость там,
+где поступила новая информация. На каждом шаге складываем в
+результирующую таблицу день, наблюдённый CPUE, фильтровые оценки запаса
+и миграции и предсказанный \emph{CPUE y\textsubscript{pred}}. Важно
+понимать, что в столбец \emph{CPUE\textsubscript{Estimated}} сохраняется
+именно одношаговый прогноз \emph{y\textsubscript{pred}} до коррекции, то
+есть это линия «что ожидала модель перед тем, как увидеть факт». Если
+нужно визуализировать «отфильтрованный» CPUE, соответствующий уже
+обновлённой оценке состояния, логичнее использовать \emph{q ×
+N\textsubscript{est}} после коррекции; оба варианта корректны, но
+выражают разные величины --- прогноз и фильтровую оценку.
+
+После завершения цикла объединяем исходные данные и результаты фильтра в
+один датафрейм для удобства анализа. Дальше подводим оперативные итоги:
+печатаем оценку начального и конечного запаса, абсолютное и
+относительное снижение за период, среднюю миграцию и экстремальные
+значения миграционного потока. Эти величины непосредственно поступают из
+траекторий \emph{N\textsubscript{est}} и \emph{m\textsubscript{est}}, и
+по знаку миграции легко интерпретировать периоды чистого притока и
+оттока. Строим три графика. Первый сравнивает три линии в шкале CPUE:
+точки фактического CPUE, пунктир классической регрессии Лесли и сплошную
+линию одношаговых прогнозов фильтра; здесь удобно видеть, как фильтр,
+учитывая вылов, миграцию и неопределённости, «ведёт» свою линию мимо
+краткоживущих всплесков, тогда как прямая по определению усредняет всё
+линейно. Второй график показывает динамику оценённого запаса и миграции
+на одной картинке: чтобы совместить масштабы, миграция умножается на 10
+и сдвигается вверх на 400 единиц, а на правой оси задана обратная
+трансформация; это чисто визуальный приём, сдвиг не имеет биологического
+смысла, он лишь помогает видеть оба процесса одновременно. Третий график
+детализирует миграцию во времени с разметкой по знакам, подчёркивая, в
+какие дни фильтр «видел» преобладание иммиграции, а в какие ---
+эмиграции.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ЧАСТЬ 3: ФИЛЬТР КАЛМАНА ДЛЯ ОЦЕНКИ ЗАПАСА И МИГРАЦИИ}
+\CommentTok{\# ====================================================}
+\CommentTok{\# Фильтр Калмана позволяет оценивать ненаблюдаемые состояния системы}
+\CommentTok{\# (запас, миграцию) на основе зашумленных наблюдений (CPUE)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{=== ЧАСТЬ 3: ФИЛЬТР КАЛМАНА ===}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ПАРАМЕТРЫ ФИЛЬТРА КАЛМАНА}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Инициализация параметров фильтра Калмана...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{q }\OtherTok{\textless{}{-}} \FloatTok{0.002}      \CommentTok{\# Коэффициент улавливаемости (связь между запасом и CPUE)}
+\NormalTok{sigma\_N }\OtherTok{\textless{}{-}} \DecValTok{30}   \CommentTok{\# Шум процесса для запаса (неопределенность в динамике запаса)}
+\NormalTok{sigma\_m }\OtherTok{\textless{}{-}} \DecValTok{20}   \CommentTok{\# Шум процесса для миграции (неопределенность в миграции)}
+\NormalTok{sigma\_y }\OtherTok{\textless{}{-}} \FloatTok{0.08} \CommentTok{\# Шум измерений для CPUE (ошибка наблюдений)}
+
+\CommentTok{\# НАЧАЛЬНЫЕ УСЛОВИЯ}
+\NormalTok{N\_est }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{CPUE[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{/}\NormalTok{ q  }\CommentTok{\# Начальная оценка запаса из первого наблюдения CPUE}
+\NormalTok{m\_est }\OtherTok{\textless{}{-}} \DecValTok{0}                 \CommentTok{\# Начальная оценка миграции (предполагаем 0)}
+\NormalTok{P }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{), }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{)  }\CommentTok{\# Начальная матрица ковариации ошибок}
+
+\CommentTok{\# ДЛЯ ХРАНЕНИЯ РЕЗУЛЬТАТОВ}
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Day =} \FunctionTok{integer}\NormalTok{(),}
+  \AttributeTok{CPUE\_Observed =} \FunctionTok{numeric}\NormalTok{(),}
+  \AttributeTok{Stock\_Estimate =} \FunctionTok{numeric}\NormalTok{(),}
+  \AttributeTok{Migration\_Estimate =} \FunctionTok{numeric}\NormalTok{(),}
+  \AttributeTok{CPUE\_Estimated =} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Запуск основного цикла фильтра Калмана...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ОСНОВНОЙ ЦИКЛ ФИЛЬТРА КАЛМАНА (для каждого дня наблюдений)}
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(data)) \{}
+  
+  \CommentTok{\# █████ ШАГ 1: ПРОГНОЗ (PREDICTION STEP) █████}
+  \CommentTok{\# Прогнозируем состояние системы на следующий день}
+  
+  \CommentTok{\# Уравнения состояния:}
+\NormalTok{  N\_pred }\OtherTok{\textless{}{-}}\NormalTok{ N\_est }\SpecialCharTok{{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{Catch[t] }\SpecialCharTok{+}\NormalTok{ m\_est  }\CommentTok{\# Запас: предыдущий {-} вылов + миграция}
+\NormalTok{  m\_pred }\OtherTok{\textless{}{-}} \FloatTok{0.9} \SpecialCharTok{*}\NormalTok{ m\_est                    }\CommentTok{\# Миграция: авторегрессия 1{-}го порядка}
+  
+  \CommentTok{\# Матрица перехода состояний (описывает динамику системы)}
+\NormalTok{  F\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{,     }\CommentTok{\# Влияние миграции на запас}
+                       \DecValTok{0}\NormalTok{, }\FloatTok{0.9}\NormalTok{),  }\CommentTok{\# Авторегрессия для миграции}
+                     \AttributeTok{nrow =} \DecValTok{2}\NormalTok{, }\AttributeTok{byrow =} \ConstantTok{TRUE}\NormalTok{)}
+  
+  \CommentTok{\# Матрица ковариации шума процесса}
+\NormalTok{  Q }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(sigma\_N}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\DecValTok{0}\NormalTok{, }
+                \DecValTok{0}\NormalTok{, sigma\_m}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{)}
+  
+  \CommentTok{\# Прогноз ковариации ошибок}
+\NormalTok{  P\_pred }\OtherTok{\textless{}{-}}\NormalTok{ F\_matrix }\SpecialCharTok{\%*\%}\NormalTok{ P }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(F\_matrix) }\SpecialCharTok{+}\NormalTok{ Q}
+  
+  \CommentTok{\# █████ ШАГ 2: КОРРЕКЦИЯ (UPDATE STEP) █████}
+  \CommentTok{\# Обновляем прогноз на основе новых наблюдений}
+  
+  \CommentTok{\# Матрица измерений (связь состояний с наблюдениями)}
+\NormalTok{  H }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(q, }\DecValTok{0}\NormalTok{), }\AttributeTok{nrow =} \DecValTok{1}\NormalTok{)  }\CommentTok{\# Только запас влияет на CPUE}
+  
+  \CommentTok{\# Прогнозируемое значение CPUE}
+\NormalTok{  y\_pred }\OtherTok{\textless{}{-}}\NormalTok{ q }\SpecialCharTok{*}\NormalTok{ N\_pred}
+  
+  \CommentTok{\# Инновация (невязка) {-} разница между наблюдением и прогнозом}
+\NormalTok{  innovation }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{CPUE[t] }\SpecialCharTok{{-}}\NormalTok{ y\_pred}
+  
+  \CommentTok{\# Ковариация инноваций}
+\NormalTok{  S }\OtherTok{\textless{}{-}}\NormalTok{ H }\SpecialCharTok{\%*\%}\NormalTok{ P\_pred }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(H) }\SpecialCharTok{+}\NormalTok{ sigma\_y}\SpecialCharTok{\^{}}\DecValTok{2}
+  
+  \CommentTok{\# Коэффициент усиления Калмана (оптимальные веса для обновления)}
+\NormalTok{  K }\OtherTok{\textless{}{-}}\NormalTok{ P\_pred }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(H) }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(S)}
+  
+  \CommentTok{\# ОБНОВЛЕНИЕ ОЦЕНОК СОСТОЯНИЙ}
+\NormalTok{  state\_update }\OtherTok{\textless{}{-}}\NormalTok{ K }\SpecialCharTok{\%*\%}\NormalTok{ innovation}
+\NormalTok{  N\_est }\OtherTok{\textless{}{-}}\NormalTok{ N\_pred }\SpecialCharTok{+}\NormalTok{ state\_update[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{]  }\CommentTok{\# Обновляем оценку запаса}
+\NormalTok{  m\_est }\OtherTok{\textless{}{-}}\NormalTok{ m\_pred }\SpecialCharTok{+}\NormalTok{ state\_update[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]  }\CommentTok{\# Обновляем оценку миграции}
+  
+  \CommentTok{\# ОБНОВЛЕНИЕ КОВАРИАЦИИ ОШИБОК}
+\NormalTok{  P }\OtherTok{\textless{}{-}}\NormalTok{ (}\FunctionTok{diag}\NormalTok{(}\DecValTok{2}\NormalTok{) }\SpecialCharTok{{-}}\NormalTok{ K }\SpecialCharTok{\%*\%}\NormalTok{ H) }\SpecialCharTok{\%*\%}\NormalTok{ P\_pred}
+  
+  \CommentTok{\# СОХРАНЕНИЕ РЕЗУЛЬТАТОВ ДЛЯ ЭТОГО ДНЯ}
+\NormalTok{  results }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(results, }\FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{Day =}\NormalTok{ t,}
+    \AttributeTok{CPUE\_Observed =}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{CPUE[t],}
+    \AttributeTok{Stock\_Estimate =}\NormalTok{ N\_est,}
+    \AttributeTok{Migration\_Estimate =}\NormalTok{ m\_est,}
+    \AttributeTok{CPUE\_Estimated =}\NormalTok{ y\_pred}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Фильтр Калмана успешно завершил работу!}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ОБЪЕДИНЕНИЕ ВСЕХ ДАННЫХ ДЛЯ АНАЛИЗА}
+\NormalTok{final\_data }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(data, results[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Stock\_Estimate"}\NormalTok{, }\StringTok{"Migration\_Estimate"}\NormalTok{, }\StringTok{"CPUE\_Estimated"}\NormalTok{)])}
+
+\CommentTok{\# ЧАСТЬ 4: ЗАКЛЮЧИТЕЛЬНАЯ АНАЛИТИКА И ВИЗУАЛИЗАЦИЯ}
+\CommentTok{\# ================================================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"=== ЧАСТЬ 4: СРАВНИТЕЛЬНЫЙ АНАЛИЗ РЕЗУЛЬТАТОВ ===}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ОСНОВНЫЕ РЕЗУЛЬТАТЫ ФИЛЬТРА КАЛМАНА}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"ОЦЕНКИ ФИЛЬТРА КАЛМАНА:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Начальный запас:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{1}\NormalTok{], }\DecValTok{1}\NormalTok{), }\StringTok{"особей}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Конечный запас:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{20}\NormalTok{], }\DecValTok{1}\NormalTok{), }\StringTok{"особей}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Снижение запаса за период:"}\NormalTok{, }
+    \FunctionTok{round}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}}\NormalTok{ results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{20}\NormalTok{], }\DecValTok{1}\NormalTok{), }
+    \StringTok{"особей ("}\NormalTok{, }
+    \FunctionTok{round}\NormalTok{((results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}}\NormalTok{ results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{20}\NormalTok{]) }\SpecialCharTok{/}\NormalTok{ results}\SpecialCharTok{$}\NormalTok{Stock\_Estimate[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+    \StringTok{"\%)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Средняя миграция:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Migration\_Estimate), }\DecValTok{1}\NormalTok{), }\StringTok{"особей/день}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Максимальный приток:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{max}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Migration\_Estimate), }\DecValTok{1}\NormalTok{), }\StringTok{"особей/день}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Максимальный отток:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{min}\NormalTok{(results}\SpecialCharTok{$}\NormalTok{Migration\_Estimate), }\DecValTok{1}\NormalTok{), }\StringTok{"особей/день}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ГРАФИК 1: СРАВНЕНИЕ МЕТОДОВ ОЦЕНКИ CPUE}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Построение сравнительных графиков...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{plot\_comparison }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(final\_data) }\SpecialCharTok{+}
+  \CommentTok{\# Наблюдения}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ CPUE, }\AttributeTok{color =} \StringTok{"Наблюдения CPUE"}\NormalTok{), }\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Модель Лесли}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ LM\_Prediction, }\AttributeTok{color =} \StringTok{"Модель Лесли"}\NormalTok{), }
+            \AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Фильтр Калмана}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ CPUE\_Estimated, }\AttributeTok{color =} \StringTok{"Фильтр Калмана"}\NormalTok{), }
+            \AttributeTok{size =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.9}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Настройки графика}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Сравнение методов оценки динамики запаса"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Фильтр Калмана vs Классическая модель Лесли"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"День промысла"}\NormalTok{, }
+       \AttributeTok{y =} \StringTok{"Улов на усилие (CPUE)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Метод"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}
+    \StringTok{"Наблюдения CPUE"} \OtherTok{=} \StringTok{"darkred"}\NormalTok{,}
+    \StringTok{"Модель Лесли"} \OtherTok{=} \StringTok{"darkblue"}\NormalTok{, }
+    \StringTok{"Фильтр Калмана"} \OtherTok{=} \StringTok{"darkgreen"}
+\NormalTok{  )) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(plot\_comparison)}
+
+\CommentTok{\# ГРАФИК 2: ДИНАМИКА ЗАПАСА И МИГРАЦИИ}
+\NormalTok{plot\_stock\_migration }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(final\_data) }\SpecialCharTok{+}
+  \CommentTok{\# Оценка запаса}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ Stock\_Estimate, }\AttributeTok{color =} \StringTok{"Оценка запаса"}\NormalTok{), }
+            \AttributeTok{size =} \FloatTok{1.3}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Миграционный поток (масштабируем для визуализации)}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ Migration\_Estimate }\SpecialCharTok{*} \DecValTok{10} \SpecialCharTok{+} \DecValTok{400}\NormalTok{, }
+                \AttributeTok{color =} \StringTok{"Миграция (x10)"}\NormalTok{), }\AttributeTok{size =} \FloatTok{1.1}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Две оси Y}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}
+    \AttributeTok{name =} \StringTok{"Оценка запаса (особи)"}\NormalTok{,}
+    \AttributeTok{sec.axis =} \FunctionTok{sec\_axis}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ (. }\SpecialCharTok{{-}} \DecValTok{400}\NormalTok{) }\SpecialCharTok{/} \DecValTok{10}\NormalTok{, }\AttributeTok{name =} \StringTok{"Миграционный поток (особи/день)"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Динамика запаса и миграционного потока"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Результаты работы фильтра Калмана"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"День промысла"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Переменные"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}
+    \StringTok{"Оценка запаса"} \OtherTok{=} \StringTok{"steelblue"}\NormalTok{,}
+    \StringTok{"Миграция (x10)"} \OtherTok{=} \StringTok{"orange"}
+\NormalTok{  )) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(plot\_stock\_migration)}
+
+\CommentTok{\# ГРАФИК 3: ДЕТАЛЬНЫЙ АНАЛИЗ МИГРАЦИИ}
+\NormalTok{plot\_migration\_detail }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(final\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Day, }\AttributeTok{y =}\NormalTok{ Migration\_Estimate)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"firebrick"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =} \FunctionTok{ifelse}\NormalTok{(Migration\_Estimate }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, }\StringTok{"Иммиграция"}\NormalTok{, }\StringTok{"Эмиграция"}\NormalTok{)), }
+             \AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Оценка миграционного потока фильтром Калмана"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Положительные значения {-} приток, отрицательные {-} отток"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"День промысла"}\NormalTok{, }
+       \AttributeTok{y =} \StringTok{"Чистый миграционный поток (особи/день)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Тип миграции"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Иммиграция"} \OtherTok{=} \StringTok{"green4"}\NormalTok{, }\StringTok{"Эмиграция"} \OtherTok{=} \StringTok{"red3"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(plot\_migration\_detail)}
+
+\CommentTok{\# ТАБЛИЦА РЕЗУЛЬТАТОВ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"=== ТАБЛИЦА РЕЗУЛЬТАТОВ (первые 10 дней) ===}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{results\_table }\OtherTok{\textless{}{-}} \FunctionTok{head}\NormalTok{(final\_data[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Day"}\NormalTok{, }\StringTok{"Catch"}\NormalTok{, }\StringTok{"CPUE"}\NormalTok{, }\StringTok{"Stock\_Estimate"}\NormalTok{, }\StringTok{"Migration\_Estimate"}\NormalTok{)], }\DecValTok{10}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), round, }\DecValTok{1}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(results\_table)}
+
+\CommentTok{\# СТАТИСТИКА КАЧЕСТВА ОЦЕНОК}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{=== СТАТИСТИКА КАЧЕСТВА ОЦЕНОК ===}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# Среднеквадратичные ошибки}
+\NormalTok{mse\_leslie }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((final\_data}\SpecialCharTok{$}\NormalTok{CPUE }\SpecialCharTok{{-}}\NormalTok{ final\_data}\SpecialCharTok{$}\NormalTok{LM\_Prediction)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{mse\_kalman }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((final\_data}\SpecialCharTok{$}\NormalTok{CPUE }\SpecialCharTok{{-}}\NormalTok{ final\_data}\SpecialCharTok{$}\NormalTok{CPUE\_Estimated)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"СРЕДНЕКВАДРАТИЧНЫЕ ОШИБКИ (MSE):}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Модель Лесли:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(mse\_leslie, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Фильтр Калмана:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(mse\_kalman, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Улучшение:"}\NormalTok{, }\FunctionTok{round}\NormalTok{((mse\_leslie }\SpecialCharTok{{-}}\NormalTok{ mse\_kalman) }\SpecialCharTok{/}\NormalTok{ mse\_leslie }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\CommentTok{\# ЗАКЛЮЧЕНИЕ}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"=== ВЫВОДЫ И РЕКОМЕНДАЦИИ ===}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"1. Фильтр Калмана позволяет оценивать ненаблюдаемые параметры (запас, миграцию)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"2. Учитывает не только наблюдения, но и знания о динамике системы}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"3. Обеспечивает более точные оценки по сравнению с классическими методами}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"4. Особенно полезен при наличии миграционных процессов}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"5. Требует тщательной настройки параметров шумов}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Анализ завершен! Для углубленного изучения рекомендуется:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Экспериментировать с параметрами шумов (sigma\_N, sigma\_m, sigma\_y)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Добавить сезонные компоненты в модель}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Рассмотреть нелинейные версии фильтра Калмана}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KALMAN3.PNG}
+\end{center}
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KALMAN4.PNG}
+\end{center}
+\begin{center}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{images/KALMAN5.PNG}
+\end{center}
+Чтобы увязать качество подгонки в шкале наблюдений, считаем
+среднеквадратические ошибки для регрессии Лесли и для линии
+\emph{CPUE\textsubscript{Estimated}}. В данном прогоне MSE (Mean Squared
+Error) фильтра близка к MSE регрессии и может быть чуть хуже, что
+нормально, поскольку мы сравниваем не «подогнанную линию» к факту, а
+одношаговые прогнозы, которые по определению не используют нынешнее
+измерение. Если вместо прогноза использовать \emph{q ×
+N\textsubscript{est}} после обновления, MSE обычно снижается и
+становится сопоставимой или лучшей, а настройка шума измерений
+\emph{sigma\textsubscript{y}} и процессных шумов
+\emph{sigma\textsubscript{N}} и \emph{sigma\textsubscript{m}} позволяет
+управлять балансом доверия между моделью и данными. Финальные текстовые
+выводы подчёркивают ключевую практическую мысль: фильтр Калмана
+позволяет оценивать ненаблюдаемые компоненты баланса (запас и миграцию),
+опираясь одновременно на физику процесса и на данные; он особенно
+полезен при наличии миграций и шумных индексов и требует аккуратного
+выбора дисперсий, что в прикладных задачах делается по максимальному
+правдоподобию инноваций, как это реализовано в ОМЛ ФК по Михееву. В этом
+учебном скрипте параметры заданы вручную ради прозрачности, шаг контроля
+«пропусков» не демонстрируется, поскольку синтетический ряд полный;
+однако та же схема фильтра устойчиво работает и при отсутствующих
+наблюдениях, если на таких шагах пропускать блок коррекции и не менять
+P\_pred формулой обновления.
 
 \bookmarksetup{startatroot}
 
