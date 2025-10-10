@@ -130,9 +130,36 @@ if (inherits(fit_train, "try-error")) {
   spict_pred <- data.frame(year = test_years, point = NA_real_)
 } else {
   # Параметры динамики
-  r_hat <- as.numeric(exp(fit_train$par.fixed["logr"]))
-  K_hat <- as.numeric(exp(fit_train$par.fixed["logK"]))
+  safe_get_par_exp <- function(fit, name) {
+    val <- NA_real_
+    if (!is.null(fit$par.fixed) && name %in% names(fit$par.fixed)) {
+      val <- as.numeric(exp(fit$par.fixed[name]))
+    }
+    if (!is.finite(val)) {
+      gp <- try(get.par(name, fit, exp = TRUE), silent = TRUE)
+      if (!inherits(gp, "try-error")) {
+        if (is.null(dim(gp))) {
+          # скалярный параметр: именованный вектор c(est, ll, ul)
+          if ("est" %in% names(gp)) val <- as.numeric(gp["est"]) else val <- as.numeric(gp[1])
+        } else if ("est" %in% colnames(gp)) {
+          val <- as.numeric(gp[, "est"][1])
+        }
+      }
+    }
+    val
+  }
+
+  r_hat <- safe_get_par_exp(fit_train, "logr")
+  K_hat <- safe_get_par_exp(fit_train, "logK")
   B0 <- as.numeric(extract_B_at_years(fit_train, 2021)$B)
+  if (!is.finite(B0)) {
+    # Фолбэк: возьмём последнее доступное значение биомассы из train-фита
+    gp_tmp <- get.par("logB", fit_train, exp = TRUE)
+    est_tmp <- if (!is.null(dim(gp_tmp))) as.numeric(gp_tmp[, "est"]) else as.numeric(gp_tmp)
+    if (length(est_tmp) > 0 && is.finite(tail(est_tmp, 1))) {
+      B0 <- tail(est_tmp, 1)
+    }
+  }
   if (!is.finite(B0)) {
     warning("Не удалось определить B(2021) из SPiCT train; SPiCT-сценарий пропущен.")
     spict_pred <- data.frame(year = test_years, point = NA_real_)
@@ -220,8 +247,8 @@ plot_fc <- fc_tbl |>
   select(year, method, point)
 
 p1 <- ggplot() +
-  geom_line(data = truth, aes(x = year, y = B), color = "black", linewidth = 1) +
-  geom_point(data = truth, aes(x = year, y = B), color = "black", size = 1.5) +
+  geom_line(data = dplyr::filter(truth, is.finite(B)), aes(x = year, y = B), color = "black", linewidth = 1) +
+  geom_point(data = dplyr::filter(truth, is.finite(B)), aes(x = year, y = B), color = "black", size = 1.5) +
   geom_line(data = bind_rows(last_train, plot_fc), aes(x = year, y = point, color = method), linewidth = 0.9, linetype = "dashed") +
   geom_point(data = plot_fc, aes(x = year, y = point, color = method), size = 2) +
   scale_color_brewer(palette = "Set1") +
