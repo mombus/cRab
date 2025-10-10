@@ -62,27 +62,20 @@ inp$dteuler <- 1/16
 fit_all <- try(fit.spict(inp), silent = TRUE)
 if (inherits(fit_all, "try-error")) stop("SPiCT не сошелся на полном наборе данных")
 
-# Функция: перевести сплошной ряд времени SPiCT в годовую биомассу (последняя точка года)
-extract_annual_B <- function(fit) {
+# Функция: получить биомассу на конец каждого года (последняя точка времени ≤ year+0.999)
+extract_B_at_years <- function(fit, years, frac_end = 0.999) {
   gp <- get.par("logB", fit, exp = TRUE)
-  if (is.null(dim(gp))) {
-    stop("Не удалось извлечь временной ряд биомассы из SPiCT")
-  }
-  time <- fit$inp$time
-  df <- data.frame(time = as.numeric(time), B = as.numeric(gp[,"est"]))
-  df$year <- floor(df$time + 1e-9)
-  annual <- df |>
-    group_by(year) |>
-    arrange(time, .by_group = TRUE) |>
-    summarise(B = dplyr::last(B), .groups = "drop")
-  annual <- annual |>
-    filter(year %in% Year) |>
-    arrange(year)
-  return(annual)
+  est <- if (!is.null(dim(gp))) as.numeric(gp[, "est"]) else as.numeric(gp)
+  time <- as.numeric(fit$inp$time)
+  Bvals <- vapply(years, function(y) {
+    idx <- which(time <= y + frac_end)
+    if (length(idx) == 0) return(NA_real_)
+    est[max(idx)]
+  }, numeric(1))
+  data.frame(year = years, B = Bvals)
 }
 
-annual_B_all <- extract_annual_B(fit_all)
-truth <- left_join(data.frame(year = Year), annual_B_all, by = c("year" = "year"))
+truth <- extract_B_at_years(fit_all, Year)
 if (any(is.na(truth$B))) {
   warning("В годовом ряду биомассы есть NA; проверьте входные данные/сходимость.")
 }
@@ -139,8 +132,7 @@ if (inherits(fit_train, "try-error")) {
   # Параметры динамики
   r_hat <- as.numeric(exp(fit_train$par.fixed["logr"]))
   K_hat <- as.numeric(exp(fit_train$par.fixed["logK"]))
-  annual_B_train <- extract_annual_B(fit_train)
-  B0 <- as.numeric(annual_B_train$B[annual_B_train$year == 2021])
+  B0 <- as.numeric(extract_B_at_years(fit_train, 2021)$B)
   if (!is.finite(B0)) {
     warning("Не удалось определить B(2021) из SPiCT train; SPiCT-сценарий пропущен.")
     spict_pred <- data.frame(year = test_years, point = NA_real_)
