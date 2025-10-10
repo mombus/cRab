@@ -234,6 +234,18 @@ write_csv(metrics, file.path(out_dir, "skill_metrics.csv"))
 cat("\nИтоги точности (2022–2024):\n")
 print(metrics)
 
+# ----- 6.1) Таблица: отклонение прогнозов от истины по годам (в процентах) -----
+percent_diff_tbl <- fc_tbl |>
+  dplyr::select(method, year, point) |>
+  dplyr::left_join(true_df, by = "year") |>
+  dplyr::mutate(
+    percent_diff = 100 * (point - truth) / truth,
+    abs_percent_diff = abs(percent_diff)
+  ) |>
+  dplyr::arrange(method, year)
+
+readr::write_csv(percent_diff_tbl, file.path(out_dir, "forecast_percent_diff_by_year.csv"))
+
 # ----- 7) Визуализация -----
 # 7.1 Ряд биомассы и прогнозы
 plot_df <- truth |>
