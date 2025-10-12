@@ -165,7 +165,7 @@ for(r in 1:R){
 }
 
 # 7) Plots -------------------------------------------------------------------
-output_dir <- file.path(dirname("/workspace/images/placeholder"), "images", "NASCO_salmon")
+output_dir <- file.path("images", "NASCO_salmon")
 if(!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # P(CL) trajectories
@@ -204,13 +204,10 @@ p_s <- ggplot(df_s, aes(S, after_stat(density), fill = river, color = river)) +
 
 ggsave(filename = file.path(output_dir, "s_last_hist_vs_cl.png"), plot = p_s, width = 8, height = 5, dpi = 150)
 
-# Posterior predictive check: y vs y_rep (means)
-
-y_mean <- matrix(NA_real_, R, Tt)
+# Posterior predictive check: observed y vs mean(y_rep)
 yrep_mean <- matrix(NA_real_, R, Tt)
 for(r in 1:R){
   for(t in 1:Tt){
-    y_mean[r,t] <- mean(post_mat[, y_colname(r,t)])
     yrep_mean[r,t] <- mean(post_mat[, yrep_colname(r,t)])
   }
 }
@@ -218,14 +215,14 @@ for(r in 1:R){
 df_ppc <- data.frame(
   river = rep(paste0("R",1:R), each = Tt),
   year  = rep(1:Tt, times = R),
-  y_obs = as.vector(y_mean),
+  y_obs = as.vector(y),
   y_rep = as.vector(yrep_mean)
 )
 
 p_ppc <- ggplot(df_ppc, aes(y_obs, y_rep, color = river)) +
   geom_abline(slope = 1, intercept = 0, linetype = 2) +
   geom_point() +
-  labs(title = "Posterior predictive: mean(y_rep) vs mean(y)", x = "Observed mean", y = "Replicated mean") +
+  labs(title = "Posterior predictive: mean(y_rep) vs observed y", x = "Observed", y = "Posterior mean y_rep") +
   theme_minimal()
 
 ggsave(filename = file.path(output_dir, "ppc_scatter.png"), plot = p_ppc, width = 6, height = 5, dpi = 150)
