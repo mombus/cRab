@@ -204,7 +204,81 @@ for (i in 1:n_rivers) {
                         ))
 }
 
-# 3. Визуализация данных
+# 3. Визуализация иерархической структуры модели
+# Создаем схему иерархии
+hierarchy_data <- tibble(
+  level = c(rep("Гиперпараметры", 3), rep("Параметры рек", 10), rep("Наблюдения", 150)),
+  parameter = c("μ (среднее log R0)", "σ (межречная SD)", "τ (наблюдательная SD)",
+                paste0("log R0[", 1:10, "]"),
+                paste0("log_recruits[", rep(1:10, each=15), ",", rep(1:15, 10), "]")),
+  river_id = c(rep(NA, 3), 1:10, rep(1:10, each=15)),
+  x = c(0.5, 0.5, 0.5, 
+        seq(0.1, 0.9, length.out=10),
+        rep(seq(0.1, 0.9, length.out=10), each=15) + runif(150, -0.02, 0.02)),
+  y = c(rep(3, 3), rep(2, 10), rep(1, 150))
+)
+
+p_hierarchy <- ggplot(hierarchy_data, aes(x = x, y = y)) +
+  # Гиперпараметры
+  geom_point(data = filter(hierarchy_data, level == "Гиперпараметры"), 
+             size = 8, color = "darkred", alpha = 0.8) +
+  geom_text(data = filter(hierarchy_data, level == "Гиперпараметры"), 
+            aes(label = parameter), size = 3, color = "white", fontface = "bold") +
+  
+  # Параметры рек
+  geom_point(data = filter(hierarchy_data, level == "Параметры рек"), 
+             size = 6, color = "steelblue", alpha = 0.8) +
+  geom_text(data = filter(hierarchy_data, level == "Параметры рек"), 
+            aes(label = paste0("R", river_id)), size = 2.5, color = "white", fontface = "bold") +
+  
+  # Наблюдения
+  geom_point(data = filter(hierarchy_data, level == "Наблюдения"), 
+             size = 2, color = "darkgreen", alpha = 0.6) +
+  
+  # Стрелки от гиперпараметров к параметрам рек
+  geom_segment(data = expand.grid(from_x = 0.5, from_y = 3, to_x = seq(0.1, 0.9, length.out=10), to_y = 2),
+               aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
+               arrow = arrow(length = unit(0.1, "cm")), color = "gray50", alpha = 0.7) +
+  
+  # Стрелки от параметров рек к наблюдениям
+  geom_segment(data = expand.grid(river = 1:10, obs = 1:15) %>%
+                 mutate(from_x = seq(0.1, 0.9, length.out=10)[river],
+                        from_y = 2,
+                        to_x = seq(0.1, 0.9, length.out=10)[river] + runif(150, -0.02, 0.02),
+                        to_y = 1),
+               aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
+               arrow = arrow(length = unit(0.05, "cm")), color = "gray30", alpha = 0.5) +
+  
+  # Подписи уровней
+  annotate("text", x = -0.1, y = 3, label = "Уровень 1:\nГиперпараметры", 
+           hjust = 1, size = 4, fontface = "bold", color = "darkred") +
+  annotate("text", x = -0.1, y = 2, label = "Уровень 2:\nПараметры рек", 
+           hjust = 1, size = 4, fontface = "bold", color = "steelblue") +
+  annotate("text", x = -0.1, y = 1, label = "Уровень 3:\nНаблюдения", 
+           hjust = 1, size = 4, fontface = "bold", color = "darkgreen") +
+  
+  # Заголовок и подписи
+  labs(title = "Иерархическая структура байесовской модели",
+       subtitle = "μ, σ, τ → log R0[i] → log_recruits[j]",
+       x = "", y = "") +
+  
+  # Настройки темы
+  theme_void() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "gray50"),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  
+  # Ограничения осей
+  xlim(-0.3, 1.1) +
+  ylim(0.5, 3.5)
+
+print(p_hierarchy)
+
+# 4. Визуализация данных
 p1 <- obs_data %>%
   mutate(river = paste0("River_", river_id)) %>%
   ggplot(aes(x = year, y = exp(log_recruits), group = river)) +
@@ -217,7 +291,7 @@ p1 <- obs_data %>%
 
 print(p1)
 
-# 4. Определение модели в Nimble
+# 5. Определение модели в Nimble
 hbm_code <- nimbleCode({
   # Гиперпараметры
   mu ~ dnorm(7, sd = 10)
@@ -235,7 +309,7 @@ hbm_code <- nimbleCode({
   }
 })
 
-# 5. Подготовка данных, констант и начальных значений
+# 6. Подготовка данных, констант и начальных значений
 constants <- list(
   N_rivers = n_rivers,
   N_obs = nrow(obs_data)
@@ -255,7 +329,7 @@ inits_list <- list(
 
 params_to_monitor <- c("mu", "sigma", "tau_obs", "logR0")
 
-# 6. Создание и компиляция модели
+# 7. Создание и компиляция модели
 hbm_model <- nimbleModel(code = hbm_code,
                          constants = constants,
                          data = data_list,
@@ -267,7 +341,7 @@ hbm_mcmc <- buildMCMC(hbm_model, monitors = params_to_monitor)
 compiled_model <- compileNimble(hbm_model)
 compiled_mcmc  <- compileNimble(hbm_mcmc, project = hbm_model)
 
-# 7. Запуск MCMC
+# 8. Запуск MCMC
 set.seed(123)
 samples <- runMCMC(compiled_mcmc,
                    niter = 12000,
@@ -276,7 +350,7 @@ samples <- runMCMC(compiled_mcmc,
                    thin = 10,
                    samplesAsCodaMCMC = TRUE)
 
-# 8. Диагностика сходимости
+# 9. Диагностика сходимости
 cat("Диагностика сходимости:\n")
 print(gelman.diag(samples))
 
@@ -287,7 +361,7 @@ print(effectiveSize(samples))
 p2 <- mcmc_trace(samples, pars = c("mu", "sigma", "tau_obs"))
 print(p2)
 
-# 9. Визуализация априоров и постериоров (ИСПРАВЛЕНО)
+# 10. Визуализация априоров и постериоров (ИСПРАВЛЕНО)
 # Генерируем априорные распределения
 prior_mu <- rnorm(5000, 7, 10)
 prior_sigma <- runif(5000, 0.1, 3)
@@ -334,7 +408,7 @@ p5 <- mcmc_dens(samples, pars = "tau_obs") +
 
 print(p5)
 
-# 10. Оценки R0 по рекам (ИСПРАВЛЕНО)
+# 11. Оценки R0 по рекам (ИСПРАВЛЕНО)
 # Извлекаем постериорные выборки logR0 как числовую матрицу
 logR0_samples <- as.matrix(samples[, paste0("logR0[", 1:n_rivers, "]")])
 R0_est_median <- apply(exp(logR0_samples), 2, median)
@@ -360,7 +434,7 @@ p6 <- ggplot(river_summary, aes(x = reorder(river, R0_true))) +
 
 print(p6)
 
-# 11. Дополнительная диагностика и сводка
+# 12. Дополнительная диагностика и сводка
 cat("\n=== СВОДКА РЕЗУЛЬТАТОВ ===\n")
 
 # Сводка по гиперпараметрам
