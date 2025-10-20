@@ -41,6 +41,7 @@ book:
     - chapter29.qmd
     - chapter30.qmd
     - chapter31.qmd
+    - chapter32.qmd
     - references.qmd
 
 bibliography: references.bib
