@@ -1,0 +1,388 @@
+---
+title: "Лекция-практикум: Анализ факторов и прогноз пополнения R3haddock в R"
+author: "Курс: Оценка водных биоресурсов в среде R (для начинающих)"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+    theme: readable
+    code_folding: show
+params:
+  data_path: "RECRUITMENT.xlsx"
+  sheet: "RECRUITMENT"
+  fc_start: 2022
+  alpha_opt: 0.75
+---
+
+```{r setup, include=FALSE}
+set.seed(123)
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(
+  knitr, readxl, tidyverse, caret, corrplot, mgcv, randomForest, xgboost,
+  Boruta, GGally, FactoMineR, glmnet, recipes, rsample, nnet, earth,
+  kernlab, pls, Cubist, ranger, gbm, lattice
+)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5)
+
+# Автоматически отключаем исполнение, если файл данных не найден
+can_run <- file.exists(params$data_path)
+if (!can_run) {
+  message("Внимание: не найден файл ", params$data_path, ". Кодовые блоки будут показаны, но не выполнены.")
+}
+```
+
+## Что это за занятие и зачем оно нужно
+
+В этой практической работе вы проходите полный цикл прикладочного анализа пополнения запаса рыбы `R3haddock`: от подготовки данных и отбора предикторов до сравнения нескольких семейств моделей, выбора устойчивой к хронологии прогностической схемы и построения прогноза с доверительными интервалами. Подход ориентирован на начинающих, но использует современные приёмы: автоматический отбор признаков (Boruta, LASSO), сопоставление линейных/нелинейных моделей, time-slice валидацию и ансамблевый прогноз.
+
+Ключевые риски, на которые мы обращаем внимание: мультиколлинеарность, «подсмотр в будущее» во временных данных, малая выборка и корректная оценка неопределённости. В конце вы получите прозрачный и воспроизводимый рабочий процесс для реальных задач гидробиологии.
+
+## Данные, предметная постановка и цель
+
+- **Цель**: понять, как средовые/биологические факторы связаны с `R3haddock`, и построить прогноз 2022–2024 с оценкой неопределённости.
+- **Целевая переменная**: `R3haddock` (положительная, непрерывная).
+- **Предикторы**: гидрометеорология (`T*`), индексы (`I*`), океанография (`O*`), биотические показатели (напр. `codTSB`), лаги (`haddock68`).
+
+## Подготовка данных и инженерия признаков
+
+```{r load-data, eval=can_run}
+# Загрузка исходных данных
+DATA <- readxl::read_excel(path = params$data_path, sheet = params$sheet) %>%
+  filter(YEAR > 1989 & YEAR < 2022) %>%
+  mutate(
+    across(starts_with("T"), as.numeric),
+    across(starts_with("I"), as.numeric),
+    across(starts_with("O"), as.numeric),
+    across(where(is.character), ~na_if(., "NA"))
+  )
+
+# Производный признак: NAOspring = среднее NAO за март–май, если есть соответствующие колонки
+if (all(c("NAO3","NAO4","NAO5") %in% names(DATA))) {
+  DATA <- DATA %>%
+    mutate(NAOspring = rowMeans(pick(NAO3, NAO4, NAO5), na.rm = TRUE)) %>%
+    select(-NAO3, -NAO4, -NAO5)
+}
+
+glimpse(DATA)
+```
+
+### Медианная импутация, фильтр корреляций, предварительная визуализация
+
+```{r preprocessing, eval=can_run}
+# Кандидатные предикторы и отклик
+predictors <- DATA %>% select(-YEAR, -R3haddock) %>% select(where(is.numeric))
+response   <- DATA$R3haddock
+
+# Простая и робастная импутация пропусков медианой
+predictors_filled <- predictors %>% mutate(across(everything(), ~ ifelse(is.na(.), median(., na.rm = TRUE), .)))
+
+# Корреляционная матрица и фильтр высоких корреляций
+cor_matrix <- cor(predictors_filled, use = "complete.obs")
+corrplot(cor_matrix, method = "circle", type = "upper", tl.cex = 0.65)
+
+high_cor <- findCorrelation(cor_matrix, cutoff = 0.8)
+predictors_filtered <- predictors_filled[, -high_cor, drop = FALSE]
+```
+
+## Автоматический отбор признаков: Boruta и LASSO
+
+```{r feature-selection, eval=can_run}
+set.seed(123)
+
+# Boruta: отбор сверх «теневых» признаков
+boruta_output <- Boruta(x = predictors_filtered, y = response, maxRuns = 100, doTrace = 0)
+plot(boruta_output, cex.axis = 0.6, las = 2, main = "Boruta: важности признаков")
+selected_vars <- getSelectedAttributes(boruta_output, withTentative = TRUE)
+
+# LASSO: консервативный выбор по lambda.1se
+x <- as.matrix(predictors_filtered)
+y <- response
+cv_fit <- cv.glmnet(x, y, alpha = 1, nfolds = 10)
+plot(cv_fit, main = "LASSO: кросс-валидация")
+lasso_coef <- coef(cv_fit, s = "lambda.1se")
+lasso_vars <- rownames(lasso_coef)[lasso_coef[, 1] != 0]
+lasso_vars <- setdiff(lasso_vars, "(Intercept)")
+
+cat("Boruta selected (n=", length(selected_vars), "): ", paste(selected_vars, collapse=", "), "\n", sep="")
+cat("LASSO selected (n=", length(lasso_vars), "): ", paste(lasso_vars, collapse=", "), "\n", sep="")
+
+# Финальный пул предикторов + обязательная переменная по биологической логике
+mandatory <- c("haddock68")
+final_vars <- unique(union(union(selected_vars, lasso_vars), mandatory))
+final_vars <- final_vars[final_vars %in% names(predictors_filled)]
+
+# Учебный набор для моделирования
+model_data <- DATA %>% select(YEAR, all_of(final_vars), R3haddock) %>% drop_na()
+glimpse(model_data)
+
+# Быстрый sanity-check важностей
+rf_imp <- randomForest(R3haddock ~ ., data = model_data %>% select(-YEAR), importance = TRUE)
+varImpPlot(rf_imp, main = "Random Forest: важность предикторов")
+```
+
+## Базовое сравнение моделей (5-fold CV + holdout)
+
+```{r base-comparison, eval=can_run}
+# Подготовка
+df <- model_data %>% select(-YEAR)
+set.seed(123)
+train_idx <- caret::createDataPartition(df$R3haddock, p = 0.8, list = FALSE)
+train <- df[train_idx, ]
+test  <- df[-train_idx, ]
+ctrl  <- caret::trainControl(method = "cv", number = 5, savePredictions = "final")
+
+# Кастомный GAM (mgcv)
+gam_spec <- list(
+  type = "Regression", library = "mgcv", loop = NULL,
+  parameters = data.frame(parameter = "none", class = "character", label = "none"),
+  grid = function(x,y,len=NULL,search="grid") data.frame(none = NA),
+  fit = function(x,y,...) {
+    df <- x; df$R3haddock <- y
+    mgcv::gam(
+      R3haddock ~ s(codTSB,bs="tp") + s(T12,bs="tp") + s(I5,bs="tp") + s(NAOspring,bs="tp") + s(haddock68,bs="tp"),
+      data = df, method = "REML", select = TRUE, ...
+    )
+  },
+  predict = function(modelFit, newdata, submodels = NULL) predict(modelFit, newdata = newdata, type = "response"),
+  prob = NULL, sort = function(x) x
+)
+
+# Обучение "панели" моделей
+lm_model    <- caret::train(R3haddock ~ ., data = train, method = "lm", trControl = ctrl)
+glm_model   <- caret::train(R3haddock ~ ., data = train, method = "glm", family = Gamma(link = "log"), trControl = ctrl)
+gam_model   <- caret::train(x = train[, -which(names(train) == "R3haddock")], y = train$R3haddock, method = gam_spec, trControl = ctrl)
+rf_model    <- caret::train(R3haddock ~ ., data = train, method = "rf", trControl = ctrl, ntree = 1000, tuneGrid = data.frame(mtry = 1), importance = TRUE)
+xgb_grid    <- expand.grid(nrounds=100, max_depth=4, eta=0.1, gamma=0, colsample_bytree=0.8, min_child_weight=1, subsample=0.8)
+xgb_model   <- caret::train(R3haddock ~ ., data = train, method = "xgbTree", trControl = ctrl, tuneGrid = xgb_grid, verbose = 0)
+nnet_model  <- caret::train(R3haddock ~ ., data = train, method = "nnet", trControl = ctrl, preProcess = c("center","scale"), tuneGrid = expand.grid(size = 5, decay = 0.1), linout = TRUE, trace = FALSE, MaxNWts = 5000)
+glmnet_model<- caret::train(R3haddock ~ ., data = train, method = "glmnet", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 10)
+earth_model <- caret::train(R3haddock ~ ., data = train, method = "earth", trControl = ctrl, tuneLength = 10)
+svm_model   <- caret::train(R3haddock ~ ., data = train, method = "svmRadial", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 8)
+knn_model   <- caret::train(R3haddock ~ ., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 15)
+ranger_model<- caret::train(R3haddock ~ ., data = train, method = "ranger", trControl = ctrl, tuneLength = 3, importance = "impurity")
+gbm_model   <- caret::train(R3haddock ~ ., data = train, method = "gbm", trControl = ctrl, tuneGrid = expand.grid(n.trees=100, interaction.depth=1, shrinkage=0.1, n.minobsinnode=2), distribution = "gaussian", bag.fraction = 1, verbose = FALSE)
+pls_model   <- caret::train(R3haddock ~ ., data = train, method = "pls", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 10)
+cubist_model<- caret::train(R3haddock ~ ., data = train, method = "cubist", trControl = ctrl, tuneLength = 5)
+
+# Метрики
+rmse  <- function(a, p) sqrt(mean((a - p)^2, na.rm = TRUE))
+mae   <- function(a, p) mean(abs(a - p), na.rm = TRUE)
+r2    <- function(a, p) 1 - sum((a - p)^2, na.rm = TRUE) / sum((a - mean(a))^2, na.rm = TRUE)
+mape  <- function(a, p) mean(abs((a - p) / a), na.rm = TRUE) * 100
+smape <- function(a, p) mean(2 * abs(p - a) / (abs(a) + abs(p)), na.rm = TRUE) * 100
+metrics_vec <- function(y, pred) c(RMSE=rmse(y,pred), MAE=mae(y,pred), R2=r2(y,pred), MAPE=mape(y,pred), sMAPE=smape(y,pred))
+
+y_test <- test$R3haddock
+preds_test <- list(
+  LM=predict(lm_model,test), GLM=predict(glm_model,test), GAM=predict(gam_model,test),
+  RF=predict(rf_model,test), XGB=predict(xgb_model,test), NNET=predict(nnet_model,test),
+  ENet=predict(glmnet_model,test), MARS=predict(earth_model,test), SVM=predict(svm_model,test),
+  kNN=predict(knn_model,test), RANGER=predict(ranger_model,test), GBM=predict(gbm_model,test),
+  PLS=predict(pls_model,test), CUBIST=predict(cubist_model,test)
+)
+metrics_table <- do.call(rbind, lapply(names(preds_test), function(nm){
+  data.frame(Model = nm, t(metrics_vec(y_test, preds_test[[nm]])), row.names = NULL)
+})) %>% arrange(RMSE, MAE)
+
+knitr::kable(round(metrics_table, 3), caption = "Holdout-метрики по моделям (сортировка по RMSE/MAE)")
+
+results <- caret::resamples(list(
+  LM=lm_model, GLM=glm_model, GAM=gam_model, RF=rf_model, XGB=xgb_model, NNET=nnet_model,
+  ENet=glmnet_model, MARS=earth_model, SVM=svm_model, kNN=knn_model, RANGER=ranger_model,
+  GBM=gbm_model, PLS=pls_model, CUBIST=cubist_model
+))
+summary(results)
+lattice::dotplot(results, metric = "RMSE")
+```
+
+## Time-slice CV (горизонт 3 года) и хронологический тест
+
+```{r time-slice, eval=can_run}
+# Хронологический порядок
+md <- model_data %>% arrange(YEAR)
+md_for_fit <- md %>% select(codTSB, T12, I5, NAOspring, haddock68, R3haddock)
+
+n <- nrow(md_for_fit)
+holdout_frac <- 0.2
+n_test <- max(4, ceiling(n * holdout_frac))
+train_ts <- head(md_for_fit, n - n_test)
+test_ts  <- tail(md_for_fit, n_test)
+
+n_train <- nrow(train_ts)
+initial_frac <- 0.6
+horizon      <- 3
+initialWindow <- max(10, floor(initial_frac * n_train))
+if (initialWindow + horizon > n_train) initialWindow <- n_train - horizon
+
+slices <- caret::createTimeSlices(1:n_train, initialWindow = initialWindow, horizon = horizon, fixedWindow = FALSE)
+ctrl_ts <- caret::trainControl(method = "cv", index = slices$train, indexOut = slices$test, savePredictions = "final")
+
+fit_ts <- function(method, form, data, ctrl, ...) {
+  out <- try(caret::train(form, data = data, method = method, trControl = ctrl, ...), silent = TRUE)
+  if (inherits(out, "try-error")) NULL else out
+}
+
+lm_ts   <- fit_ts("lm",        R3haddock ~ ., train_ts, ctrl_ts)
+glm_ts  <- fit_ts("glm",       R3haddock ~ ., train_ts, ctrl_ts, family = Gamma(link="log"))
+gam_ts  <- caret::train(x = train_ts[, -which(names(train_ts)=="R3haddock")], y = train_ts$R3haddock, method = gam_spec, trControl = ctrl_ts)
+rf_ts   <- fit_ts("rf",        R3haddock ~ ., train_ts, ctrl_ts, ntree=1000, tuneGrid=data.frame(mtry=1))
+xgb_ts  <- fit_ts("xgbTree",   R3haddock ~ ., train_ts, ctrl_ts, tuneGrid = xgb_grid, verbose = 0)
+rgr_ts  <- fit_ts("ranger",    R3haddock ~ ., train_ts, ctrl_ts, tuneLength=3)
+nnet_ts <- fit_ts("nnet",      R3haddock ~ ., train_ts, ctrl_ts, preProcess=c("center","scale"), tuneGrid=expand.grid(size=5,decay=0.1), linout=TRUE, trace=FALSE, MaxNWts=5000)
+svm_ts  <- fit_ts("svmRadial", R3haddock ~ ., train_ts, ctrl_ts, preProcess=c("center","scale"), tuneLength=8)
+knn_ts  <- fit_ts("knn",       R3haddock ~ ., train_ts, ctrl_ts, preProcess=c("center","scale"), tuneLength=15)
+enet_ts <- fit_ts("glmnet",    R3haddock ~ ., train_ts, ctrl_ts, preProcess=c("center","scale"), tuneLength=10)
+mars_ts <- fit_ts("earth",     R3haddock ~ ., train_ts, ctrl_ts, tuneLength=10)
+pls_ts  <- fit_ts("pls",       R3haddock ~ ., train_ts, ctrl_ts, preProcess=c("center","scale"), tuneLength=10)
+cub_ts  <- fit_ts("cubist",    R3haddock ~ ., train_ts, ctrl_ts, tuneLength=5)
+
+models_ts <- list(LM=lm_ts, GLM=glm_ts, GAM=gam_ts, RF=rf_ts, XGB=xgb_ts, RANGER=rgr_ts,
+                  NNET=nnet_ts, SVM=svm_ts, kNN=knn_ts, ENet=enet_ts, MARS=mars_ts, PLS=pls_ts, CUBIST=cub_ts)
+models_ts <- models_ts[!vapply(models_ts, is.null, logical(1))]
+
+rmse  <- function(a, p) sqrt(mean((a - p)^2, na.rm = TRUE))
+mae   <- function(a, p) mean(abs(a - p), na.rm = TRUE)
+
+cv_metrics <- function(m) {
+  if (is.null(m$pred) || !"Resample" %in% names(m$pred)) return(c(RMSE=NA, MAE=NA))
+  by_slice <- m$pred %>% dplyr::group_by(Resample) %>% dplyr::summarise(RMSE=rmse(obs,pred), MAE=mae(obs,pred), .groups="drop")
+  c(RMSE = mean(by_slice$RMSE, na.rm = TRUE), MAE = mean(by_slice$MAE, na.rm = TRUE))
+}
+
+cv_rank <- do.call(rbind, lapply(models_ts, cv_metrics)) %>% as.data.frame()
+cv_rank$Model <- rownames(cv_rank)
+cv_rank <- cv_rank[is.finite(cv_rank$RMSE), ] %>% dplyr::relocate(Model) %>% dplyr::arrange(RMSE, MAE)
+knitr::kable(cv_rank, digits = 3, caption = "Time-slice CV (h=3): средние RMSE/MAE по срезам")
+
+preds_ts <- lapply(models_ts, function(m) try(predict(m, newdata = test_ts), TRUE))
+keep <- vapply(preds_ts, function(p) is.numeric(p) && length(p)==nrow(test_ts) && all(is.finite(p)), logical(1))
+preds_ts <- preds_ts[keep]
+
+r2 <- function(a, p) 1 - sum((a - p)^2, na.rm = TRUE) / sum((a - mean(a))^2, na.rm = TRUE)
+test_rank <- do.call(rbind, lapply(names(preds_ts), function(nm){
+  data.frame(Model=nm,
+             RMSE=rmse(test_ts$R3haddock, preds_ts[[nm]]),
+             MAE =mae (test_ts$R3haddock, preds_ts[[nm]]),
+             R2  =r2  (test_ts$R3haddock, preds_ts[[nm]]),
+             row.names = NULL)
+})) %>% dplyr::arrange(RMSE, MAE)
+knitr::kable(round(test_rank, 3), caption = "Хронологический тест: RMSE/MAE/R2")
+```
+
+## Прогноз 2022–2024 (ансамбль Cubist + LM) и график 1990–2024 с ДИ
+
+```{r forecast, eval=can_run}
+# Полные модели
+alpha_opt <- params$alpha_opt
+md <- model_data %>% arrange(YEAR)
+
+cubist_full <- caret::train(R3haddock ~ codTSB + T12 + I5 + NAOspring + haddock68, data = md, method = "cubist", trControl = caret::trainControl(method = "none"), tuneGrid = if (exists("cubist_model")) cubist_model$bestTune else NULL, tuneLength = if (exists("cubist_model")) 1 else 5)
+lm_full     <- caret::train(R3haddock ~ codTSB + T12 + I5 + NAOspring + haddock68, data = md, method = "lm", trControl = caret::trainControl(method = "none"))
+
+predict_ensemble <- function(newdata, alpha = alpha_opt) {
+  alpha * predict(cubist_full, newdata) + (1 - alpha) * predict(lm_full, newdata)
+}
+
+# Остатки для эмпирических PI
+get_residuals_for_pi <- function() {
+  if (exists("lm_model") && exists("cubist_model") && !is.null(lm_model$pred) && !is.null(cubist_model$pred)) {
+    pl <- lm_model$pred %>% dplyr::select(Resample,rowIndex,obs,p_lm=pred)
+    pc <- cubist_model$pred %>% dplyr::select(Resample,rowIndex,p_cu=pred)
+    dplyr::inner_join(pl, pc, by=c("Resample","rowIndex")) %>%
+      dplyr::mutate(p_ens = alpha_opt * p_cu + (1 - alpha_opt) * p_lm, resid = obs - p_ens) %>%
+      dplyr::pull(resid) %>% .[is.finite(.)]
+  } else {
+    md$R3haddock - predict_ensemble(md)
+  }
+}
+
+resids <- get_residuals_for_pi()
+q025 <- as.numeric(quantile(resids, 0.025, na.rm = TRUE))
+q250 <- as.numeric(quantile(resids, 0.250, na.rm = TRUE))
+q750 <- as.numeric(quantile(resids, 0.750, na.rm = TRUE))
+q975 <- as.numeric(quantile(resids, 0.975, na.rm = TRUE))
+
+# Сценарий будущего
+fc_start <- params$fc_start
+pred_cols <- c("codTSB","T12","I5","NAOspring","haddock68")
+train_period <- md %>% filter(YEAR > 1989 & YEAR < fc_start)
+mu <- train_period %>% summarise(across(all_of(pred_cols), ~mean(.x, na.rm = TRUE))) %>% as.list()
+
+build_future <- function(years, mu, user_df=NULL) {
+  df <- tibble::tibble(YEAR = years)
+  for (v in pred_cols) df[[v]] <- mu[[v]]
+  if (!is.null(user_df)) {
+    for (i in seq_len(nrow(user_df))) {
+      yr <- user_df$YEAR[i]
+      if (yr %in% years) {
+        idx <- which(df$YEAR == yr)
+        for (v in intersect(pred_cols, names(user_df))) {
+          val <- user_df[[v]][i]
+          if (!is.na(val)) df[[v]][idx] <- val
+        }
+      }
+    }
+  }
+  df
+}
+
+future_years <- fc_start:2024
+scenario_future <- build_future(future_years, mu, user_df = NULL)
+
+pred_future <- predict_ensemble(scenario_future)
+forecast_tbl <- tibble::tibble(
+  YEAR      = scenario_future$YEAR,
+  pred_mean = as.numeric(pred_future),
+  PI50_low  = pred_future + q250, PI50_high = pred_future + q750,
+  PI95_low  = pred_future + q025, PI95_high = pred_future + q975
+)
+
+knitr::kable(round(forecast_tbl, 0), caption = "Прогноз R3haddock на 2022–2024 (ансамбль Cubist+LM)")
+
+pred_df <- dplyr::bind_rows(md %>% dplyr::select(YEAR, all_of(pred_cols)), scenario_future) %>% dplyr::distinct(YEAR, .keep_all = TRUE) %>% dplyr::arrange(YEAR)
+pred_df$Pred      <- as.numeric(predict_ensemble(pred_df))
+pred_df$PI50_low  <- pred_df$Pred + q250
+pred_df$PI50_high <- pred_df$Pred + q750
+pred_df$PI95_low  <- pred_df$Pred + q025
+pred_df$PI95_high <- pred_df$Pred + q975
+
+hist_df <- md %>% dplyr::select(YEAR, R3haddock)
+
+ggplot() +
+  geom_ribbon(data = pred_df, aes(x = YEAR, ymin = PI95_low, ymax = PI95_high), fill = "grey80", alpha = 0.25) +
+  geom_ribbon(data = pred_df, aes(x = YEAR, ymin = PI50_low, ymax = PI50_high), fill = "grey60", alpha = 0.35) +
+  geom_line(data = subset(pred_df, YEAR < fc_start), aes(x = YEAR, y = PI95_low), color = "grey45", linewidth = 0.6) +
+  geom_line(data = subset(pred_df, YEAR < fc_start), aes(x = YEAR, y = PI95_high), color = "grey45", linewidth = 0.6) +
+  geom_line(data = subset(pred_df, YEAR < fc_start), aes(x = YEAR, y = PI50_low), color = "grey35", linewidth = 0.6) +
+  geom_line(data = subset(pred_df, YEAR < fc_start), aes(x = YEAR, y = PI50_high), color = "grey35", linewidth = 0.6) +
+  geom_line(data = subset(pred_df, YEAR >= fc_start-1), aes(x = YEAR, y = PI95_low), color = "grey45", linewidth = 0.6, linetype = "dashed") +
+  geom_line(data = subset(pred_df, YEAR >= fc_start-1), aes(x = YEAR, y = PI95_high), color = "grey45", linewidth = 0.6, linetype = "dashed") +
+  geom_line(data = subset(pred_df, YEAR >= fc_start-1), aes(x = YEAR, y = PI50_low), color = "grey35", linewidth = 0.6, linetype = "dashed") +
+  geom_line(data = subset(pred_df, YEAR >= fc_start-1), aes(x = YEAR, y = PI50_high), color = "grey35", linewidth = 0.6, linetype = "dashed") +
+  geom_line(data = subset(pred_df, YEAR < fc_start), aes(x = YEAR, y = Pred), color = "steelblue4", linewidth = 1) +
+  geom_line(data = subset(pred_df, YEAR >= fc_start-1), aes(x = YEAR, y = Pred), color = "steelblue4", linewidth = 1, linetype = "dashed") +
+  geom_point(data = hist_df, aes(x = YEAR, y = R3haddock), color = "black", size = 2, alpha = 0.9) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0))) +
+  labs(title = "Пополнение R3haddock: факт (1990–2021) и прогноз (2022–2024)\nАнсамбль CUBIST+LM; интервалы — эмпирические",
+       x = "Год", y = "R3haddock") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+```
+
+## Нюансы, подводные камни и расширения
+
+- **Малая выборка**: предпочитайте простые и устойчивые модели (LM/GLM/GAM/PLS/Cubist), регуляризацию (LASSO/ENet), кросс-проверку с хронологией.
+- **Мульти/конкурвиколлинеарность**: фильтр корреляций, VIF, PLS, упрощение набора признаков.
+- **Нестационарность**: проверка режимных сдвигов, раздельная оценка «эпох», адаптивные окна, переобучение.
+- **Автокорреляция/гетероскедастичность**: диагностика ACF/PACF, DW, Бройш–Паган; GLM/GAMLSS, трансформации, ARIMAX/GAMM.
+- **Интервалы прогноза**: бутстреп, квантильные модели, конформные предсказания — полезные альтернативы эмпирическим остаточным PI.
+
+## Приложение: сведения о сессии R
+
+```{r session-info}
+sessionInfo()
+```
+
